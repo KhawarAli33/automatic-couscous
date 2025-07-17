@@ -509,10 +509,18 @@ document.addEventListener('DOMContentLoaded', () => {
         playSound('success');
         
         if (state.isMatchSync) {
-            document.getElementById('submitActualResultBtn').addEventListener('click', handleActualResultSubmit);
+            const submitBtn = document.getElementById('submitActualResultBtn');
+            // Remove existing event listener to prevent memory leaks
+            submitBtn.removeEventListener('click', handleActualResultSubmit);
+            submitBtn.addEventListener('click', handleActualResultSubmit);
             document.getElementById('actualNumInput').focus();
         } else {
-            document.querySelectorAll('.feedback-btn').forEach(btn => btn.addEventListener('click', handleManualFeedback));
+            const feedbackBtns = document.querySelectorAll('.feedback-btn');
+            feedbackBtns.forEach(btn => {
+                // Remove existing event listener to prevent memory leaks
+                btn.removeEventListener('click', handleManualFeedback);
+                btn.addEventListener('click', handleManualFeedback);
+            });
         }
     };
     
