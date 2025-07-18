@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <title>CHIMERA OMEGA v18.2 :: Quantum Core (Corrected)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e5ff; --secondary: #9d00ff; --success: #28a745;
+            --warning: #ffcc00; --danger: #dc3545; --dark: #0f172a;
+            --hot: #ff5555; --odd: #fde047; --even: #7dd3fc;
+        }
+        body{font-family:'Share Tech Mono',monospace;background:radial-gradient(circle at center,#0f172a,#000);min-height:100vh}.font-sans{font-family:'Orbitron',sans-serif}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}@keyframes glow{0%{box-shadow:0 0 5px var(--primary)}50%{box-shadow:0 0 20px var(--primary)}100%{box-shadow:0 0 5px var(--primary)}}
+        .signal-segment{transition:all .4s ease;border-radius:2px}.signal-segment.lit-green{background-color:var(--success);box-shadow:0 0 10px var(--success)}.signal-segment.lit-blue{background-color:var(--primary);box-shadow:0 0 10px var(--primary)}.signal-segment.lit-yellow{background-color:var(--warning);box-shadow:0 0 10px var(--warning)}.signal-segment.lit-red{background-color:var(--danger);box-shadow:0 0 10px var(--danger)}.signal-segment.lit-purple{background-color:var(--secondary);box-shadow:0 0 10px var(--secondary)}
+        .history-outcome-win{color:var(--success)}.history-outcome-loss{color:var(--danger)}.type-rate{color:var(--primary)}.key-button{transition:all .2s;background:linear-gradient(145deg,#1e293b,#0f172a);box-shadow:3px 3px 6px #0a0f1a,-3px -3px 6px #141f3a;border:1px solid rgba(0,229,255,.1)}.key-button:hover{transform:scale(1.05)}.key-button:active{transform:scale(.95);box-shadow:inset 2px 2px 4px #0a0f1a,inset -2px -2px 4px #141f3a}
+        .feedback-number-btn.big{border-color:#f472b6;color:#f472b6}.feedback-number-btn.small{border-color:#60a5fa;color:#60a5fa}.feedback-number-btn:hover{background:rgba(0,229,255,.1)}.predict-button{transition:all .3s;background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 0 15px rgba(0,229,255,.5),0 0 15px rgba(157,0,255,.5);letter-spacing:1px;font-weight:700;animation:glow 2s infinite}.predict-button:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--primary),0 0 25px var(--secondary);animation:none}
+        .lobby-btn.active{text-shadow:0 0 10px var(--primary);color:var(--primary);background:rgba(0,229,255,.1);border:1px solid var(--primary)}.lobby-btn:hover:not(.active){color:var(--primary);text-shadow:0 0 5px var(--primary)}.icon-btn{transition:all .2s ease;cursor:pointer;text-shadow:0 0 5px currentColor}.icon-btn:hover{transform:scale(1.1);color:var(--primary)}
+        .strategy-tag{font-size:.65rem;padding:.15rem .4rem;border-radius:.25rem;font-family:'Orbitron',sans-serif;font-weight:700;border:1px solid currentColor;background:rgba(0,0,0,.3);text-shadow:0 0 3px currentColor}.T-Rev{color:#d8b4fe}.D-Alt{color:#7dd3fc}.Alt{color:#fde047}.T-Cont{color:#fca5a5}.HYBRID{color:#6ee7b7}.COLD{color:#fdba74}.ADAPTIVE{color:#a78bfa}.DRAGON{color:#f472b6}.D-Cont{color:#fca5a5}.Quad-Rev{color:#d8b4fe}.STREAK-BREAKER{color:#ff5555;font-weight:900}.QUANTUM{color:#00e5ff}
+        .panel{background:linear-gradient(145deg,#1e293b,#0f172a);border:1px solid rgba(0,229,255,.1);border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.5),0 0 15px rgba(0,229,255,.1)}
+        .pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}.pattern-item{background:rgba(30,41,59,.7);border:1px solid rgba(0,229,255,.2);border-radius:8px;padding:6px;text-align:center;font-size:.8rem}.number-badge{display:inline-block;width:28px;height:28px;line-height:28px;border-radius:50%;text-align:center;font-weight:700;background:linear-gradient(145deg,#1e293b,#0f172a);box-shadow:2px 2px 4px #0a0f1a,-2px -2px 4px #141f3a;margin:0 2px}.number-badge.big{color:#f472b6}.number-badge.small{color:#60a5fa}
+        .number-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}.number-item{background:rgba(30,41,59,.7);border-radius:6px;padding:4px;text-align:center;font-size:.9rem}
+        .number-item.cold{border:1px solid rgba(253,186,116,.3)}.number-item.cold.active{background:rgba(253,186,116,.2);border:1px solid var(--warning);box-shadow:0 0 8px var(--warning)}
+        .number-item.hot{border:1px solid rgba(255,85,85,.3)}.number-item.hot.active{background:rgba(255,85,85,.2);border:1px solid var(--hot);box-shadow:0 0 8px var(--hot)}
+        .fade-in{animation:fadeIn .5s ease-out}.pulse-anim{animation:pulse 1.5s infinite}
+        .grid-bg,.matrix-effect,.scanline{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+        .grid-bg{background:linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px);background-size:20px 20px}.scanline{height:10px;background:linear-gradient(to bottom,rgba(0,229,255,.3),transparent);animation:scan 6s linear infinite;z-index:1}.matrix-effect{overflow:hidden}
+        .matrix-column{position:absolute;top:-50px;color:rgba(0,229,255,.2);font-size:18px;writing-mode:vertical-rl;text-orientation:mixed;text-shadow:0 0 5px rgba(0,229,255,.5);animation:fall linear infinite}@keyframes fall{to{top:100%}}
+        .parity-tag{border:1px solid currentColor;padding:2px 6px;border-radius:4px;font-size:1.5rem}.parity-tag.Odd{color:var(--odd)}.parity-tag.Even{color:var(--even)}
+        .quantum-core {background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(157,0,255,0.1)); border: 1px solid rgba(0,229,255,0.3);}
+        .progress-bar {height: 4px; background: rgba(0,229,255,0.2); position: relative; overflow: hidden;}
+        .progress-bar::after {content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 100%; background: linear-gradient(90deg, transparent, rgba(0,229,255,0.8), transparent); animation: scanning 2s linear infinite;}
+        @keyframes scanning {0% {transform: translateX(-100%);} 100% {transform: translateX(100%);}}
+        @keyframes scan {0% {top: -10px;} 100% {top: 100%;}}
+        /* New pattern specific styles (for visual identification in UI) */
+        .R-B-S { color: #81c784; } .REGULAR { color: #ffeb3b; }
+        .SMALL-BI { color: #bbdefb; } .ALT-CONT { color: #f06292; }
+    </style>
+</head>
+<body class="text-gray-100 flex flex-col items-center min-h-screen p-4 relative">
+    <div class="matrix-effect" id="matrixEffect"></div>
+    <div class="grid-bg"></div>
+    <div class="scanline"></div>
+    
+    <audio id="soundPredict" src="https://cdn.pixabay.com/audio/2022/03/15/audio_731c519a81.mp3" preload="auto"></audio>
+    <audio id="soundWin" src="https://cdn.pixabay.com/audio/2022/03/10/audio_c3b0923528.mp3" preload="auto"></audio>
+    <audio id="soundLoss" src="https://cdn.pixabay.com/audio/2021/08/04/audio_a538221b34.mp3" preload="auto"></audio>
+
+    <div class="w-full max-w-2xl panel flex justify-between items-center p-4 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="text-left text-xs text-gray-400">
+                <div>B/S: <span id="winRateBS" class="type-rate">0%</span> (W/L: <span id="winLossBS">0/0</span>)</div>
+                <div>O/E: <span id="winRateOE" class="type-rate">0%</span> (W/L: <span id="winLossOE">0/0</span>)</div>
+            </div>
+        </div>
+        <div class="font-sans text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500 tracking-tighter">
+            CHIMERA OMEGA <span class="text-xs text-pink-500">v18.2</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <i id="adaptiveModeToggle" class="icon-btn fa-solid fa-brain text-lg text-green-400" title="Adaptive Mode"></i>
+            <i id="patternToggle" class="icon-btn fa-solid fa-cubes text-lg text-cyan-400" title="Pattern Analysis"></i>
+            <i id="themeToggle" class="icon-btn fa-solid fa-moon text-lg" title="Toggle Theme"></i>
+            <i id="resetButton" class="icon-btn fa-solid fa-arrows-rotate text-lg" title="Reset System"></i>
+        </div>
+    </div>
+
+    <div class="w-full max-w-2xl flex flex-col md:flex-row gap-6">
+        <div class="flex-1 flex flex-col gap-6">
+            <div class="panel p-6 flex flex-col gap-6">
+                <div class="flex justify-around bg-gray-900 p-1 rounded-lg mb-2">
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="30s">30s</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="1m">1m</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="3m">3m</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="5m">5m</button>
+                </div>
+                
+                <div class="flex flex-col gap-4 quantum-core p-4 rounded-lg">
+                    <div class="progress-bar rounded-full mb-2"></div>
+                    <input id="periodInput" class="w-full bg-gray-900 border border-cyan-500/30 text-cyan-400 font-sans text-3xl text-center rounded-lg p-3 shadow-inner shadow-cyan-500/10 focus:outline-none focus:ring-1 focus:ring-cyan-500" type="text" maxlength="20" placeholder="Enter Period..." autocomplete="off">
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="1">1</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="2">2</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="3">3</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="4">4</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="5">5</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="6">6</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="7">7</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="8">8</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="9">9</button>
+                        <button class="key-button bg-rose-700 hover:bg-rose-600 border-rose-600 text-white font-sans text-xl rounded-lg p-4" data-key="C">C</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="0">0</button>
+                        <button class="key-button bg-amber-700 hover:bg-amber-600 border-amber-600 text-white font-sans text-xl rounded-lg p-4" data-key="B">←</button>
+                    </div>
+                    <button id="predictButton" class="predict-button text-white font-sans text-lg py-4 rounded-lg uppercase tracking-wider"><i class="fa-solid fa-bolt"></i> Quantum Predict</button>
+                </div>
+                
+                <div id="resultContainer" class="min-h-[200px] flex justify-center items-center"></div>
+                
+                <div class="mt-2 px-4">
+                    <div class="flex justify-between mb-1"><h5 class="text-sm text-gray-400 font-sans">QUANTUM CONFIDENCE (B/S)</h5><span id="confidenceValue" class="text-sm font-bold text-cyan-400">0%</span></div>
+                    <div id="signalTower" class="flex flex-col gap-2 w-full mx-auto">
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="panel p-4">
+                    <h4 class="font-sans font-bold text-center mb-3 text-red-400">HOT NUMBERS</h4>
+                    <div class="number-grid" id="hotGrid"></div>
+                    <div class="text-xs text-gray-500 mt-2 text-center">Highest frequency</div>
+                </div>
+                <div class="panel p-4">
+                    <h4 class="font-sans font-bold text-center mb-3 text-amber-400">COLD NUMBERS</h4>
+                    <div class="number-grid" id="coldGrid"></div>
+                    <div class="text-xs text-gray-500 mt-2 text-center">Lowest frequency</div>
+                </div>
+            </div>
+        </div>
+        <div class="flex-1 flex flex-col gap-6">
+            <div id="patternPanel" class="panel p-4">
+                <h4 class="font-sans font-bold text-center mb-3">PATTERN RECOGNITION</h4>
+                <div class="pattern-grid">
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">T-REV</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge small">S</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Triple Reverse</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">D-ALT</div>
+                        <div><span class="number-badge small">S</span><span class="number-badge big">B</span><span class="number-badge small">S</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge big">B</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Double Alternate</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">ALT</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge small">S</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge small">S</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Alternate</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">T-CONT</div>
+                        <div><span class="number-badge small">S</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge big">B</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Triple Continue</div>
+                    </div>
+                     <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">D-CONT</div>
+                        <div><span class="number-badge small">S</span><span class="number-badge small">S</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge big">B</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Double Continue</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">DRAGON</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge big">B</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Dragon Streak</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">Quad-Rev</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge small">S</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Quadruple Reverse</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">R-B-S</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge small">S</span><span class="number-badge big">B</span><span class="number-badge small">S</span><span class="text-green-400">→</span><span class="number-badge big">B</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Regular B-S Pattern</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">REGULAR</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge small">S</span><span class="number-badge small">S</span><span class="text-green-400">→</span><span class="number-badge big">B</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Regular Pattern (BBSS)</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">SMALL-BI</div>
+                        <div><span class="number-badge small">S</span><span class="number-badge small">S</span><span class="number-badge small">S</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge small">S</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Small Big Reverse</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">ALT-CONT</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge small">S</span><span class="number-badge big">B</span><span class="number-badge small">S</span><span class="text-green-400">→</span><span class="number-badge big">B</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Alternate Continue</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel p-4">
+                <h4 class="font-sans font-bold text-center mb-3">STRATEGY PERFORMANCE</h4>
+                <div id="strategyStats" class="grid grid-cols-2 gap-3 text-xs"></div>
+            </div>
+            <div class="panel p-4 flex-1">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-sans font-bold">SESSION HISTORY</h4>
+                    <button id="clearHistoryBtn" class="text-xs bg-gray-700 px-2 py-1 rounded hover:bg-gray-600"><i class="fas fa-trash"></i> Clear</button>
+                </div>
+                <div id="historyLog" class="max-h-48 overflow-y-auto pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // ---- Basic DOM elements ----
+    const dom = {
+        periodInput: document.getElementById("periodInput"),
+        keypadButtons: document.querySelectorAll(".key-button"),
+        predictBtn: document.getElementById("predictButton"),
+        resultContainer: document.getElementById("resultContainer"),
+        themeToggle: document.getElementById("themeToggle"),
+        resetButton: document.getElementById("resetButton"),
+        winRateBS: document.getElementById("winRateBS"),
+        winLossBS: document.getElementById("winLossBS"),
+        winRateOE: document.getElementById("winRateOE"),
+        winLossOE: document.getElementById("winLossOE"),
+        confidenceValue: document.getElementById("confidenceValue"),
+        historyLog: document.getElementById("historyLog"),
+        signalTower: document.getElementById("signalTower"),
+        lobbyButtons: document.querySelectorAll('.lobby-btn'),
+        strategyStats: document.getElementById("strategyStats"),
+        coldGrid: document.getElementById('coldGrid'),
+        hotGrid: document.getElementById('hotGrid'),
+        adaptiveModeToggle: document.getElementById("adaptiveModeToggle"),
+        patternToggle: document.getElementById("patternToggle"),
+        patternPanel: document.getElementById("patternPanel"),
+        clearHistoryBtn: document.getElementById("clearHistoryBtn"),
+        htmlEl: document.documentElement
+    };
+
+    // ---- State Management ----
+    const createInitialLobbyState = () => ({
+        history: [], winsBS: 0, lossesBS: 0, winsOE: 0, lossesOE: 0,
+        strategyWeights: {
+            "T-Rev": { w: 7.0, W: 0, L: 0 }, 
+            "D-Alt": { w: 6.5, W: 0, L: 0 },
+            "Alt": { w: 6.0, W: 0, L: 0 }, 
+            "T-Cont": { w: 5.5, W: 0, L: 0 },
+            "D-Cont": { w: 5.0, W: 0, L: 0 }, 
+            "DRAGON": { w: 8.0, W: 0, L: 0 }, 
+            "Quad-Rev": { w: 7.5, W: 0, L: 0 },
+            "STREAK-BREAKER": { w: 9.5, W: 0, L: 0 },
+            "HYBRID": { w: 6.0, W: 0, L: 0 },
+            "COLD": { w: 4.0, W: 0, L: 0 },
+            "ADAPTIVE": { w: 5.0, W: 0, L: 0 }, 
+            "QUANTUM": { w: 5.0, W: 0, L: 0 }, 
+            "R-B-S": { w: 7.0, W: 0, L: 0 }, 
+            "REGULAR": { w: 6.5, W: 0, L: 0 }, 
+            "SMALL-BI": { w: 7.0, W: 0, L: 0 },
+            "ALT-CONT": { w: 6.8, W: 0, L: 0 }, 
+        },
+        numberFrequency: Array(10).fill(0),
+    });
+    let state = {
+        isAdaptiveMode: true,
+        showPatterns: true,
+        activeLobby: '30s',
+        lobbies: {
+            '30s': createInitialLobbyState(), '1m': createInitialLobbyState(),
+            '3m': createInitialLobbyState(), '5m': createInitialLobbyState()
+        }
+    };
+    let currentPrediction = null;
+
+    // ---- QUANTUM CORE: Prediction Logic ----
+    const calculateEntropy = (arr) => {
+        if (arr.length === 0) return 0;
+        const counts = {};
+        arr.forEach(x => { counts[x] = (counts[x] || 0) + 1; });
+        let entropy = 0;
+        const total = arr.length;
+        for (const x in counts) {
+            const p = counts[x] / total;
+            entropy -= p * Math.log2(p);
+        }
+        return entropy;
+    };
+
+    const predictBigSmall = (history, lobbyData) => {
+        const { strategyWeights } = lobbyData;
+        const BIG = 'Big', SMALL = 'Small';
+        const MAX_HISTORY_FOR_PATTERNS = 10;
+
+        const hTypes = history.map(item => item.type);
+        const recentHistory = hTypes.slice(-MAX_HISTORY_FOR_PATTERNS);
+
+        if (history.length >= 3) {
+            const lastThreeOutcomesBS = history.slice(-3).map(h => h.outcomeBS);
+            if (lastThreeOutcomesBS.every(o => o === 'loss')) {
+                const counterPredictionType = history[history.length - 1].type === BIG ? SMALL : BIG;
+                return { type: counterPredictionType, confidence: 98, strategy: "STREAK-BREAKER", reason: 'Identified a significant losing streak. Forcing a high-confidence counter-trend.', contributing: ["STREAK-BREAKER"] };
+            }
+        }
+        
+        if (recentHistory.length < 3) {
+            return { type: Math.random() > 0.5 ? BIG : SMALL, confidence: 35, strategy: "COLD", reason: 'Insufficient historical data for complex analysis. Reverting to a probabilistic guess.', contributing: ["COLD"] };
+        }
+
+        const A = recentHistory[recentHistory.length - 1]; 
+        const B = (A === BIG) ? SMALL : BIG; 
+
+        const patterns = [
+            { id: "T-Rev", s: [A, A, A], p: B, minLength: 3, description: 'Triple Same Reverse' }, 
+            { id: "D-Alt", s: [B, A, B, A], p: B, minLength: 4, description: 'Double Alternate' },
+            { id: "Alt", s: [A, B, A], p: B, minLength: 3, description: 'Single Alternate' }, 
+            { id: "T-Cont", s: [B, A, A], p: A, minLength: 3, description: 'Triple Continue' },
+            { id: "D-Cont", s: [B, B, A], p: A, minLength: 3, description: 'Double Continue' },
+            { id: "DRAGON", s: [A, A, A, A], p: A, minLength: 4, description: 'Dragon Streak Continue (4 same)' },
+            { id: "Quad-Rev", s: [A, A, A, A], p: B, minLength: 4, description: 'Quadruple Same Reverse' },
+            { id: "R-B-S", s: [BIG, SMALL, BIG, SMALL], p: BIG, minLength: 4, description: 'Regular Big-Small-Big-Small Pattern' },
+            { id: "REGULAR", s: [BIG, BIG, SMALL, SMALL], p: BIG, minLength: 4, description: 'Regular Pattern (BBSS)' },
+            { id: "SMALL-BI", s: [SMALL, SMALL, SMALL, BIG], p: SMALL, minLength: 4, description: 'Small Big Reverse (SSS B -> S)' },
+            { id: "ALT-CONT", s: [A, B, A, B], p: A, minLength: 4, description: 'Alternate Continue (A B A B -> A)' },
+        ];
+
+        let bigScore = 0, smallScore = 0, activeStrats = [];
+        let detailedReasons = [];
+        let totalWeight = 0; 
+
+        patterns.forEach(p => {
+            if (recentHistory.length >= p.s.length) { 
+                const subHistory = recentHistory.slice(-p.s.length);
+                if (JSON.stringify(subHistory) === JSON.stringify(p.s)) {
+                    const weight = strategyWeights[p.id]?.w || 5; 
+                    if (p.p === BIG) bigScore += weight; else smallScore += weight;
+                    totalWeight += weight;
+                    activeStrats.push(p.id);
+                    detailedReasons.push(`${p.description} (${p.s.join('-')}) recommends ${p.p} with weight ${weight.toFixed(1)}`);
+                }
+            }
+        });
+        
+        if (activeStrats.length === 0) {
+            const bigCount = hTypes.filter(t => t === BIG).length;
+            const smallCount = hTypes.filter(t => t === SMALL).length;
+            const totalCount = hTypes.length;
+
+            let typePrediction;
+            let currentReason;
+            let currentConfidence;
+
+            if (totalCount > 10) { 
+                const bigPercentage = (bigCount / totalCount) * 100;
+                const smallPercentage = (smallCount / totalCount) * 100;
+                const entropy = calculateEntropy(hTypes);
+
+                if (entropy < 1.0 && (bigPercentage > 60 || smallPercentage > 60)) { 
+                    typePrediction = bigPercentage > smallPercentage ? BIG : SMALL;
+                    currentReason = `Frequency bias detected: ${typePrediction} appears more often (${Math.max(bigPercentage, smallPercentage).toFixed(0)}%).`;
+                    currentConfidence = 50 + (Math.max(bigPercentage, smallPercentage) - 50) * 0.5;
+                    return { type: typePrediction, confidence: Math.min(Math.round(currentConfidence), 85), strategy: "QUANTUM", reason: currentReason, contributing: ["QUANTUM"] };
+                }
+            }
+            
+            if (recentHistory.length >= 2) {
+                const lastTwo = recentHistory.slice(-2);
+                if (lastTwo[0] === lastTwo[1]) { 
+                    typePrediction = (lastTwo[0] === BIG) ? SMALL : BIG;
+                    currentReason = `Simple reversal after ${lastTwo[0]}-${lastTwo[1]} sequence.`;
+                } else { 
+                    typePrediction = (lastTwo[1] === BIG) ? SMALL : BIG;
+                    currentReason = `Simple continuation of alternating pattern ${lastTwo[0]}-${lastTwo[1]}.`;
+                }
+                return { type: typePrediction, confidence: 50, strategy: "ADAPTIVE", reason: currentReason, contributing: ["ADAPTIVE"] };
+            }
+            return { type: Math.random() > 0.5 ? BIG : SMALL, confidence: 30, strategy: "COLD", reason: 'Very limited history. Random initial guess.', contributing: ["COLD"] };
+        }
+
+        const prediction = bigScore >= smallScore ? BIG : SMALL;
+        const baseConfidence = 50; 
+        let confidence = baseConfidence;
+        if (totalWeight > 0) {
+            confidence = Math.min(Math.round(baseConfidence + (Math.abs(bigScore - smallScore) / totalWeight) * 40), 95); 
+        }
+
+        if (activeStrats.length > 1) {
+            confidence = Math.min(confidence + 5, 95); 
+        }
+        if (bigScore === smallScore) { 
+            confidence = Math.min(confidence, 60);
+        }
+
+        return { 
+            type: prediction, 
+            confidence: confidence, 
+            strategy: activeStrats.length > 1 ? "HYBRID" : activeStrats[0],
+            reason: `Complex analysis leveraging patterns: [${detailedReasons.join('; ')}]. Predicted based on dominant weight.`,
+            contributing: activeStrats
+        };
+    };
+
+    const predictOddEven = (history) => {
+        if(history.length < 5) return { parity: Math.random() > 0.5 ? 'Odd' : 'Even', reason: 'Limited O/E data. Probabilistic guess.' };
+        const ODD = 'Odd', EVEN = 'Even';
+        const parities = history.map(h => h.actualNum % 2 === 0 ? EVEN : ODD);
+        const recentParities = parities.slice(-5);
+        const A = recentParities[recentParities.length - 1];
+        const B = A === ODD ? EVEN : ODD;
+        const oePatterns = [
+            { s: [A, A, A], p: B, reason: `O/E: Triple Same (${A}) suggests reversal.` }, 
+            { s: [A, B, A], p: B, reason: `O/E: Alternating (${A}-${B}-${A}) suggests reversal.` }, 
+            { s: [B, A, A], p: A, reason: `O/E: Double Same (${B}-${A}-${A}) suggests continuation.` },
+        ];
+        for (const p of oePatterns) {
+            if (recentParities.length >= p.s.length && JSON.stringify(recentParities.slice(-p.s.length)) === JSON.stringify(p.s)) {
+                return { parity: p.p, reason: p.reason };
+            }
+        }
+        return { parity: B, reason: `O/E: No specific pattern. Defaulting to simple reversal on ${A}.` };
+    };
+    
+    // ---- UI and State Update Functions ----
+    const playSound = (soundId) => { try { const sound = document.getElementById(soundId); if (sound) { sound.currentTime = 0; sound.play().catch(e => {}); } } catch(e) {} };
+    const saveState = () => { try { localStorage.setItem("chimeraOmegaState_v18_2", JSON.stringify(state)); } catch(e) {} };
+    const loadState = () => { try { const savedState = localStorage.getItem("chimeraOmegaState_v18_2"); if (savedState) { const parsedState = JSON.parse(savedState); state = deepMerge(createInitialState(), parsedState); } const savedTheme = localStorage.getItem('chimeraTheme'); updateTheme(savedTheme || 'dark'); } catch (e) { state = createInitialState(); } };
+    const deepMerge = (target, source) => { for (const key in source) { if (source.hasOwnProperty(key)) { if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) { if (!target[key]) Object.assign(target, { [key]: {} }); deepMerge(target[key], source[key]); } else { Object.assign(target, { [key]: source[key] }); } } } return target; };
+    const createInitialState = () => ({ isAdaptiveMode: true, showPatterns: true, activeLobby: '30s', lobbies: { '30s': createInitialLobbyState(), '1m': createInitialLobbyState(), '3m': createInitialLobbyState(), '5m': createInitialLobbyState() } });
+    const switchLobby = (lobbyId) => { state.activeLobby = lobbyId; dom.lobbyButtons.forEach(b => b.classList.toggle('active', b.dataset.lobby === lobbyId)); updateUIForLobby(); saveState(); };
+    const updateUIForLobby = () => { const d = state.lobbies[state.activeLobby]; const tBS = d.winsBS + d.lossesBS, rBS = tBS > 0 ? ((d.winsBS / tBS) * 100).toFixed(0) : 0; const tOE = d.winsOE + d.lossesOE, rOE = tOE > 0 ? ((d.winsOE / tOE) * 100).toFixed(0) : 0; dom.winRateBS.textContent = `${rBS}%`; dom.winLossBS.textContent = `${d.winsBS}/${d.lossesBS}`; dom.winRateOE.textContent = `${rOE}%`; dom.winLossOE.textContent = `${d.winsOE}/${d.lossesOE}`; updateHistoryLog(); updateStrategyDashboard(); updateNumberGrids(); dom.resultContainer.innerHTML = ''; updateSignalTower(null); dom.periodInput.value = ''; dom.predictBtn.disabled = false; dom.predictBtn.classList.remove('opacity-50'); };
+    const updateHistoryLog = () => { const h = state.lobbies[state.activeLobby].history; dom.historyLog.innerHTML = h.length === 0 ? '<div class="text-center text-gray-500 py-4">No history yet</div>' : h.slice().reverse().map(i => { const oBS = i.outcomeBS === 'win', oOE = i.outcomeOE === 'win'; const aT = i.actualNum >= 5 ? 'Big' : 'Small', aTC = aT === 'Big' ? 'text-pink-400' : 'text-cyan-400'; const aP = i.actualNum % 2 !== 0 ? 'Odd' : 'Even', aPC = aP === 'Odd' ? 'text-yellow-400' : 'text-cyan-400'; return `<div class="flex justify-between items-center py-2 border-b border-gray-700/50 text-sm"><span class="text-gray-400">#${i.period.slice(-4)}</span><span class="flex items-center gap-2"><span class="font-bold text-lg">${i.actualNum}</span><span class="${aTC}">${aT[0]}</span><span class="${aPC}">${aP[0]}</span><i class="fa-solid ${oBS ? 'fa-check text-green-500' : 'fa-times text-red-500'}"></i><i class="fa-solid ${oOE ? 'fa-check text-green-500' : 'fa-times text-red-500'}"></i></span><span class="strategy-tag ${i.strategy}">${i.strategy}</span></div>`; }).join(''); };
+    const updateStrategyDashboard = () => { const s = state.lobbies[state.activeLobby].strategyWeights; dom.strategyStats.innerHTML = Object.keys(s).map(k => { const d = s[k]; if(!d) return ''; const t = d.W + d.L, a = t > 0 ? ((d.W / t) * 100).toFixed(0) : 0; const accColor = a >= 75 ? 'text-green-400' : a >= 50 ? 'text-yellow-400' : 'text-red-400'; return `<div class="bg-gray-900 p-2 rounded-lg border border-gray-700/50"><div class="flex justify-between items-center"><span class="strategy-tag ${k}">${k}</span><span class="text-lg font-bold ${accColor}">${a}%</span></div><div class="h-1.5 bg-gray-700 rounded-full my-2"><div class="h-full bg-gradient-to-r from-yellow-500 to-orange-400" style="width:${a}%"></div></div><div class="text-xs text-gray-500 flex justify-between"><span>W/L: ${d.W}/${d.L}</span><span>WT: ${d.w.toFixed(1)}</span></div></div>`; }).join(''); };
+    const updateNumberGrids = () => { const d = state.lobbies[state.activeLobby]; const h = d.history.length; const f = [...d.numberFrequency]; if (h === 0) { let iHTML = ''; for (let i = 0; i < 10; i++) iHTML += `<div class="number-item">${i}</div>`; dom.coldGrid.innerHTML = iHTML; dom.hotGrid.innerHTML = iHTML; return; } const sorted = Array.from({length: 10}, (_, i) => ({ n: i, f: f[i] })); sorted.sort((a, b) => b.f - a.f); dom.hotGrid.innerHTML = sorted.slice(0, 5).map(i => `<div class="number-item hot ${i.f === sorted[0].f && sorted[0].f > 0 ? 'active' : ''}">${i.n}<div class="text-xs text-red-400">${((i.f/h)*100).toFixed(1)}%</div></div>`).join(''); sorted.sort((a, b) => a.f - b.f); dom.coldGrid.innerHTML = sorted.slice(0, 5).map(i => `<div class="number-item cold ${i.f === sorted[0].f && sorted[0].f > 0 ? 'active' : ''}">${i.n}<div class="text-xs text-amber-400">${((i.f/h)*100).toFixed(1)}%</div></div>`).join(''); };
+    const updateSignalTower = p => { const c = p ? p.confidence : 0; dom.confidenceValue.textContent = `${c}%`; let cl = 'lit-red', sl = 1; if (p?.strategy === "STREAK-BREAKER") { cl = 'lit-purple'; sl = 5; } else if (c >= 90) { cl = 'lit-green'; sl = 5; } else if (c >= 80) { cl = 'lit-blue'; sl = 4; } else if (c >= 65) { cl = 'lit-yellow'; sl = 3; } else if (c >= 50) { cl = 'lit-yellow'; sl = 2; } if (!p) sl = 0; Array.from(dom.signalTower.children).forEach((seg, i) => { seg.className = 'signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50'; if (i < sl) seg.classList.add(cl); }); };
+    const updateTheme = (theme) => { dom.htmlEl.setAttribute('data-theme', theme); dom.themeToggle.className = `icon-btn fa-solid fa-${theme === 'dark' ? 'moon' : 'sun'} text-lg`; localStorage.setItem('chimeraTheme', theme); };
+    const toggleAdaptiveMode = () => { state.isAdaptiveMode = !state.isAdaptiveMode; dom.adaptiveModeToggle.classList.toggle('text-green-400', state.isAdaptiveMode); dom.adaptiveModeToggle.classList.toggle('text-gray-500', !state.isAdaptiveMode); dom.adaptiveModeToggle.title = state.isAdaptiveMode ? "Adaptive Mode: ON" : "Adaptive Mode: OFF"; saveState(); };
+    const togglePatternPanel = () => { state.showPatterns = !state.showPatterns; dom.patternPanel.style.display = state.showPatterns ? 'block' : 'none'; dom.patternToggle.classList.toggle('text-cyan-400', state.showPatterns); dom.patternToggle.classList.toggle('text-gray-500', !state.showPatterns); dom.patternToggle.title = state.showPatterns ? "Pattern Analysis: ON" : "Pattern Analysis: OFF"; saveState(); };
+    
+    // ---- Main Application Flow ----
+    const handlePrediction = () => {
+        const lobbyData = state.lobbies[state.activeLobby];
+        const period = dom.periodInput.value.trim();
+        if (!period || period.length < 4) { alert('Please enter a valid Period ID (at least 4 characters).'); return; }
+        if (lobbyData.history.some(h => h.period === period)) { alert(`Period #${period} already processed.`); return; }
+        
+        playSound('soundPredict');
+        dom.predictBtn.disabled = true;
+        dom.predictBtn.classList.add('opacity-50');
+        dom.resultContainer.innerHTML = `<div class="animate-pulse text-xl text-cyan-400 font-sans">Analyzing Quantum Core...</div>`;
+
+        setTimeout(() => {
+            const bsPrediction = predictBigSmall(lobbyData.history, lobbyData);
+            const oePrediction = predictOddEven(lobbyData.history);
+            
+            const validNums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter(n => (n >= 5 ? 'Big' : 'Small') === bsPrediction.type && (n % 2 !== 0 ? 'Odd' : 'Even') === oePrediction.parity);
+            
+            let predictedNum;
+            if (validNums.length > 0) {
+                const freqs = lobbyData.numberFrequency;
+                validNums.sort((a, b) => freqs[a] - freqs[b]);
+                predictedNum = validNums[0];
+            } else {
+                const fallbackPool = bsPrediction.type === 'Big' ? [5, 6, 7, 8, 9] : [0, 1, 2, 3, 4];
+                predictedNum = fallbackPool[Math.floor(Math.random() * fallbackPool.length)];
+            }
+            currentPrediction = { 
+                period, num: predictedNum, type: bsPrediction.type, parity: oePrediction.parity, 
+                confidence: bsPrediction.confidence,
+                strategy: bsPrediction.strategy, 
+                reason: `B/S: ${bsPrediction.reason} | O/E: ${oePrediction.reason}`, 
+                contributing: bsPrediction.contributing 
+            };
+            displayResult(currentPrediction);
+            updateSignalTower(currentPrediction);
+        }, 1000); 
+    };
+    
+    const displayResult = (p) => {
+        const { num, type, parity, reason, confidence, strategy } = p;
+        const tC = type === 'Big' ? 'text-pink-400' : 'text-cyan-400';
+        const fbHTML = Array.from({ length: 10 }, (_, i) => `<button type="button" class="feedback-number-btn text-xl font-bold p-3 rounded-lg key-button ${i >= 5 ? 'big' : 'small'}" data-actual-number="${i}">${i}</button>`).join('');
+        dom.resultContainer.innerHTML = `<div class="w-full bg-gray-900 border border-cyan-500/30 rounded-xl p-4 fade-in"><h4 class="font-sans text-lg font-bold text-center mb-3 flex items-center justify-center gap-2"><i class="fas fa-lightbulb text-yellow-400"></i> PREDICTION <span class="strategy-tag ${strategy}">${strategy}</span></h4><div class="text-center text-sm text-gray-400 mb-3">B/S Confidence: <span class="font-bold ${confidence >= 70 ? 'text-green-400' : 'text-yellow-400'}">${confidence}%</span></div><div class="bg-gray-800 text-xs text-gray-300 p-3 rounded-lg mb-4 border-l-4 border-cyan-500"><strong class="text-cyan-400">AI:</strong> ${reason}</div><div class="grid grid-cols-3 gap-3 mb-4"><div class="bg-gray-800 p-3 rounded-lg border border-gray-700 text-center"><div class="text-xs text-gray-400 mb-1">NUMBER</div><div class="text-5xl font-bold font-sans text-cyan-400">${num}</div></div><div class="bg-gray-800 p-3 rounded-lg border border-gray-700 text-center"><div class="text-xs text-gray-400 mb-1">TYPE</div><div class="text-3xl font-bold font-sans ${tC}">${type}</div></div><div class="bg-gray-800 p-3 rounded-lg border border-gray-700 text-center"><div class="text-xs text-gray-400 mb-1">PARITY</div><div class="font-bold font-sans parity-tag ${parity}">${parity}</div></div></div><div class="mt-4" id="feedbackMatrix"><p class="text-center text-sm text-gray-400 mb-2">What was the actual result?</p><div class="grid grid-cols-5 gap-2">${fbHTML}</div></div></div>`;
+        dom.predictBtn.disabled = false;
+        dom.predictBtn.classList.remove('opacity-50');
+        document.querySelectorAll('.feedback-number-btn').forEach(b => b.addEventListener('click', handleActualResult));
+    };
+
+    const handleActualResult = (e) => { if (!currentPrediction) return; const actualNumber = parseInt(e.target.closest('button').dataset.actualNumber, 10); processFeedback(actualNumber); dom.resultContainer.innerHTML = ''; updateSignalTower(null); dom.periodInput.value = ''; };
+    const processFeedback = (actualNumber) => {
+        if (!currentPrediction) return;
+        const lobbyData = state.lobbies[state.activeLobby];
+        const actualType = actualNumber >= 5 ? 'Big' : 'Small';
+        const actualParity = actualNumber % 2 !== 0 ? 'Odd' : 'Even';
+        const outcomeBS = (currentPrediction.type === actualType) ? 'win' : 'loss';
+        const outcomeOE = (currentPrediction.parity === actualParity) ? 'win' : 'loss';
+        
+        playSound(outcomeBS === 'win' ? 'soundWin' : 'soundLoss');
+        
+        currentPrediction.outcomeBS = outcomeBS;
+        currentPrediction.outcomeOE = outcomeOE;
+        currentPrediction.actualNum = actualNumber;
+
+        if (outcomeBS === 'win') lobbyData.winsBS++; else lobbyData.lossesBS++;
+        if (outcomeOE === 'win') lobbyData.winsOE++; else lobbyData.lossesOE++;
+        lobbyData.numberFrequency[actualNumber]++;
+        
+        if (state.isAdaptiveMode) {
+            currentPrediction.contributing.forEach(stratId => {
+                const strat = lobbyData.strategyWeights[stratId];
+                if (strat) {
+                    if (outcomeBS === 'win') {
+                        strat.w = Math.min(10, strat.w + 0.5); 
+                        strat.W++;
+                    } else {
+                        strat.w = Math.max(1, strat.w - 0.5); 
+                        strat.L++;
+                    }
+                }
+            });
+        }
+        
+        lobbyData.history.push(currentPrediction);
+        updateUIForLobby();
+        saveState();
+        currentPrediction = null; 
+    };
+
+    // ---- Event Listeners ----
+    dom.keypadButtons.forEach(b => { b.addEventListener('click', () => { const k = b.dataset.key; if (k === 'C') dom.periodInput.value = ''; else if (k === 'B') dom.periodInput.value = dom.periodInput.value.slice(0, -1); else dom.periodInput.value += k; }); });
+    dom.predictBtn.addEventListener('click', handlePrediction);
+    dom.lobbyButtons.forEach(b => { b.addEventListener('click', () => switchLobby(b.dataset.lobby)); });
+    dom.themeToggle.addEventListener('click', () => { const currentTheme = dom.htmlEl.getAttribute('data-theme'); updateTheme(currentTheme === 'dark' ? 'light' : 'dark'); });
+    dom.resetButton.addEventListener('click', () => { if (confirm('Reset all data for this lobby?')) { state.lobbies[state.activeLobby] = createInitialLobbyState(); saveState(); updateUIForLobby(); alert('Lobby data has been reset.'); } });
+    dom.clearHistoryBtn.addEventListener('click', () => { if (confirm('Clear ALL history and stats for this lobby?')) { state.lobbies[state.activeLobby] = createInitialLobbyState(); saveState(); updateUIForLobby(); alert('Lobby data cleared.'); } });
+    dom.adaptiveModeToggle.addEventListener('click', toggleAdaptiveMode);
+    dom.patternToggle.addEventListener('click', togglePatternPanel);
+
+    // ---- Matrix Background Effect ----
+    const matrixEffect = document.getElementById('matrixEffect'); const chars = '0123456789ABCDEF'; const fontSize = 18; let columns = 0;
+    const initMatrix = () => { if (!matrixEffect) return; matrixEffect.innerHTML = ''; const canvasWidth = matrixEffect.offsetWidth; columns = Math.floor(canvasWidth / fontSize); for (let i = 0; i < columns; i++) { const column = document.createElement('div'); column.classList.add('matrix-column'); column.style.left = `${i * fontSize}px`; column.style.animationDelay = `${Math.random() * -20}s`; column.style.animationDuration = `${Math.random() * 5 + 5}s`; matrixEffect.appendChild(column); } };
+    const drawMatrix = () => { const matrixColumns = matrixEffect ? matrixEffect.children : []; for (let i = 0; i < columns; i++) { const text = Array.from({ length: 50 }, () => chars[Math.floor(Math.random() * chars.length)]).join(''); if (matrixColumns[i]) { matrixColumns[i].textContent = text; } } requestAnimationFrame(drawMatrix); };
+
+    // Initial setup
+    loadState(); 
+    switchLobby(state.activeLobby); 
+    if (matrixEffect) { initMatrix(); drawMatrix(); window.addEventListener('resize', initMatrix); }
+    dom.adaptiveModeToggle.classList.toggle('text-green-400', state.isAdaptiveMode); dom.adaptiveModeToggle.classList.toggle('text-gray-500', !state.isAdaptiveMode); dom.adaptiveModeToggle.title = state.isAdaptiveMode ? "Adaptive Mode: ON" : "Adaptive Mode: OFF";
+    dom.patternPanel.style.display = state.showPatterns ? 'block' : 'none'; dom.patternToggle.classList.toggle('text-cyan-400', state.showPatterns); dom.patternToggle.classList.toggle('text-gray-500', !state.showPatterns); dom.patternToggle.title = state.showPatterns ? "Pattern Analysis: ON" : "Pattern Analysis: OFF";
+});
+</script>
+</body>
+</html>
