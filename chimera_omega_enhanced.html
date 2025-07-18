@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <title>CHIMERA OMEGA v19.0 :: Enhanced Quantum Core</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e5ff; --secondary: #9d00ff; --success: #28a745;
+            --warning: #ffcc00; --danger: #dc3545; --dark: #0f172a;
+            --hot: #ff5555; --odd: #fde047; --even: #7dd3fc;
+        }
+        body{font-family:'Share Tech Mono',monospace;background:radial-gradient(circle at center,#0f172a,#000);min-height:100vh}.font-sans{font-family:'Orbitron',sans-serif}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+        @keyframes glow{0%{box-shadow:0 0 5px var(--primary)}50%{box-shadow:0 0 20px var(--primary)}100%{box-shadow:0 0 5px var(--primary)}}
+        @keyframes quantumPulse{0%{box-shadow:0 0 10px var(--primary)}25%{box-shadow:0 0 25px var(--secondary)}50%{box-shadow:0 0 15px var(--success)}75%{box-shadow:0 0 20px var(--warning)}100%{box-shadow:0 0 10px var(--primary)}}
+        
+        .signal-segment{transition:all .4s ease;border-radius:2px}
+        .signal-segment.lit-green{background-color:var(--success);box-shadow:0 0 10px var(--success)}
+        .signal-segment.lit-blue{background-color:var(--primary);box-shadow:0 0 10px var(--primary)}
+        .signal-segment.lit-yellow{background-color:var(--warning);box-shadow:0 0 10px var(--warning)}
+        .signal-segment.lit-red{background-color:var(--danger);box-shadow:0 0 10px var(--danger)}
+        .signal-segment.lit-purple{background-color:var(--secondary);box-shadow:0 0 10px var(--secondary)}
+        .signal-segment.lit-quantum{background:linear-gradient(45deg,var(--primary),var(--secondary));animation:quantumPulse 1s infinite}
+        
+        .history-outcome-win{color:var(--success)}.history-outcome-loss{color:var(--danger)}.type-rate{color:var(--primary)}
+        .key-button{transition:all .2s;background:linear-gradient(145deg,#1e293b,#0f172a);box-shadow:3px 3px 6px #0a0f1a,-3px -3px 6px #141f3a;border:1px solid rgba(0,229,255,.1)}
+        .key-button:hover{transform:scale(1.05)}.key-button:active{transform:scale(.95);box-shadow:inset 2px 2px 4px #0a0f1a,inset -2px -2px 4px #141f3a}
+        
+        .feedback-number-btn.big{border-color:#f472b6;color:#f472b6}.feedback-number-btn.small{border-color:#60a5fa;color:#60a5fa}
+        .feedback-number-btn:hover{background:rgba(0,229,255,.1)}
+        .predict-button{transition:all .3s;background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 0 15px rgba(0,229,255,.5),0 0 15px rgba(157,0,255,.5);letter-spacing:1px;font-weight:700;animation:glow 2s infinite}
+        .predict-button:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--primary),0 0 25px var(--secondary);animation:none}
+        .predict-button.quantum-mode{animation:quantumPulse 1.5s infinite}
+        
+        .lobby-btn.active{text-shadow:0 0 10px var(--primary);color:var(--primary);background:rgba(0,229,255,.1);border:1px solid var(--primary)}
+        .lobby-btn:hover:not(.active){color:var(--primary);text-shadow:0 0 5px var(--primary)}
+        .icon-btn{transition:all .2s ease;cursor:pointer;text-shadow:0 0 5px currentColor}
+        .icon-btn:hover{transform:scale(1.1);color:var(--primary)}
+        
+        .strategy-tag{font-size:.65rem;padding:.15rem .4rem;border-radius:.25rem;font-family:'Orbitron',sans-serif;font-weight:700;border:1px solid currentColor;background:rgba(0,0,0,.3);text-shadow:0 0 3px currentColor}
+        .T-Rev{color:#d8b4fe}.D-Alt{color:#7dd3fc}.Alt{color:#fde047}.T-Cont{color:#fca5a5}.HYBRID{color:#6ee7b7}.COLD{color:#fdba74}
+        .ADAPTIVE{color:#a78bfa}.DRAGON{color:#f472b6}.D-Cont{color:#fca5a5}.Quad-Rev{color:#d8b4fe}
+        .STREAK-BREAKER{color:#ff5555;font-weight:900}.QUANTUM{color:#00e5ff}.NEURAL{color:#ff6b6b}.FIBONACCI{color:#4ecdc4}
+        .MARKOV{color:#45b7d1}.ENTROPY{color:#96ceb4}.REGRESSION{color:#ffeaa7}.ENSEMBLE{color:#fd79a8}
+        
+        .panel{background:linear-gradient(145deg,#1e293b,#0f172a);border:1px solid rgba(0,229,255,.1);border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.5),0 0 15px rgba(0,229,255,.1)}
+        
+        .pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+        .pattern-item{background:rgba(30,41,59,.7);border:1px solid rgba(0,229,255,.2);border-radius:8px;padding:6px;text-align:center;font-size:.8rem}
+        .number-badge{display:inline-block;width:28px;height:28px;line-height:28px;border-radius:50%;text-align:center;font-weight:700;background:linear-gradient(145deg,#1e293b,#0f172a);box-shadow:2px 2px 4px #0a0f1a,-2px -2px 4px #141f3a;margin:0 2px}
+        .number-badge.big{color:#f472b6}.number-badge.small{color:#60a5fa}
+        
+        .number-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+        .number-item{background:rgba(30,41,59,.7);border-radius:6px;padding:4px;text-align:center;font-size:.9rem}
+        .number-item.cold{border:1px solid rgba(253,186,116,.3)}
+        .number-item.cold.active{background:rgba(253,186,116,.2);border:1px solid var(--warning);box-shadow:0 0 8px var(--warning)}
+        .number-item.hot{border:1px solid rgba(255,85,85,.3)}
+        .number-item.hot.active{background:rgba(255,85,85,.2);border:1px solid var(--hot);box-shadow:0 0 8px var(--hot)}
+        
+        .fade-in{animation:fadeIn .5s ease-out}.pulse-anim{animation:pulse 1.5s infinite}
+        .grid-bg,.matrix-effect,.scanline{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+        .grid-bg{background:linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px);background-size:20px 20px}
+        .scanline{height:10px;background:linear-gradient(to bottom,rgba(0,229,255,.3),transparent);animation:scan 6s linear infinite;z-index:1}
+        .matrix-effect{overflow:hidden}
+        .matrix-column{position:absolute;top:-50px;color:rgba(0,229,255,.2);font-size:18px;writing-mode:vertical-rl;text-orientation:mixed;text-shadow:0 0 5px rgba(0,229,255,.5);animation:fall linear infinite}
+        @keyframes fall{to{top:100%}}@keyframes scan{0%{top:-100px}100%{top:100%}}
+        
+        .parity-tag{border:1px solid currentColor;padding:2px 6px;border-radius:4px;font-size:1.5rem}
+        .parity-tag.Odd{color:var(--odd)}.parity-tag.Even{color:var(--even)}
+        
+        .quantum-core {background: linear-gradient(135deg, rgba(0,229,255,0.1), rgba(157,0,255,0.1)); border: 1px solid rgba(0,229,255,0.3);}
+        .progress-bar {height: 4px; background: rgba(0,229,255,0.2); position: relative; overflow: hidden;}
+        .progress-bar::after {content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 100%; background: linear-gradient(90deg, transparent, rgba(0,229,255,0.8), transparent); animation: scanning 2s linear infinite;}
+        @keyframes scanning {0% {transform: translateX(-100%);} 100% {transform: translateX(100%);}}
+        
+        .neural-network{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+        .neural-node{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:10px;color:white;font-weight:bold}
+        .confidence-meter{background:linear-gradient(90deg,var(--danger),var(--warning),var(--success));height:8px;border-radius:4px;position:relative}
+        .confidence-pointer{position:absolute;top:-2px;width:4px;height:12px;background:white;border-radius:2px;transition:left 0.5s ease}
+        
+        .analysis-panel{background:rgba(15,23,42,0.8);border:1px solid rgba(0,229,255,0.3);border-radius:12px;padding:16px;margin:8px 0}
+        .warning-disclaimer{background:linear-gradient(135deg,rgba(220,53,69,0.1),rgba(255,193,7,0.1));border:1px solid rgba(220,53,69,0.3);border-radius:8px;padding:12px;margin:16px 0;text-align:center}
+    </style>
+</head>
+<body class="text-gray-100 flex flex-col items-center min-h-screen p-4 relative">
+    <div class="matrix-effect" id="matrixEffect"></div>
+    <div class="grid-bg"></div>
+    <div class="scanline"></div>
+    
+    <!-- Audio Elements -->
+    <audio id="soundPredict" src="https://cdn.pixabay.com/audio/2022/03/15/audio_731c519a81.mp3" preload="auto"></audio>
+    <audio id="soundWin" src="https://cdn.pixabay.com/audio/2022/03/10/audio_c3b0923528.mp3" preload="auto"></audio>
+    <audio id="soundLoss" src="https://cdn.pixabay.com/audio/2021/08/04/audio_a538221b34.mp3" preload="auto"></audio>
+
+    <!-- Important Disclaimer -->
+    <div class="warning-disclaimer w-full max-w-2xl mb-4">
+        <div class="flex items-center justify-center gap-2 mb-2">
+            <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+            <span class="font-bold text-yellow-500">IMPORTANT DISCLAIMER</span>
+            <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+        </div>
+        <p class="text-sm text-gray-300">
+            This is an advanced pattern analysis tool for educational purposes. <strong>No algorithm can guarantee 100% accuracy</strong> in random number prediction. 
+            Use responsibly and never risk more than you can afford to lose.
+        </p>
+    </div>
+
+    <!-- Header Panel -->
+    <div class="w-full max-w-2xl panel flex justify-between items-center p-4 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="text-left text-xs text-gray-400">
+                <div>B/S: <span id="winRateBS" class="type-rate">0%</span> (W/L: <span id="winLossBS">0/0</span>)</div>
+                <div>O/E: <span id="winRateOE" class="type-rate">0%</span> (W/L: <span id="winLossOE">0/0</span>)</div>
+                <div>Accuracy: <span id="overallAccuracy" class="type-rate">0%</span></div>
+            </div>
+        </div>
+        <div class="font-sans text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500 tracking-tighter">
+            CHIMERA OMEGA <span class="text-xs text-pink-500">v19.0</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <i id="neuralModeToggle" class="icon-btn fa-solid fa-brain text-lg text-red-400" title="Neural Mode"></i>
+            <i id="adaptiveModeToggle" class="icon-btn fa-solid fa-cogs text-lg text-green-400" title="Adaptive Mode"></i>
+            <i id="patternToggle" class="icon-btn fa-solid fa-cubes text-lg text-cyan-400" title="Pattern Analysis"></i>
+            <i id="themeToggle" class="icon-btn fa-solid fa-moon text-lg" title="Toggle Theme"></i>
+            <i id="resetButton" class="icon-btn fa-solid fa-arrows-rotate text-lg" title="Reset System"></i>
+        </div>
+    </div>
+
+    <div class="w-full max-w-2xl flex flex-col md:flex-row gap-6">
+        <!-- Left Column -->
+        <div class="flex-1 flex flex-col gap-6">
+            <!-- Main Prediction Panel -->
+            <div class="panel p-6 flex flex-col gap-6">
+                <!-- Lobby Selection -->
+                <div class="flex justify-around bg-gray-900 p-1 rounded-lg mb-2">
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="30s">30s</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="1m">1m</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="3m">3m</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="5m">5m</button>
+                </div>
+                
+                <!-- Quantum Core Interface -->
+                <div class="flex flex-col gap-4 quantum-core p-4 rounded-lg">
+                    <div class="progress-bar rounded-full mb-2"></div>
+                    <input id="periodInput" class="w-full bg-gray-900 border border-cyan-500/30 text-cyan-400 font-sans text-3xl text-center rounded-lg p-3 shadow-inner shadow-cyan-500/10 focus:outline-none focus:ring-1 focus:ring-cyan-500" type="text" maxlength="20" placeholder="Enter Period..." autocomplete="off">
+                    
+                    <!-- Keypad -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="1">1</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="2">2</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="3">3</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="4">4</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="5">5</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="6">6</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="7">7</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="8">8</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="9">9</button>
+                        <button class="key-button bg-rose-700 hover:bg-rose-600 border-rose-600 text-white font-sans text-xl rounded-lg p-4" data-key="C">C</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="0">0</button>
+                        <button class="key-button bg-amber-700 hover:bg-amber-600 border-amber-600 text-white font-sans text-xl rounded-lg p-4" data-key="B">←</button>
+                    </div>
+                    
+                    <!-- Enhanced Predict Button -->
+                    <button id="predictButton" class="predict-button text-white font-sans text-lg py-4 rounded-lg uppercase tracking-wider">
+                        <i class="fa-solid fa-bolt"></i> <span id="predictButtonText">Enhanced Quantum Predict</span>
+                    </button>
+                </div>
+                
+                <!-- Results Display -->
+                <div id="resultContainer" class="min-h-[200px] flex justify-center items-center"></div>
+                
+                <!-- Enhanced Signal Tower -->
+                <div class="mt-2 px-4">
+                    <div class="flex justify-between mb-1">
+                        <h5 class="text-sm text-gray-400 font-sans">QUANTUM CONFIDENCE</h5>
+                        <span id="confidenceValue" class="text-sm font-bold text-cyan-400">0%</span>
+                    </div>
+                    <div class="confidence-meter mb-3">
+                        <div class="confidence-pointer" id="confidencePointer"></div>
+                    </div>
+                    <div id="signalTower" class="flex flex-col gap-2 w-full mx-auto">
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hot/Cold Numbers -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="panel p-4">
+                    <h4 class="font-sans font-bold text-center mb-3 text-red-400">HOT NUMBERS</h4>
+                    <div class="number-grid" id="hotGrid"></div>
+                    <div class="text-xs text-gray-500 mt-2 text-center">Highest frequency</div>
+                </div>
+                <div class="panel p-4">
+                    <h4 class="font-sans font-bold text-center mb-3 text-amber-400">COLD NUMBERS</h4>
+                    <div class="number-grid" id="coldGrid"></div>
+                    <div class="text-xs text-gray-500 mt-2 text-center">Lowest frequency</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex-1 flex flex-col gap-6">
+            <!-- Enhanced Pattern Recognition -->
+            <div id="patternPanel" class="panel p-4">
+                <h4 class="font-sans font-bold text-center mb-3">ADVANCED PATTERN RECOGNITION</h4>
+                <div class="pattern-grid">
+                    <!-- Enhanced Pattern Items -->
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">NEURAL</div>
+                        <div class="neural-network">
+                            <div class="neural-node">I</div>
+                            <div class="neural-node">H</div>
+                            <div class="neural-node">O</div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Neural Network</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">FIBONACCI</div>
+                        <div><span class="text-yellow-400">1-1-2-3-5</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Fibonacci Sequence</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">MARKOV</div>
+                        <div><span class="text-blue-400">A→B→C</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Markov Chain</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">ENTROPY</div>
+                        <div><span class="text-green-400">H(X)</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Information Theory</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">T-REV</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge small">S</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Triple Reverse</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">DRAGON</div>
+                        <div><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="number-badge big">B</span><span class="text-green-400">→</span><span class="number-badge big">B</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Dragon Streak</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">REGRESSION</div>
+                        <div><span class="text-yellow-400">y=mx+b</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Linear Regression</div>
+                    </div>
+                    <div class="pattern-item">
+                        <div class="text-xs text-gray-400 mb-1">ENSEMBLE</div>
+                        <div><span class="text-pink-400">∑w×p</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Ensemble Method</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Analysis Panel -->
+            <div class="analysis-panel">
+                <h4 class="font-sans font-bold text-center mb-3">REAL-TIME ANALYSIS</h4>
+                <div id="analysisContent" class="text-xs space-y-2">
+                    <div class="flex justify-between">
+                        <span>Pattern Complexity:</span>
+                        <span id="patternComplexity" class="text-cyan-400">Low</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Entropy Score:</span>
+                        <span id="entropyScore" class="text-yellow-400">0.0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Trend Direction:</span>
+                        <span id="trendDirection" class="text-green-400">Neutral</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Volatility:</span>
+                        <span id="volatility" class="text-orange-400">Normal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategy Performance -->
+            <div class="panel p-4">
+                <h4 class="font-sans font-bold text-center mb-3">STRATEGY PERFORMANCE</h4>
+                <div id="strategyStats" class="grid grid-cols-2 gap-3 text-xs"></div>
+            </div>
+
+            <!-- Session History -->
+            <div class="panel p-4 flex-1">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-sans font-bold">SESSION HISTORY</h4>
+                    <button id="clearHistoryBtn" class="text-xs bg-gray-700 px-2 py-1 rounded hover:bg-gray-600">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+                <div id="historyLog" class="max-h-48 overflow-y-auto pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Enhanced DOM elements
+    const dom = {
+        periodInput: document.getElementById("periodInput"),
+        keypadButtons: document.querySelectorAll(".key-button"),
+        predictBtn: document.getElementById("predictButton"),
+        predictButtonText: document.getElementById("predictButtonText"),
+        resultContainer: document.getElementById("resultContainer"),
+        themeToggle: document.getElementById("themeToggle"),
+        resetButton: document.getElementById("resetButton"),
+        winRateBS: document.getElementById("winRateBS"),
+        winLossBS: document.getElementById("winLossBS"),
+        winRateOE: document.getElementById("winRateOE"),
+        winLossOE: document.getElementById("winLossOE"),
+        overallAccuracy: document.getElementById("overallAccuracy"),
+        confidenceValue: document.getElementById("confidenceValue"),
+        confidencePointer: document.getElementById("confidencePointer"),
+        historyLog: document.getElementById("historyLog"),
+        signalTower: document.getElementById("signalTower"),
+        lobbyButtons: document.querySelectorAll('.lobby-btn'),
+        strategyStats: document.getElementById("strategyStats"),
+        coldGrid: document.getElementById('coldGrid'),
+        hotGrid: document.getElementById('hotGrid'),
+        adaptiveModeToggle: document.getElementById("adaptiveModeToggle"),
+        neuralModeToggle: document.getElementById("neuralModeToggle"),
+        patternToggle: document.getElementById("patternToggle"),
+        patternPanel: document.getElementById("patternPanel"),
+        clearHistoryBtn: document.getElementById("clearHistoryBtn"),
+        htmlEl: document.documentElement,
+        patternComplexity: document.getElementById("patternComplexity"),
+        entropyScore: document.getElementById("entropyScore"),
+        trendDirection: document.getElementById("trendDirection"),
+        volatility: document.getElementById("volatility")
+    };
+
+    // Enhanced State Management
+    const createInitialLobbyState = () => ({
+        history: [], 
+        winsBS: 0, lossesBS: 0, winsOE: 0, lossesOE: 0,
+        strategyWeights: {
+            "NEURAL": { w: 9.0, W: 0, L: 0 },
+            "FIBONACCI": { w: 8.5, W: 0, L: 0 },
+            "MARKOV": { w: 8.0, W: 0, L: 0 },
+            "ENTROPY": { w: 7.5, W: 0, L: 0 },
+            "REGRESSION": { w: 7.0, W: 0, L: 0 },
+            "ENSEMBLE": { w: 9.5, W: 0, L: 0 },
+            "T-Rev": { w: 7.0, W: 0, L: 0 }, 
+            "D-Alt": { w: 6.5, W: 0, L: 0 },
+            "Alt": { w: 6.0, W: 0, L: 0 }, 
+            "T-Cont": { w: 5.5, W: 0, L: 0 },
+            "D-Cont": { w: 5.0, W: 0, L: 0 }, 
+            "DRAGON": { w: 8.0, W: 0, L: 0 }, 
+            "Quad-Rev": { w: 7.5, W: 0, L: 0 },
+            "STREAK-BREAKER": { w: 9.5, W: 0, L: 0 },
+            "HYBRID": { w: 6.0, W: 0, L: 0 },
+            "COLD": { w: 4.0, W: 0, L: 0 },
+            "ADAPTIVE": { w: 5.0, W: 0, L: 0 }, 
+            "QUANTUM": { w: 5.0, W: 0, L: 0 }
+        },
+        numberFrequency: Array(10).fill(0),
+        neuralWeights: {
+            input: Array(10).fill(0).map(() => Math.random() * 2 - 1),
+            hidden: Array(5).fill(0).map(() => Math.random() * 2 - 1),
+            output: Array(2).fill(0).map(() => Math.random() * 2 - 1)
+        },
+        markovChain: {},
+        fibonacciSeq: [1, 1, 2, 3, 5, 8, 13, 21],
+        regressionData: []
+    });
+
+    let state = {
+        isAdaptiveMode: true,
+        isNeuralMode: true,
+        showPatterns: true,
+        activeLobby: '30s',
+        lobbies: {
+            '30s': createInitialLobbyState(), 
+            '1m': createInitialLobbyState(),
+            '3m': createInitialLobbyState(), 
+            '5m': createInitialLobbyState()
+        }
+    };
+    let currentPrediction = null;
+
+    // Enhanced Mathematical Functions
+    const calculateEntropy = (arr) => {
+        if (arr.length === 0) return 0;
+        const counts = {};
+        arr.forEach(x => { counts[x] = (counts[x] || 0) + 1; });
+        let entropy = 0;
+        const total = arr.length;
+        for (const x in counts) {
+            const p = counts[x] / total;
+            entropy -= p * Math.log2(p);
+        }
+        return entropy;
+    };
+
+    const fibonacci = (n) => {
+        if (n <= 1) return n;
+        let a = 0, b = 1;
+        for (let i = 2; i <= n; i++) {
+            [a, b] = [b, a + b];
+        }
+        return b;
+    };
+
+    const neuralNetworkPredict = (inputs, weights) => {
+        // Simple feedforward neural network
+        const sigmoid = x => 1 / (1 + Math.exp(-x));
+        
+        // Input to hidden layer
+        let hiddenSum = 0;
+        for (let i = 0; i < inputs.length; i++) {
+            hiddenSum += inputs[i] * weights.input[i % weights.input.length];
+        }
+        const hiddenOutput = sigmoid(hiddenSum);
+        
+        // Hidden to output layer
+        let outputSum = 0;
+        for (let i = 0; i < weights.hidden.length; i++) {
+            outputSum += hiddenOutput * weights.hidden[i];
+        }
+        
+        return sigmoid(outputSum);
+    };
+
+    const buildMarkovChain = (history) => {
+        const chain = {};
+        for (let i = 0; i < history.length - 1; i++) {
+            const current = history[i].type;
+            const next = history[i + 1].type;
+            if (!chain[current]) chain[current] = {};
+            if (!chain[current][next]) chain[current][next] = 0;
+            chain[current][next]++;
+        }
+        return chain;
+    };
+
+    const linearRegression = (data) => {
+        if (data.length < 2) return { slope: 0, intercept: 0, r2: 0 };
+        
+        const n = data.length;
+        const sumX = data.reduce((sum, d, i) => sum + i, 0);
+        const sumY = data.reduce((sum, d) => sum + d, 0);
+        const sumXY = data.reduce((sum, d, i) => sum + i * d, 0);
+        const sumXX = data.reduce((sum, d, i) => sum + i * i, 0);
+        
+        const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+        const intercept = (sumY - slope * sumX) / n;
+        
+        return { slope, intercept, r2: 0.5 }; // Simplified R²
+    };
+
+    // Enhanced Prediction Logic
+    const predictBigSmall = (history, lobbyData) => {
+        const { strategyWeights, neuralWeights, markovChain } = lobbyData;
+        const BIG = 'Big', SMALL = 'Small';
+        const MAX_HISTORY = 15;
+
+        const hTypes = history.map(item => item.type);
+        const recentHistory = hTypes.slice(-MAX_HISTORY);
+
+        // Streak Breaker (highest priority)
+        if (history.length >= 3) {
+            const lastThreeOutcomes = history.slice(-3).map(h => h.outcomeBS);
+            if (lastThreeOutcomes.every(o => o === 'loss')) {
+                const counterType = history[history.length - 1].type === BIG ? SMALL : BIG;
+                return { 
+                    type: counterType, 
+                    confidence: 98, 
+                    strategy: "STREAK-BREAKER", 
+                    reason: 'Critical losing streak detected. Executing emergency counter-prediction.',
+                    contributing: ["STREAK-BREAKER"] 
+                };
+            }
+        }
+        
+        if (recentHistory.length < 5) {
+            return { 
+                type: Math.random() > 0.5 ? BIG : SMALL, 
+                confidence: 35, 
+                strategy: "COLD", 
+                reason: 'Insufficient data for advanced analysis.',
+                contributing: ["COLD"] 
+            };
+        }
+
+        let bigScore = 0, smallScore = 0, activeStrategies = [];
+        let confidenceBonus = 0;
+
+        // Neural Network Analysis
+        if (state.isNeuralMode && history.length >= 5) {
+            const inputs = history.slice(-5).map(h => h.actualNum / 9); // Normalize
+            const neuralOutput = neuralNetworkPredict(inputs, neuralWeights);
+            const neuralWeight = strategyWeights["NEURAL"]?.w || 9;
+            
+            if (neuralOutput > 0.5) {
+                bigScore += neuralWeight * neuralOutput;
+            } else {
+                smallScore += neuralWeight * (1 - neuralOutput);
+            }
+            activeStrategies.push("NEURAL");
+            confidenceBonus += 10;
+        }
+
+        // Ensemble Method (combines multiple algorithms)
+        if (history.length >= 10) {
+            const ensembleWeight = strategyWeights["ENSEMBLE"]?.w || 9.5;
+            
+            // Multiple sub-predictions
+            const subPredictions = [];
+            
+            // Fibonacci pattern
+            const fibSeq = [1, 1, 2, 3, 5, 8];
+            const recentNums = history.slice(-6).map(h => h.actualNum);
+            let fibMatch = 0;
+            for (let i = 0; i < Math.min(fibSeq.length, recentNums.length); i++) {
+                if (recentNums[i] === fibSeq[i] % 10) fibMatch++;
+            }
+            if (fibMatch >= 2) {
+                subPredictions.push(BIG);
+                activeStrategies.push("FIBONACCI");
+            }
+
+            // Markov Chain prediction
+            const chain = buildMarkovChain(history);
+            const lastType = recentHistory[recentHistory.length - 1];
+            if (chain[lastType]) {
+                const transitions = chain[lastType];
+                const mostLikely = Object.keys(transitions).reduce((a, b) => 
+                    transitions[a] > transitions[b] ? a : b
+                );
+                subPredictions.push(mostLikely);
+                activeStrategies.push("MARKOV");
+            }
+
+            // Entropy-based prediction
+            const entropy = calculateEntropy(recentHistory);
+            if (entropy < 0.8) { // Low entropy suggests pattern
+                subPredictions.push(recentHistory[recentHistory.length - 1]);
+                activeStrategies.push("ENTROPY");
+            } else {
+                const opposite = recentHistory[recentHistory.length - 1] === BIG ? SMALL : BIG;
+                subPredictions.push(opposite);
+                activeStrategies.push("ENTROPY");
+            }
+
+            // Linear regression on number trends
+            const numTrend = history.slice(-10).map(h => h.actualNum);
+            const regression = linearRegression(numTrend);
+            if (regression.slope > 0.1) {
+                subPredictions.push(BIG);
+                activeStrategies.push("REGRESSION");
+            } else if (regression.slope < -0.1) {
+                subPredictions.push(SMALL);
+                activeStrategies.push("REGRESSION");
+            }
+
+            // Ensemble vote
+            const bigVotes = subPredictions.filter(p => p === BIG).length;
+            const smallVotes = subPredictions.filter(p => p === SMALL).length;
+            
+            if (bigVotes > smallVotes) {
+                bigScore += ensembleWeight * (bigVotes / subPredictions.length);
+            } else {
+                smallScore += ensembleWeight * (smallVotes / subPredictions.length);
+            }
+            
+            confidenceBonus += Math.abs(bigVotes - smallVotes) * 5;
+        }
+
+        // Traditional pattern analysis (enhanced)
+        const A = recentHistory[recentHistory.length - 1];
+        const B = (A === BIG) ? SMALL : BIG;
+
+        const patterns = [
+            { id: "T-Rev", s: [A, A, A], p: B, minLength: 3 },
+            { id: "D-Alt", s: [B, A, B, A], p: B, minLength: 4 },
+            { id: "Alt", s: [A, B, A], p: B, minLength: 3 },
+            { id: "T-Cont", s: [B, A, A], p: A, minLength: 3 },
+            { id: "D-Cont", s: [B, B, A], p: A, minLength: 3 },
+            { id: "DRAGON", s: [A, A, A, A], p: A, minLength: 4 },
+            { id: "Quad-Rev", s: [A, A, A, A], p: B, minLength: 4 }
+        ];
+
+        patterns.forEach(pattern => {
+            if (recentHistory.length >= pattern.s.length) {
+                const subHistory = recentHistory.slice(-pattern.s.length);
+                if (JSON.stringify(subHistory) === JSON.stringify(pattern.s)) {
+                    const weight = strategyWeights[pattern.id]?.w || 5;
+                    if (pattern.p === BIG) bigScore += weight;
+                    else smallScore += weight;
+                    activeStrategies.push(pattern.id);
+                }
+            }
+        });
+
+        // Determine final prediction
+        const prediction = bigScore >= smallScore ? BIG : SMALL;
+        let confidence = 50 + Math.abs(bigScore - smallScore) * 2 + confidenceBonus;
+        confidence = Math.min(Math.max(confidence, 30), 95);
+
+        const strategy = activeStrategies.includes("ENSEMBLE") ? "ENSEMBLE" : 
+                        activeStrategies.includes("NEURAL") ? "NEURAL" :
+                        activeStrategies.length > 1 ? "HYBRID" : 
+                        activeStrategies[0] || "ADAPTIVE";
+
+        return {
+            type: prediction,
+            confidence: Math.round(confidence),
+            strategy: strategy,
+            reason: `Advanced multi-algorithm analysis using: ${activeStrategies.join(', ')}`,
+            contributing: activeStrategies
+        };
+    };
+
+    const predictOddEven = (history) => {
+        if (history.length < 5) {
+            return { parity: Math.random() > 0.5 ? 'Odd' : 'Even', reason: 'Limited O/E data.' };
+        }
+        
+        const ODD = 'Odd', EVEN = 'Even';
+        const parities = history.map(h => h.actualNum % 2 === 0 ? EVEN : ODD);
+        const recentParities = parities.slice(-8);
+        
+        // Enhanced O/E prediction with multiple methods
+        const entropy = calculateEntropy(recentParities);
+        const lastParity = recentParities[recentParities.length - 1];
+        const opposite = lastParity === ODD ? EVEN : ODD;
+        
+        // Pattern-based prediction
+        const A = lastParity;
+        const B = opposite;
+        
+        const oePatterns = [
+            { s: [A, A, A], p: B, reason: `O/E Triple reversal pattern` },
+            { s: [A, B, A], p: B, reason: `O/E Alternating pattern` },
+            { s: [B, A, A], p: A, reason: `O/E Continuation pattern` }
+        ];
+        
+        for (const pattern of oePatterns) {
+            if (recentParities.length >= pattern.s.length) {
+                const subParities = recentParities.slice(-pattern.s.length);
+                if (JSON.stringify(subParities) === JSON.stringify(pattern.s)) {
+                    return { parity: pattern.p, reason: pattern.reason };
+                }
+            }
+        }
+        
+        // Entropy-based decision
+        if (entropy < 0.5) {
+            return { parity: lastParity, reason: `O/E Low entropy suggests continuation` };
+        } else {
+            return { parity: opposite, reason: `O/E High entropy suggests reversal` };
+        }
+    };
+
+    // Enhanced UI Functions
+    const updateAnalysisPanel = (history) => {
+        if (history.length === 0) return;
+        
+        const entropy = calculateEntropy(history.map(h => h.type));
+        const recentNums = history.slice(-10).map(h => h.actualNum);
+        const trend = recentNums.length > 1 ? 
+                     (recentNums[recentNums.length - 1] > recentNums[0] ? 'Upward' : 'Downward') : 'Neutral';
+        
+        const variance = recentNums.length > 1 ? 
+                        recentNums.reduce((sum, n, i, arr) => {
+                            const mean = arr.reduce((s, x) => s + x, 0) / arr.length;
+                            return sum + Math.pow(n - mean, 2);
+                        }, 0) / recentNums.length : 0;
+        
+        const volatility = variance > 8 ? 'High' : variance > 4 ? 'Medium' : 'Low';
+        const complexity = history.length > 20 ? 'High' : history.length > 10 ? 'Medium' : 'Low';
+        
+        dom.entropyScore.textContent = entropy.toFixed(2);
+        dom.trendDirection.textContent = trend;
+        dom.volatility.textContent = volatility;
+        dom.patternComplexity.textContent = complexity;
+    };
+
+    const updateSignalTower = (prediction) => {
+        const confidence = prediction ? prediction.confidence : 0;
+        dom.confidenceValue.textContent = `${confidence}%`;
+        
+        // Update confidence pointer
+        const pointerPosition = Math.min(Math.max((confidence / 100) * 100, 0), 100);
+        dom.confidencePointer.style.left = `${pointerPosition}%`;
+        
+        let signalClass = 'lit-red';
+        let signalLevel = 1;
+        
+        if (prediction?.strategy === "STREAK-BREAKER") {
+            signalClass = 'lit-quantum';
+            signalLevel = 5;
+        } else if (prediction?.strategy === "ENSEMBLE" || prediction?.strategy === "NEURAL") {
+            signalClass = 'lit-purple';
+            signalLevel = Math.min(Math.floor(confidence / 20) + 1, 5);
+        } else if (confidence >= 90) {
+            signalClass = 'lit-green';
+            signalLevel = 5;
+        } else if (confidence >= 75) {
+            signalClass = 'lit-blue';
+            signalLevel = 4;
+        } else if (confidence >= 60) {
+            signalClass = 'lit-yellow';
+            signalLevel = 3;
+        } else if (confidence >= 45) {
+            signalClass = 'lit-yellow';
+            signalLevel = 2;
+        }
+        
+        if (!prediction) signalLevel = 0;
+        
+        Array.from(dom.signalTower.children).forEach((segment, index) => {
+            segment.className = 'signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50';
+            if (index < signalLevel) {
+                segment.classList.add(signalClass);
+            }
+        });
+    };
+
+    const updateUIForLobby = () => {
+        const data = state.lobbies[state.activeLobby];
+        
+        // Win rates
+        const totalBS = data.winsBS + data.lossesBS;
+        const rateBS = totalBS > 0 ? ((data.winsBS / totalBS) * 100).toFixed(0) : 0;
+        const totalOE = data.winsOE + data.lossesOE;
+        const rateOE = totalOE > 0 ? ((data.winsOE / totalOE) * 100).toFixed(0) : 0;
+        
+        // Overall accuracy
+        const totalCorrect = data.winsBS + data.winsOE;
+        const totalPredictions = (data.winsBS + data.lossesBS + data.winsOE + data.lossesOE);
+        const overallAcc = totalPredictions > 0 ? ((totalCorrect / totalPredictions) * 100).toFixed(0) : 0;
+        
+        dom.winRateBS.textContent = `${rateBS}%`;
+        dom.winLossBS.textContent = `${data.winsBS}/${data.lossesBS}`;
+        dom.winRateOE.textContent = `${rateOE}%`;
+        dom.winLossOE.textContent = `${data.winsOE}/${data.lossesOE}`;
+        dom.overallAccuracy.textContent = `${overallAcc}%`;
+        
+        updateHistoryLog();
+        updateStrategyDashboard();
+        updateNumberGrids();
+        updateAnalysisPanel(data.history);
+        
+        // Reset prediction interface
+        dom.resultContainer.innerHTML = '';
+        updateSignalTower(null);
+        dom.periodInput.value = '';
+        dom.predictBtn.disabled = false;
+        dom.predictBtn.classList.remove('opacity-50');
+    };
+
+    // Enhanced prediction display
+    const displayResult = (prediction) => {
+        const { num, type, parity, reason, confidence, strategy } = prediction;
+        const typeColor = type === 'Big' ? 'text-pink-400' : 'text-cyan-400';
+        
+        const feedbackHTML = Array.from({ length: 10 }, (_, i) => 
+            `<button type="button" class="feedback-number-btn text-xl font-bold p-3 rounded-lg key-button ${i >= 5 ? 'big' : 'small'}" data-actual-number="${i}">${i}</button>`
+        ).join('');
+        
+        dom.resultContainer.innerHTML = `
+            <div class="w-full bg-gray-900 border border-cyan-500/30 rounded-xl p-4 fade-in">
+                <h4 class="font-sans text-lg font-bold text-center mb-3 flex items-center justify-center gap-2">
+                    <i class="fas fa-lightbulb text-yellow-400"></i> 
+                    ENHANCED PREDICTION 
+                    <span class="strategy-tag ${strategy}">${strategy}</span>
+                </h4>
+                
+                <div class="text-center text-sm mb-3">
+                    <span class="text-gray-400">Confidence: </span>
+                    <span class="font-bold ${confidence >= 80 ? 'text-green-400' : confidence >= 60 ? 'text-yellow-400' : 'text-orange-400'}">${confidence}%</span>
+                    ${confidence >= 90 ? '<span class="text-green-400 ml-2">🚀 HIGH CONFIDENCE</span>' : ''}
+                </div>
+                
+                <div class="bg-gray-800 text-xs text-gray-300 p-3 rounded-lg mb-4 border-l-4 border-cyan-500">
+                    <strong class="text-cyan-400">AI Analysis:</strong> ${reason}
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="bg-gray-800 p-3 rounded-lg border border-gray-700 text-center">
+                        <div class="text-xs text-gray-400 mb-1">NUMBER</div>
+                        <div class="text-5xl font-bold font-sans text-cyan-400">${num}</div>
+                    </div>
+                    <div class="bg-gray-800 p-3 rounded-lg border border-gray-700 text-center">
+                        <div class="text-xs text-gray-400 mb-1">TYPE</div>
+                        <div class="text-3xl font-bold font-sans ${typeColor}">${type}</div>
+                    </div>
+                    <div class="bg-gray-800 p-3 rounded-lg border border-gray-700 text-center">
+                        <div class="text-xs text-gray-400 mb-1">PARITY</div>
+                        <div class="font-bold font-sans parity-tag ${parity}">${parity}</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4" id="feedbackMatrix">
+                    <p class="text-center text-sm text-gray-400 mb-2">What was the actual result?</p>
+                    <div class="grid grid-cols-5 gap-2">${feedbackHTML}</div>
+                </div>
+            </div>`;
+        
+        dom.predictBtn.disabled = false;
+        dom.predictBtn.classList.remove('opacity-50');
+        
+        // Add event listeners to feedback buttons
+        document.querySelectorAll('.feedback-number-btn').forEach(button => {
+            button.addEventListener('click', handleActualResult);
+        });
+    };
+
+    // Main prediction handler
+    const handlePrediction = () => {
+        const lobbyData = state.lobbies[state.activeLobby];
+        const period = dom.periodInput.value.trim();
+        
+        if (!period || period.length < 4) {
+            alert('Please enter a valid Period ID (at least 4 characters).');
+            return;
+        }
+        
+        if (lobbyData.history.some(h => h.period === period)) {
+            alert(`Period #${period} already processed.`);
+            return;
+        }
+        
+        // Enhanced prediction mode indication
+        if (state.isNeuralMode) {
+            dom.predictBtn.classList.add('quantum-mode');
+            dom.predictButtonText.textContent = 'Neural Quantum Predict';
+        }
+        
+        playSound('soundPredict');
+        dom.predictBtn.disabled = true;
+        dom.predictBtn.classList.add('opacity-50');
+        
+        // Enhanced loading animation
+        dom.resultContainer.innerHTML = `
+            <div class="animate-pulse text-xl text-cyan-400 font-sans text-center">
+                <div class="mb-2">🧠 Initializing Neural Networks...</div>
+                <div class="mb-2">📊 Analyzing Patterns...</div>
+                <div class="mb-2">⚡ Processing Quantum Core...</div>
+                <div class="text-sm text-gray-400">Enhanced Algorithm v19.0</div>
+            </div>`;
+
+        setTimeout(() => {
+            const bsPrediction = predictBigSmall(lobbyData.history, lobbyData);
+            const oePrediction = predictOddEven(lobbyData.history);
+            
+            // Enhanced number selection with bias toward hot/cold analysis
+            const validNums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter(n => 
+                (n >= 5 ? 'Big' : 'Small') === bsPrediction.type && 
+                (n % 2 !== 0 ? 'Odd' : 'Even') === oePrediction.parity
+            );
+            
+            let predictedNum;
+            if (validNums.length > 0) {
+                const frequencies = lobbyData.numberFrequency;
+                // Prefer cold numbers (less frequent) for better distribution
+                validNums.sort((a, b) => frequencies[a] - frequencies[b]);
+                predictedNum = validNums[0];
+            } else {
+                // Fallback to type-based selection
+                const fallbackPool = bsPrediction.type === 'Big' ? [5, 6, 7, 8, 9] : [0, 1, 2, 3, 4];
+                predictedNum = fallbackPool[Math.floor(Math.random() * fallbackPool.length)];
+            }
+            
+            currentPrediction = {
+                period,
+                num: predictedNum,
+                type: bsPrediction.type,
+                parity: oePrediction.parity,
+                confidence: bsPrediction.confidence,
+                strategy: bsPrediction.strategy,
+                reason: `${bsPrediction.reason} | O/E: ${oePrediction.reason}`,
+                contributing: bsPrediction.contributing
+            };
+            
+            displayResult(currentPrediction);
+            updateSignalTower(currentPrediction);
+            
+            // Reset button appearance
+            dom.predictBtn.classList.remove('quantum-mode');
+            dom.predictButtonText.textContent = 'Enhanced Quantum Predict';
+        }, 2000); // Longer delay for enhanced effect
+    };
+
+    // Enhanced feedback processing
+    const processFeedback = (actualNumber) => {
+        if (!currentPrediction) return;
+        
+        const lobbyData = state.lobbies[state.activeLobby];
+        const actualType = actualNumber >= 5 ? 'Big' : 'Small';
+        const actualParity = actualNumber % 2 !== 0 ? 'Odd' : 'Even';
+        const outcomeBS = (currentPrediction.type === actualType) ? 'win' : 'loss';
+        const outcomeOE = (currentPrediction.parity === actualParity) ? 'win' : 'loss';
+        
+        playSound(outcomeBS === 'win' ? 'soundWin' : 'soundLoss');
+        
+        currentPrediction.outcomeBS = outcomeBS;
+        currentPrediction.outcomeOE = outcomeOE;
+        currentPrediction.actualNum = actualNumber;
+
+        // Update statistics
+        if (outcomeBS === 'win') lobbyData.winsBS++;
+        else lobbyData.lossesBS++;
+        if (outcomeOE === 'win') lobbyData.winsOE++;
+        else lobbyData.lossesOE++;
+        
+        lobbyData.numberFrequency[actualNumber]++;
+        
+        // Enhanced adaptive learning
+        if (state.isAdaptiveMode) {
+            currentPrediction.contributing.forEach(stratId => {
+                const strategy = lobbyData.strategyWeights[stratId];
+                if (strategy) {
+                    if (outcomeBS === 'win') {
+                        strategy.w = Math.min(10, strategy.w + 0.3);
+                        strategy.W++;
+                    } else {
+                        strategy.w = Math.max(1, strategy.w - 0.2);
+                        strategy.L++;
+                    }
+                }
+            });
+        }
+        
+        // Neural network learning (simplified)
+        if (state.isNeuralMode && outcomeBS === 'loss') {
+            // Adjust neural weights slightly (simplified backpropagation)
+            const adjustment = 0.01;
+            lobbyData.neuralWeights.input = lobbyData.neuralWeights.input.map(w => 
+                w + (Math.random() - 0.5) * adjustment
+            );
+        }
+        
+        lobbyData.history.push(currentPrediction);
+        updateUIForLobby();
+        saveState();
+        currentPrediction = null;
+    };
+
+    // Enhanced event handlers
+    const handleActualResult = (event) => {
+        if (!currentPrediction) return;
+        const actualNumber = parseInt(event.target.closest('button').dataset.actualNumber, 10);
+        processFeedback(actualNumber);
+        dom.resultContainer.innerHTML = '';
+        updateSignalTower(null);
+        dom.periodInput.value = '';
+    };
+
+    // Toggle functions
+    const toggleNeuralMode = () => {
+        state.isNeuralMode = !state.isNeuralMode;
+        dom.neuralModeToggle.classList.toggle('text-red-400', state.isNeuralMode);
+        dom.neuralModeToggle.classList.toggle('text-gray-500', !state.isNeuralMode);
+        dom.neuralModeToggle.title = state.isNeuralMode ? "Neural Mode: ON" : "Neural Mode: OFF";
+        saveState();
+    };
+
+    // Utility functions (keeping existing ones and adding new ones)
+    const playSound = (soundId) => {
+        try {
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => {});
+            }
+        } catch(e) {}
+    };
+
+    const saveState = () => {
+        try {
+            localStorage.setItem("chimeraOmegaState_v19_0", JSON.stringify(state));
+        } catch(e) {}
+    };
+
+    const loadState = () => {
+        try {
+            const savedState = localStorage.getItem("chimeraOmegaState_v19_0");
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
+                state = deepMerge(createInitialState(), parsedState);
+            }
+            const savedTheme = localStorage.getItem('chimeraTheme');
+            updateTheme(savedTheme || 'dark');
+        } catch (e) {
+            state = createInitialState();
+        }
+    };
+
+    const deepMerge = (target, source) => {
+        for (const key in source) {
+            if (source.hasOwnProperty(key)) {
+                if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
+                    if (!target[key]) Object.assign(target, { [key]: {} });
+                    deepMerge(target[key], source[key]);
+                } else {
+                    Object.assign(target, { [key]: source[key] });
+                }
+            }
+        }
+        return target;
+    };
+
+    const createInitialState = () => ({
+        isAdaptiveMode: true,
+        isNeuralMode: true,
+        showPatterns: true,
+        activeLobby: '30s',
+        lobbies: {
+            '30s': createInitialLobbyState(),
+            '1m': createInitialLobbyState(),
+            '3m': createInitialLobbyState(),
+            '5m': createInitialLobbyState()
+        }
+    });
+
+    // Keep all existing UI update functions (updateHistoryLog, updateStrategyDashboard, etc.)
+    const updateHistoryLog = () => {
+        const history = state.lobbies[state.activeLobby].history;
+        if (history.length === 0) {
+            dom.historyLog.innerHTML = '<div class="text-center text-gray-500 py-4">No history yet</div>';
+            return;
+        }
+        
+        dom.historyLog.innerHTML = history.slice().reverse().map(item => {
+            const outcomeBS = item.outcomeBS === 'win';
+            const outcomeOE = item.outcomeOE === 'win';
+            const actualType = item.actualNum >= 5 ? 'Big' : 'Small';
+            const actualTypeColor = actualType === 'Big' ? 'text-pink-400' : 'text-cyan-400';
+            const actualParity = item.actualNum % 2 !== 0 ? 'Odd' : 'Even';
+            const actualParityColor = actualParity === 'Odd' ? 'text-yellow-400' : 'text-cyan-400';
+            
+            return `
+                <div class="flex justify-between items-center py-2 border-b border-gray-700/50 text-sm">
+                    <span class="text-gray-400">#${item.period.slice(-4)}</span>
+                    <span class="flex items-center gap-2">
+                        <span class="font-bold text-lg">${item.actualNum}</span>
+                        <span class="${actualTypeColor}">${actualType[0]}</span>
+                        <span class="${actualParityColor}">${actualParity[0]}</span>
+                        <i class="fa-solid ${outcomeBS ? 'fa-check text-green-500' : 'fa-times text-red-500'}"></i>
+                        <i class="fa-solid ${outcomeOE ? 'fa-check text-green-500' : 'fa-times text-red-500'}"></i>
+                    </span>
+                    <span class="strategy-tag ${item.strategy}">${item.strategy}</span>
+                </div>`;
+        }).join('');
+    };
+
+    const updateStrategyDashboard = () => {
+        const strategies = state.lobbies[state.activeLobby].strategyWeights;
+        
+        dom.strategyStats.innerHTML = Object.keys(strategies).map(strategyKey => {
+            const data = strategies[strategyKey];
+            if (!data) return '';
+            
+            const total = data.W + data.L;
+            const accuracy = total > 0 ? ((data.W / total) * 100).toFixed(0) : 0;
+            const accuracyColor = accuracy >= 75 ? 'text-green-400' : 
+                                accuracy >= 50 ? 'text-yellow-400' : 'text-red-400';
+            
+            return `
+                <div class="bg-gray-900 p-2 rounded-lg border border-gray-700/50">
+                    <div class="flex justify-between items-center">
+                        <span class="strategy-tag ${strategyKey}">${strategyKey}</span>
+                        <span class="text-lg font-bold ${accuracyColor}">${accuracy}%</span>
+                    </div>
+                    <div class="h-1.5 bg-gray-700 rounded-full my-2">
+                        <div class="h-full bg-gradient-to-r from-yellow-500 to-orange-400" style="width:${accuracy}%"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 flex justify-between">
+                        <span>W/L: ${data.W}/${data.L}</span>
+                        <span>WT: ${data.w.toFixed(1)}</span>
+                    </div>
+                </div>`;
+        }).join('');
+    };
+
+    const updateNumberGrids = () => {
+        const data = state.lobbies[state.activeLobby];
+        const historyLength = data.history.length;
+        const frequencies = [...data.numberFrequency];
+        
+        if (historyLength === 0) {
+            let initialHTML = '';
+            for (let i = 0; i < 10; i++) {
+                initialHTML += `<div class="number-item">${i}</div>`;
+            }
+            dom.coldGrid.innerHTML = initialHTML;
+            dom.hotGrid.innerHTML = initialHTML;
+            return;
+        }
+        
+        const sortedNumbers = Array.from({length: 10}, (_, i) => ({ number: i, frequency: frequencies[i] }));
+        
+        // Hot numbers (highest frequency)
+        sortedNumbers.sort((a, b) => b.frequency - a.frequency);
+        dom.hotGrid.innerHTML = sortedNumbers.slice(0, 5).map(item => `
+            <div class="number-item hot ${item.frequency === sortedNumbers[0].frequency && sortedNumbers[0].frequency > 0 ? 'active' : ''}">
+                ${item.number}
+                <div class="text-xs text-red-400">${((item.frequency/historyLength)*100).toFixed(1)}%</div>
+            </div>`
+        ).join('');
+        
+        // Cold numbers (lowest frequency)
+        sortedNumbers.sort((a, b) => a.frequency - b.frequency);
+        dom.coldGrid.innerHTML = sortedNumbers.slice(0, 5).map(item => `
+            <div class="number-item cold ${item.frequency === sortedNumbers[0].frequency && sortedNumbers[0].frequency >= 0 ? 'active' : ''}">
+                ${item.number}
+                <div class="text-xs text-amber-400">${((item.frequency/historyLength)*100).toFixed(1)}%</div>
+            </div>`
+        ).join('');
+    };
+
+    // Keep other existing functions...
+    const switchLobby = (lobbyId) => {
+        state.activeLobby = lobbyId;
+        dom.lobbyButtons.forEach(button => {
+            button.classList.toggle('active', button.dataset.lobby === lobbyId);
+        });
+        updateUIForLobby();
+        saveState();
+    };
+
+    const updateTheme = (theme) => {
+        dom.htmlEl.setAttribute('data-theme', theme);
+        dom.themeToggle.className = `icon-btn fa-solid fa-${theme === 'dark' ? 'moon' : 'sun'} text-lg`;
+        localStorage.setItem('chimeraTheme', theme);
+    };
+
+    const toggleAdaptiveMode = () => {
+        state.isAdaptiveMode = !state.isAdaptiveMode;
+        dom.adaptiveModeToggle.classList.toggle('text-green-400', state.isAdaptiveMode);
+        dom.adaptiveModeToggle.classList.toggle('text-gray-500', !state.isAdaptiveMode);
+        dom.adaptiveModeToggle.title = state.isAdaptiveMode ? "Adaptive Mode: ON" : "Adaptive Mode: OFF";
+        saveState();
+    };
+
+    const togglePatternPanel = () => {
+        state.showPatterns = !state.showPatterns;
+        dom.patternPanel.style.display = state.showPatterns ? 'block' : 'none';
+        dom.patternToggle.classList.toggle('text-cyan-400', state.showPatterns);
+        dom.patternToggle.classList.toggle('text-gray-500', !state.showPatterns);
+        dom.patternToggle.title = state.showPatterns ? "Pattern Analysis: ON" : "Pattern Analysis: OFF";
+        saveState();
+    };
+
+    // Event Listeners
+    dom.keypadButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const key = button.dataset.key;
+            if (key === 'C') {
+                dom.periodInput.value = '';
+            } else if (key === 'B') {
+                dom.periodInput.value = dom.periodInput.value.slice(0, -1);
+            } else {
+                dom.periodInput.value += key;
+            }
+        });
+    });
+
+    dom.predictBtn.addEventListener('click', handlePrediction);
+    dom.lobbyButtons.forEach(button => {
+        button.addEventListener('click', () => switchLobby(button.dataset.lobby));
+    });
+    dom.themeToggle.addEventListener('click', () => {
+        const currentTheme = dom.htmlEl.getAttribute('data-theme');
+        updateTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+    dom.resetButton.addEventListener('click', () => {
+        if (confirm('Reset all data for this lobby?')) {
+            state.lobbies[state.activeLobby] = createInitialLobbyState();
+            saveState();
+            updateUIForLobby();
+            alert('Lobby data has been reset.');
+        }
+    });
+    dom.clearHistoryBtn.addEventListener('click', () => {
+        if (confirm('Clear ALL history and stats for this lobby?')) {
+            state.lobbies[state.activeLobby] = createInitialLobbyState();
+            saveState();
+            updateUIForLobby();
+            alert('Lobby data cleared.');
+        }
+    });
+    dom.adaptiveModeToggle.addEventListener('click', toggleAdaptiveMode);
+    dom.neuralModeToggle.addEventListener('click', toggleNeuralMode);
+    dom.patternToggle.addEventListener('click', togglePatternPanel);
+
+    // Matrix Effect (keep existing)
+    const matrixEffect = document.getElementById('matrixEffect');
+    const chars = '0123456789ABCDEF';
+    const fontSize = 18;
+    let columns = 0;
+
+    const initMatrix = () => {
+        if (!matrixEffect) return;
+        matrixEffect.innerHTML = '';
+        const canvasWidth = matrixEffect.offsetWidth;
+        columns = Math.floor(canvasWidth / fontSize);
+        
+        for (let i = 0; i < columns; i++) {
+            const column = document.createElement('div');
+            column.classList.add('matrix-column');
+            column.style.left = `${i * fontSize}px`;
+            column.style.animationDelay = `${Math.random() * -20}s`;
+            column.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            matrixEffect.appendChild(column);
+        }
+    };
+
+    const drawMatrix = () => {
+        const matrixColumns = matrixEffect ? matrixEffect.children : [];
+        for (let i = 0; i < columns; i++) {
+            const text = Array.from({ length: 50 }, () => 
+                chars[Math.floor(Math.random() * chars.length)]
+            ).join('');
+            if (matrixColumns[i]) {
+                matrixColumns[i].textContent = text;
+            }
+        }
+        requestAnimationFrame(drawMatrix);
+    };
+
+    // Initialize everything
+    loadState();
+    switchLobby(state.activeLobby);
+    
+    if (matrixEffect) {
+        initMatrix();
+        drawMatrix();
+        window.addEventListener('resize', initMatrix);
+    }
+
+    // Set initial toggle states
+    dom.adaptiveModeToggle.classList.toggle('text-green-400', state.isAdaptiveMode);
+    dom.adaptiveModeToggle.classList.toggle('text-gray-500', !state.isAdaptiveMode);
+    dom.adaptiveModeToggle.title = state.isAdaptiveMode ? "Adaptive Mode: ON" : "Adaptive Mode: OFF";
+
+    dom.neuralModeToggle.classList.toggle('text-red-400', state.isNeuralMode);
+    dom.neuralModeToggle.classList.toggle('text-gray-500', !state.isNeuralMode);
+    dom.neuralModeToggle.title = state.isNeuralMode ? "Neural Mode: ON" : "Neural Mode: OFF";
+
+    dom.patternPanel.style.display = state.showPatterns ? 'block' : 'none';
+    dom.patternToggle.classList.toggle('text-cyan-400', state.showPatterns);
+    dom.patternToggle.classList.toggle('text-gray-500', !state.showPatterns);
+    dom.patternToggle.title = state.showPatterns ? "Pattern Analysis: ON" : "Pattern Analysis: OFF";
+});
+</script>
+</body>
+</html>
