@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <title>CHIMERA OMEGA v20.0 :: Enhanced Color Prediction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e5ff;
+            --secondary: #9d00ff;
+            --success: #28a745;
+            --warning: #ffcc00;
+            --danger: #dc3545;
+            --dark: #0f172a;
+            --hot: #ff5555;
+            --green-color: #28a745;
+            --red-color: #dc3545;
+            --violet-color: #9d00ff;
+        }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: radial-gradient(circle at center, #0f172a, #000);
+            min-height: 100vh;
+        }
+        
+        .font-sans { font-family: 'Orbitron', sans-serif; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes glow { 0% { box-shadow: 0 0 5px var(--primary); } 50% { box-shadow: 0 0 20px var(--primary); } 100% { box-shadow: 0 0 5px var(--primary); } }
+        
+        .signal-segment { transition: all 0.4s ease; border-radius: 2px; }
+        .signal-segment.lit-green { background-color: var(--success); box-shadow: 0 0 10px var(--success); }
+        .signal-segment.lit-blue { background-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        .signal-segment.lit-yellow { background-color: var(--warning); box-shadow: 0 0 10px var(--warning); }
+        .signal-segment.lit-red { background-color: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        .signal-segment.lit-purple { background-color: var(--secondary); box-shadow: 0 0 10px var(--secondary); }
+        
+        .key-button {
+            transition: all 0.2s;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            box-shadow: 3px 3px 6px #0a0f1a, -3px -3px 6px #141f3a;
+            border: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        .key-button:hover { transform: scale(1.05); }
+        .key-button:active { transform: scale(0.95); box-shadow: inset 2px 2px 4px #0a0f1a, inset -2px -2px 4px #141f3a; }
+        
+        .predict-button {
+            transition: all 0.3s;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5), 0 0 15px rgba(157, 0, 255, 0.5);
+            letter-spacing: 1px;
+            font-weight: 700;
+            animation: glow 2s infinite;
+        }
+        .predict-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px var(--primary), 0 0 25px var(--secondary);
+            animation: none;
+        }
+        
+        .lobby-btn.active {
+            text-shadow: 0 0 10px var(--primary);
+            color: var(--primary);
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid var(--primary);
+        }
+        
+        .panel {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 229, 255, 0.1);
+        }
+        
+        .quantum-core {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(157, 0, 255, 0.1));
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: rgba(0, 229, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.8), transparent);
+            animation: scanning 2s linear infinite;
+        }
+        @keyframes scanning { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        
+        .color-tag {
+            border: 1px solid currentColor;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .color-tag.Green { color: var(--green-color); }
+        .color-tag.Red { color: var(--red-color); }
+        .color-tag.Violet { color: var(--violet-color); }
+        
+        .parity-tag {
+            border: 1px solid currentColor;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .parity-tag.Odd { color: #fde047; }
+        .parity-tag.Even { color: #60a5fa; }
+        
+        .strategy-tag {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            border: 1px solid currentColor;
+            background: rgba(0, 0, 0, 0.3);
+            text-shadow: 0 0 3px currentColor;
+        }
+        
+        .QUANTUM { color: #00e5ff; }
+        .ADAPTIVE { color: #a78bfa; }
+        .PATTERN { color: #f472b6; }
+        .FREQUENCY { color: #fbbf24; }
+        .TREND { color: #34d399; }
+        .COLD { color: #fdba74; }
+        
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        .pulse-anim { animation: pulse 1.5s infinite; }
+        
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .icon-btn {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-shadow: 0 0 5px currentColor;
+        }
+        .icon-btn:hover {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+        
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+        
+        .number-item {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        
+        .number-item.hot {
+            border-color: rgba(255, 85, 85, 0.5);
+            background: rgba(255, 85, 85, 0.1);
+        }
+        
+        .number-item.cold {
+            border-color: rgba(253, 186, 116, 0.5);
+            background: rgba(253, 186, 116, 0.1);
+        }
+        
+        .feedback-btn {
+            transition: all 0.2s;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 2px solid rgba(0, 229, 255, 0.3);
+        }
+        .feedback-btn:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+        
+        .feedback-btn.big { border-color: #f472b6; color: #f472b6; }
+        .feedback-btn.small { border-color: #60a5fa; color: #60a5fa; }
+    </style>
+</head>
+<body class="text-gray-100 flex flex-col items-center min-h-screen p-4 relative">
+    <div class="grid-bg"></div>
+    
+    <!-- Header -->
+    <div class="w-full max-w-4xl panel flex justify-between items-center p-4 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="text-left text-xs text-gray-400">
+                <div>B/S: <span id="winRateBS" class="text-cyan-400">0%</span> (W/L: <span id="winLossBS">0/0</span>)</div>
+                <div>O/E: <span id="winRateOE" class="text-cyan-400">0%</span> (W/L: <span id="winLossOE">0/0</span>)</div>
+                <div>Color: <span id="winRateColor" class="text-cyan-400">0%</span> (W/L: <span id="winLossColor">0/0</span>)</div>
+            </div>
+        </div>
+        <div class="font-sans text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500 tracking-tighter">
+            CHIMERA OMEGA <span class="text-xs text-pink-500">v20.0</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <i id="aiModeToggle" class="icon-btn fa-solid fa-brain text-lg text-green-400" title="AI Mode: ON"></i>
+            <i id="themeToggle" class="icon-btn fa-solid fa-moon text-lg" title="Toggle Theme"></i>
+            <i id="resetButton" class="icon-btn fa-solid fa-arrows-rotate text-lg" title="Reset System"></i>
+        </div>
+    </div>
+
+    <div class="w-full max-w-4xl flex flex-col lg:flex-row gap-6">
+        <!-- Left Panel -->
+        <div class="flex-1 flex flex-col gap-6">
+            <!-- Main Prediction Panel -->
+            <div class="panel p-6 flex flex-col gap-6">
+                <!-- Lobby Selection -->
+                <div class="flex justify-around bg-gray-900 p-1 rounded-lg mb-2">
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="30s">30s</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="1m">1m</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="3m">3m</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="5m">5m</button>
+                </div>
+                
+                <!-- Quantum Core -->
+                <div class="flex flex-col gap-4 quantum-core p-4 rounded-lg">
+                    <div class="progress-bar rounded-full mb-2"></div>
+                    <input id="periodInput" class="w-full bg-gray-900 border border-cyan-500/30 text-cyan-400 font-sans text-3xl text-center rounded-lg p-3 shadow-inner shadow-cyan-500/10 focus:outline-none focus:ring-1 focus:ring-cyan-500" type="text" maxlength="20" placeholder="Enter Period..." autocomplete="off">
+                    
+                    <!-- Keypad -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="1">1</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="2">2</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="3">3</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="4">4</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="5">5</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="6">6</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="7">7</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="8">8</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="9">9</button>
+                        <button class="key-button bg-rose-700 hover:bg-rose-600 border-rose-600 text-white font-sans text-xl rounded-lg p-4" data-key="C">C</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="0">0</button>
+                        <button class="key-button bg-amber-700 hover:bg-amber-600 border-amber-600 text-white font-sans text-xl rounded-lg p-4" data-key="B">←</button>
+                    </div>
+                    
+                    <button id="predictButton" class="predict-button text-white font-sans text-lg py-4 rounded-lg uppercase tracking-wider">
+                        <i class="fa-solid fa-bolt"></i> Quantum Predict
+                    </button>
+                </div>
+                
+                <!-- Result Container -->
+                <div id="resultContainer" class="min-h-[200px] flex justify-center items-center"></div>
+                
+                <!-- Confidence Signal Tower -->
+                <div class="mt-2 px-4">
+                    <div class="flex justify-between mb-1">
+                        <h5 class="text-sm text-gray-400 font-sans">QUANTUM CONFIDENCE</h5>
+                        <span id="confidenceValue" class="text-sm font-bold text-cyan-400">0%</span>
+                    </div>
+                    <div id="signalTower" class="flex flex-col gap-2 w-full mx-auto">
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hot/Cold Numbers -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="panel p-4">
+                    <h4 class="font-sans font-bold text-center mb-3 text-red-400">HOT NUMBERS</h4>
+                    <div class="number-grid" id="hotGrid"></div>
+                    <div class="text-xs text-gray-500 mt-2 text-center">Highest frequency</div>
+                </div>
+                <div class="panel p-4">
+                    <h4 class="font-sans font-bold text-center mb-3 text-amber-400">COLD NUMBERS</h4>
+                    <div class="number-grid" id="coldGrid"></div>
+                    <div class="text-xs text-gray-500 mt-2 text-center">Lowest frequency</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel -->
+        <div class="flex-1 flex flex-col gap-6">
+            <!-- AI Analysis -->
+            <div class="panel p-4">
+                <h4 class="font-sans font-bold text-center mb-3">AI ANALYSIS</h4>
+                <div id="aiAnalysis" class="text-sm text-gray-300 space-y-2">
+                    <div class="text-center text-gray-500">Waiting for prediction...</div>
+                </div>
+            </div>
+            
+            <!-- Strategy Performance -->
+            <div class="panel p-4">
+                <h4 class="font-sans font-bold text-center mb-3">STRATEGY PERFORMANCE</h4>
+                <div id="strategyStats" class="grid grid-cols-2 gap-3 text-xs"></div>
+            </div>
+            
+            <!-- Session History -->
+            <div class="panel p-4 flex-1">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-sans font-bold">SESSION HISTORY</h4>
+                    <button id="clearHistoryBtn" class="text-xs bg-gray-700 px-2 py-1 rounded hover:bg-gray-600">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+                <div id="historyLog" class="max-h-64 overflow-y-auto pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Color mappings
+            const COLORS = {
+                GREEN: 'Green',
+                RED: 'Red',
+                VIOLET: 'Violet'
+            };
+
+            const getColorFromNumber = (num) => {
+                if (num === 0 || num === 5) return COLORS.VIOLET;
+                if ([1, 3, 7, 9].includes(num)) return COLORS.GREEN;
+                if ([2, 4, 6, 8].includes(num)) return COLORS.RED;
+                return 'Unknown';
+            };
+
+            // DOM elements
+            const dom = {
+                periodInput: document.getElementById("periodInput"),
+                keypadButtons: document.querySelectorAll(".key-button"),
+                predictBtn: document.getElementById("predictButton"),
+                resultContainer: document.getElementById("resultContainer"),
+                themeToggle: document.getElementById("themeToggle"),
+                resetButton: document.getElementById("resetButton"),
+                winRateBS: document.getElementById("winRateBS"),
+                winLossBS: document.getElementById("winLossBS"),
+                winRateOE: document.getElementById("winRateOE"),
+                winLossOE: document.getElementById("winLossOE"),
+                winRateColor: document.getElementById("winRateColor"),
+                winLossColor: document.getElementById("winLossColor"),
+                confidenceValue: document.getElementById("confidenceValue"),
+                historyLog: document.getElementById("historyLog"),
+                signalTower: document.getElementById("signalTower"),
+                lobbyButtons: document.querySelectorAll('.lobby-btn'),
+                strategyStats: document.getElementById("strategyStats"),
+                coldGrid: document.getElementById('coldGrid'),
+                hotGrid: document.getElementById('hotGrid'),
+                aiModeToggle: document.getElementById("aiModeToggle"),
+                clearHistoryBtn: document.getElementById("clearHistoryBtn"),
+                aiAnalysis: document.getElementById("aiAnalysis"),
+                htmlEl: document.documentElement
+            };
+
+            // State management
+            const createInitialLobbyState = () => ({
+                history: [],
+                winsBS: 0, lossesBS: 0,
+                winsOE: 0, lossesOE: 0,
+                winsColor: 0, lossesColor: 0,
+                numberFrequency: Array(10).fill(0),
+                colorFrequency: { [COLORS.GREEN]: 0, [COLORS.RED]: 0, [COLORS.VIOLET]: 0 },
+                strategies: {
+                    QUANTUM: { wins: 0, losses: 0, weight: 8.0 },
+                    PATTERN: { wins: 0, losses: 0, weight: 7.5 },
+                    FREQUENCY: { wins: 0, losses: 0, weight: 6.0 },
+                    TREND: { wins: 0, losses: 0, weight: 7.0 },
+                    ADAPTIVE: { wins: 0, losses: 0, weight: 6.5 },
+                    COLD: { wins: 0, losses: 0, weight: 4.0 }
+                }
+            });
+
+            let state = {
+                isAIMode: true,
+                activeLobby: '30s',
+                lobbies: {
+                    '30s': createInitialLobbyState(),
+                    '1m': createInitialLobbyState(),
+                    '3m': createInitialLobbyState(),
+                    '5m': createInitialLobbyState()
+                }
+            };
+
+            let currentPrediction = null;
+
+            // Persistence
+            const saveState = () => {
+                try {
+                    localStorage.setItem("chimeraOmegaState_v20", JSON.stringify(state));
+                } catch(e) {
+                    console.error("Failed to save state:", e);
+                }
+            };
+
+            const loadState = () => {
+                try {
+                    const savedState = localStorage.getItem("chimeraOmegaState_v20");
+                    if (savedState) {
+                        const parsedState = JSON.parse(savedState);
+                        state = { ...state, ...parsedState };
+                    }
+                } catch (e) {
+                    console.error("Failed to load state:", e);
+                }
+            };
+
+            // Enhanced prediction algorithms
+            const predictBigSmall = (history) => {
+                const BIG = 'Big', SMALL = 'Small';
+                if (history.length < 3) {
+                    return { type: Math.random() > 0.5 ? BIG : SMALL, confidence: 35, strategy: "COLD" };
+                }
+
+                const recent = history.slice(-10).map(h => h.actualNum >= 5 ? BIG : SMALL);
+                const patterns = [
+                    { pattern: [BIG, BIG, BIG], predict: SMALL, confidence: 85 },
+                    { pattern: [SMALL, SMALL, SMALL], predict: BIG, confidence: 85 },
+                    { pattern: [BIG, SMALL, BIG], predict: SMALL, confidence: 75 },
+                    { pattern: [SMALL, BIG, SMALL], predict: BIG, confidence: 75 },
+                    { pattern: [BIG, BIG], predict: SMALL, confidence: 65 },
+                    { pattern: [SMALL, SMALL], predict: BIG, confidence: 65 }
+                ];
+
+                for (const p of patterns) {
+                    if (recent.length >= p.pattern.length) {
+                        const slice = recent.slice(-p.pattern.length);
+                        if (JSON.stringify(slice) === JSON.stringify(p.pattern)) {
+                            return { type: p.predict, confidence: p.confidence, strategy: "PATTERN" };
+                        }
+                    }
+                }
+
+                // Frequency analysis
+                const bigCount = recent.filter(r => r === BIG).length;
+                const smallCount = recent.filter(r => r === SMALL).length;
+                
+                if (bigCount > smallCount * 1.5) {
+                    return { type: SMALL, confidence: 70, strategy: "FREQUENCY" };
+                } else if (smallCount > bigCount * 1.5) {
+                    return { type: BIG, confidence: 70, strategy: "FREQUENCY" };
+                }
+
+                // Trend analysis
+                const last3 = recent.slice(-3);
+                const trend = last3[0] === last3[1] && last3[1] === last3[2];
+                if (trend) {
+                    const opposite = last3[0] === BIG ? SMALL : BIG;
+                    return { type: opposite, confidence: 80, strategy: "TREND" };
+                }
+
+                return { type: Math.random() > 0.5 ? BIG : SMALL, confidence: 50, strategy: "ADAPTIVE" };
+            };
+
+            const predictOddEven = (history) => {
+                const ODD = 'Odd', EVEN = 'Even';
+                if (history.length < 3) {
+                    return { parity: Math.random() > 0.5 ? ODD : EVEN, confidence: 35, strategy: "COLD" };
+                }
+
+                const recent = history.slice(-8).map(h => h.actualNum % 2 === 0 ? EVEN : ODD);
+                
+                // Pattern matching
+                const patterns = [
+                    { pattern: [ODD, ODD, ODD], predict: EVEN, confidence: 85 },
+                    { pattern: [EVEN, EVEN, EVEN], predict: ODD, confidence: 85 },
+                    { pattern: [ODD, EVEN, ODD], predict: EVEN, confidence: 75 },
+                    { pattern: [EVEN, ODD, EVEN], predict: ODD, confidence: 75 }
+                ];
+
+                for (const p of patterns) {
+                    if (recent.length >= p.pattern.length) {
+                        const slice = recent.slice(-p.pattern.length);
+                        if (JSON.stringify(slice) === JSON.stringify(p.pattern)) {
+                            return { parity: p.predict, confidence: p.confidence, strategy: "PATTERN" };
+                        }
+                    }
+                }
+
+                // Frequency bias
+                const oddCount = recent.filter(r => r === ODD).length;
+                const evenCount = recent.filter(r => r === EVEN).length;
+                
+                if (oddCount > evenCount * 1.4) {
+                    return { parity: EVEN, confidence: 70, strategy: "FREQUENCY" };
+                } else if (evenCount > oddCount * 1.4) {
+                    return { parity: ODD, confidence: 70, strategy: "FREQUENCY" };
+                }
+
+                return { parity: Math.random() > 0.5 ? ODD : EVEN, confidence: 50, strategy: "ADAPTIVE" };
+            };
+
+            const predictColor = (history, lobbyData) => {
+                if (history.length < 3) {
+                    return { color: COLORS.GREEN, confidence: 35, strategy: "COLD" };
+                }
+
+                const recent = history.slice(-8).map(h => getColorFromNumber(h.actualNum));
+                const { colorFrequency } = lobbyData;
+                
+                // Pattern analysis
+                const patterns = [
+                    { pattern: [COLORS.GREEN, COLORS.GREEN, COLORS.GREEN], predict: COLORS.RED, confidence: 85 },
+                    { pattern: [COLORS.RED, COLORS.RED, COLORS.RED], predict: COLORS.GREEN, confidence: 85 },
+                    { pattern: [COLORS.GREEN, COLORS.RED, COLORS.GREEN], predict: COLORS.RED, confidence: 75 },
+                    { pattern: [COLORS.RED, COLORS.GREEN, COLORS.RED], predict: COLORS.GREEN, confidence: 75 }
+                ];
+
+                for (const p of patterns) {
+                    if (recent.length >= p.pattern.length) {
+                        const slice = recent.slice(-p.pattern.length);
+                        if (JSON.stringify(slice) === JSON.stringify(p.pattern)) {
+                            return { color: p.predict, confidence: p.confidence, strategy: "PATTERN" };
+                        }
+                    }
+                }
+
+                // Frequency analysis
+                const totalColors = Object.values(colorFrequency).reduce((a, b) => a + b, 0);
+                if (totalColors > 0) {
+                    const greenPercent = (colorFrequency[COLORS.GREEN] / totalColors) * 100;
+                    const redPercent = (colorFrequency[COLORS.RED] / totalColors) * 100;
+                    const violetPercent = (colorFrequency[COLORS.VIOLET] / totalColors) * 100;
+
+                    if (greenPercent > 40) return { color: COLORS.RED, confidence: 70, strategy: "FREQUENCY" };
+                    if (redPercent > 40) return { color: COLORS.GREEN, confidence: 70, strategy: "FREQUENCY" };
+                    if (violetPercent > 25) return { color: COLORS.GREEN, confidence: 65, strategy: "FREQUENCY" };
+                }
+
+                // Quantum prediction (enhanced randomness with bias)
+                const weights = [
+                    { color: COLORS.GREEN, weight: 0.4 },
+                    { color: COLORS.RED, weight: 0.4 },
+                    { color: COLORS.VIOLET, weight: 0.2 }
+                ];
+
+                const random = Math.random();
+                let cumulative = 0;
+                for (const w of weights) {
+                    cumulative += w.weight;
+                    if (random <= cumulative) {
+                        return { color: w.color, confidence: 60, strategy: "QUANTUM" };
+                    }
+                }
+
+                return { color: COLORS.GREEN, confidence: 50, strategy: "ADAPTIVE" };
+            };
+
+            // UI Updates
+            const updateSignalTower = (confidence) => {
+                dom.confidenceValue.textContent = `${confidence}%`;
+                
+                let lightColorClass = 'lit-red';
+                let segmentsToLight = 0;
+
+                if (confidence >= 90) {
+                    lightColorClass = 'lit-green';
+                    segmentsToLight = 5;
+                } else if (confidence >= 80) {
+                    lightColorClass = 'lit-blue';
+                    segmentsToLight = 4;
+                } else if (confidence >= 65) {
+                    lightColorClass = 'lit-yellow';
+                    segmentsToLight = 3;
+                } else if (confidence >= 50) {
+                    lightColorClass = 'lit-yellow';
+                    segmentsToLight = 2;
+                } else {
+                    segmentsToLight = 1;
+                }
+
+                Array.from(dom.signalTower.children).forEach((segment, index) => {
+                    segment.className = 'signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50';
+                    if (index < segmentsToLight) {
+                        segment.classList.add(lightColorClass);
+                    }
+                });
+            };
+
+            const updateStats = () => {
+                const d = state.lobbies[state.activeLobby];
+                
+                const updateRate = (wins, losses, winRateEl, winLossEl) => {
+                    const total = wins + losses;
+                    const rate = total > 0 ? ((wins / total) * 100).toFixed(0) : 0;
+                    winRateEl.textContent = `${rate}%`;
+                    winLossEl.textContent = `${wins}/${losses}`;
+                };
+
+                updateRate(d.winsBS, d.lossesBS, dom.winRateBS, dom.winLossBS);
+                updateRate(d.winsOE, d.lossesOE, dom.winRateOE, dom.winLossOE);
+                updateRate(d.winsColor, d.lossesColor, dom.winRateColor, dom.winLossColor);
+            };
+
+            const updateHistory = () => {
+                const h = state.lobbies[state.activeLobby].history;
+                if (h.length === 0) {
+                    dom.historyLog.innerHTML = '<div class="text-center text-gray-500 py-4">No history yet</div>';
+                    return;
+                }
+
+                dom.historyLog.innerHTML = h.slice().reverse().slice(0, 20).map(item => {
+                    const actualType = item.actualNum >= 5 ? 'Big' : 'Small';
+                    const actualParity = item.actualNum % 2 !== 0 ? 'Odd' : 'Even';
+                    const actualColor = getColorFromNumber(item.actualNum);
+                    
+                    const bsIcon = item.outcomeBS === 'win' ? 'fa-check text-green-500' : 'fa-times text-red-500';
+                    const oeIcon = item.outcomeOE === 'win' ? 'fa-check text-green-500' : 'fa-times text-red-500';
+                    const colorIcon = item.outcomeColor === 'win' ? 'fa-check text-green-500' : 'fa-times text-red-500';
+
+                    return `
+                        <div class="flex justify-between items-center py-2 border-b border-gray-700/50 text-sm">
+                            <span class="text-gray-400">#${item.period.slice(-4)}</span>
+                            <span class="flex items-center gap-2">
+                                <span class="font-bold text-lg">${item.actualNum}</span>
+                                <span class="color-tag ${actualColor}">${actualColor[0]}</span>
+                                <i class="fa-solid ${bsIcon}" title="B/S"></i>
+                                <i class="fa-solid ${oeIcon}" title="O/E"></i>
+                                <i class="fa-solid ${colorIcon}" title="Color"></i>
+                            </span>
+                            <span class="strategy-tag ${item.strategy}">${item.strategy}</span>
+                        </div>
+                    `;
+                }).join('');
+            };
+
+            const updateNumberGrids = () => {
+                const d = state.lobbies[state.activeLobby];
+                const frequencies = [...d.numberFrequency];
+                const total = frequencies.reduce((a, b) => a + b, 0);
+
+                if (total === 0) {
+                    const emptyGrid = Array(10).fill(0).map((_, i) => `<div class="number-item">${i}<div class="text-xs text-gray-500">0%</div></div>`).join('');
+                    dom.hotGrid.innerHTML = emptyGrid;
+                    dom.coldGrid.innerHTML = emptyGrid;
+                    return;
+                }
+
+                const numbers = Array.from({length: 10}, (_, i) => ({ 
+                    num: i, 
+                    freq: frequencies[i], 
+                    percent: ((frequencies[i] / total) * 100).toFixed(1) 
+                }));
+
+                // Hot numbers (highest frequency)
+                const hotNumbers = [...numbers].sort((a, b) => b.freq - a.freq).slice(0, 5);
+                dom.hotGrid.innerHTML = hotNumbers.map(n => `
+                    <div class="number-item hot">
+                        ${n.num}
+                        <div class="text-xs text-red-400">${n.percent}%</div>
+                    </div>
+                `).join('');
+
+                // Cold numbers (lowest frequency)
+                const coldNumbers = [...numbers].sort((a, b) => a.freq - b.freq).slice(0, 5);
+                dom.coldGrid.innerHTML = coldNumbers.map(n => `
+                    <div class="number-item cold">
+                        ${n.num}
+                        <div class="text-xs text-amber-400">${n.percent}%</div>
+                    </div>
+                `).join('');
+            };
+
+            const updateStrategyStats = () => {
+                const strategies = state.lobbies[state.activeLobby].strategies;
+                dom.strategyStats.innerHTML = Object.entries(strategies).map(([name, data]) => {
+                    const total = data.wins + data.losses;
+                    const accuracy = total > 0 ? ((data.wins / total) * 100).toFixed(0) : 0;
+                    const color = accuracy >= 70 ? 'text-green-400' : accuracy >= 50 ? 'text-yellow-400' : 'text-red-400';
+                    
+                    return `
+                        <div class="bg-gray-900 p-2 rounded-lg border border-gray-700/50">
+                            <div class="flex justify-between items-center">
+                                <span class="strategy-tag ${name}">${name}</span>
+                                <span class="text-lg font-bold ${color}">${accuracy}%</span>
+                            </div>
+                            <div class="h-1.5 bg-gray-700 rounded-full my-2">
+                                <div class="h-full bg-gradient-to-r from-cyan-500 to-purple-500" style="width:${accuracy}%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 flex justify-between">
+                                <span>W/L: ${data.wins}/${data.losses}</span>
+                                <span>WT: ${data.weight.toFixed(1)}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            };
+
+            const updateAIAnalysis = (prediction) => {
+                if (!prediction) {
+                    dom.aiAnalysis.innerHTML = '<div class="text-center text-gray-500">Waiting for prediction...</div>';
+                    return;
+                }
+
+                const { bsPrediction, oePrediction, colorPrediction, finalNum } = prediction;
+                
+                dom.aiAnalysis.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="bg-gray-800 p-3 rounded-lg border-l-4 border-cyan-500">
+                            <div class="font-bold text-cyan-400 mb-1">Big/Small Analysis</div>
+                            <div class="text-sm">Strategy: <span class="strategy-tag ${bsPrediction.strategy}">${bsPrediction.strategy}</span></div>
+                            <div class="text-sm">Prediction: <span class="font-bold">${bsPrediction.type}</span> (${bsPrediction.confidence}%)</div>
+                        </div>
+                        <div class="bg-gray-800 p-3 rounded-lg border-l-4 border-yellow-500">
+                            <div class="font-bold text-yellow-400 mb-1">Odd/Even Analysis</div>
+                            <div class="text-sm">Strategy: <span class="strategy-tag ${oePrediction.strategy}">${oePrediction.strategy}</span></div>
+                            <div class="text-sm">Prediction: <span class="font-bold">${oePrediction.parity}</span> (${oePrediction.confidence}%)</div>
+                        </div>
+                        <div class="bg-gray-800 p-3 rounded-lg border-l-4 border-purple-500">
+                            <div class="font-bold text-purple-400 mb-1">Color Analysis</div>
+                            <div class="text-sm">Strategy: <span class="strategy-tag ${colorPrediction.strategy}">${colorPrediction.strategy}</span></div>
+                            <div class="text-sm">Prediction: <span class="color-tag ${colorPrediction.color}">${colorPrediction.color}</span> (${colorPrediction.confidence}%)</div>
+                        </div>
+                        <div class="bg-gray-800 p-3 rounded-lg border-l-4 border-green-500">
+                            <div class="font-bold text-green-400 mb-1">Final Prediction</div>
+                            <div class="text-center">
+                                <span class="text-4xl font-bold text-cyan-400">${finalNum}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const updateUI = () => {
+                updateStats();
+                updateHistory();
+                updateNumberGrids();
+                updateStrategyStats();
+                updateSignalTower(0);
+                updateAIAnalysis(null);
+            };
+
+            // Main prediction function
+            const handlePrediction = () => {
+                const period = dom.periodInput.value.trim();
+                const lobbyData = state.lobbies[state.activeLobby];
+
+                if (!period || period.length < 4) {
+                    alert('Please enter a valid Period ID (at least 4 characters).');
+                    return;
+                }
+
+                if (lobbyData.history.some(h => h.period === period)) {
+                    alert(`Period #${period} has already been processed.`);
+                    return;
+                }
+
+                dom.predictBtn.disabled = true;
+                dom.predictBtn.classList.add('opacity-50');
+                dom.resultContainer.innerHTML = '<div class="animate-pulse text-xl text-cyan-400 font-sans">Analyzing Quantum Patterns...</div>';
+
+                setTimeout(() => {
+                    const bsPrediction = predictBigSmall(lobbyData.history);
+                    const oePrediction = predictOddEven(lobbyData.history);
+                    const colorPrediction = predictColor(lobbyData.history, lobbyData);
+
+                    // Find numbers that match all predictions
+                    let validNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter(num => {
+                        const numType = num >= 5 ? 'Big' : 'Small';
+                        const numParity = num % 2 !== 0 ? 'Odd' : 'Even';
+                        const numColor = getColorFromNumber(num);
+                        
+                        return numType === bsPrediction.type && 
+                               numParity === oePrediction.parity && 
+                               numColor === colorPrediction.color;
+                    });
+
+                    let finalNum;
+                    if (validNumbers.length > 0) {
+                        // Choose the coldest number from valid options
+                        validNumbers.sort((a, b) => lobbyData.numberFrequency[a] - lobbyData.numberFrequency[b]);
+                        finalNum = validNumbers[0];
+                    } else {
+                        // Fallback to B/S and O/E match only
+                        const fallbackNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter(num => {
+                            const numType = num >= 5 ? 'Big' : 'Small';
+                            const numParity = num % 2 !== 0 ? 'Odd' : 'Even';
+                            return numType === bsPrediction.type && numParity === oePrediction.parity;
+                        });
+                        
+                        if (fallbackNumbers.length > 0) {
+                            fallbackNumbers.sort((a, b) => lobbyData.numberFrequency[a] - lobbyData.numberFrequency[b]);
+                            finalNum = fallbackNumbers[0];
+                        } else {
+                            finalNum = Math.floor(Math.random() * 10);
+                        }
+                    }
+
+                    const avgConfidence = Math.round((bsPrediction.confidence + oePrediction.confidence + colorPrediction.confidence) / 3);
+                    
+                    currentPrediction = {
+                        period,
+                        finalNum,
+                        bsPrediction,
+                        oePrediction,
+                        colorPrediction,
+                        avgConfidence
+                    };
+
+                    displayResult(currentPrediction);
+                    updateSignalTower(avgConfidence);
+                    updateAIAnalysis(currentPrediction);
+                }, 1500);
+            };
+
+            const displayResult = (prediction) => {
+                const { finalNum, bsPrediction, oePrediction, colorPrediction } = prediction;
+                const actualType = finalNum >= 5 ? 'Big' : 'Small';
+                const actualParity = finalNum % 2 !== 0 ? 'Odd' : 'Even';
+                const actualColor = getColorFromNumber(finalNum);
+
+                const feedbackButtons = Array.from({ length: 10 }, (_, i) => 
+                    `<button class="feedback-btn ${i >= 5 ? 'big' : 'small'} text-xl font-bold p-3 rounded-lg" data-num="${i}">${i}</button>`
+                ).join('');
+
+                dom.resultContainer.innerHTML = `
+                    <div class="w-full bg-gray-900 border border-cyan-500/30 rounded-xl p-4 fade-in">
+                        <h4 class="font-sans text-lg font-bold text-center mb-4 text-cyan-400">
+                            <i class="fas fa-brain"></i> AI PREDICTION
+                        </h4>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="bg-gray-800 p-3 rounded-lg text-center">
+                                <div class="text-xs text-gray-400 mb-1">PREDICTED NUMBER</div>
+                                <div class="text-5xl font-bold text-cyan-400">${finalNum}</div>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded-lg">
+                                <div class="text-xs text-gray-400 mb-2">PREDICTIONS</div>
+                                <div class="space-y-1">
+                                    <div class="text-sm">${actualType} <span class="text-gray-500">(${bsPrediction.confidence}%)</span></div>
+                                    <div class="text-sm">${actualParity} <span class="text-gray-500">(${oePrediction.confidence}%)</span></div>
+                                    <div class="text-sm color-tag ${actualColor}">${actualColor} <span class="text-gray-500">(${colorPrediction.confidence}%)</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <p class="text-center text-sm text-gray-400 mb-2">What was the actual result?</p>
+                            <div class="grid grid-cols-5 gap-2">${feedbackButtons}</div>
+                        </div>
+                    </div>
+                `;
+
+                dom.predictBtn.disabled = false;
+                dom.predictBtn.classList.remove('opacity-50');
+
+                document.querySelectorAll('.feedback-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => handleFeedback(parseInt(e.target.dataset.num)));
+                });
+            };
+
+            const handleFeedback = (actualNum) => {
+                if (!currentPrediction) return;
+
+                const { period, bsPrediction, oePrediction, colorPrediction } = currentPrediction;
+                const lobbyData = state.lobbies[state.activeLobby];
+
+                const actualType = actualNum >= 5 ? 'Big' : 'Small';
+                const actualParity = actualNum % 2 !== 0 ? 'Odd' : 'Even';
+                const actualColor = getColorFromNumber(actualNum);
+
+                const outcomeBS = bsPrediction.type === actualType ? 'win' : 'loss';
+                const outcomeOE = oePrediction.parity === actualParity ? 'win' : 'loss';
+                const outcomeColor = colorPrediction.color === actualColor ? 'win' : 'loss';
+
+                // Update stats
+                if (outcomeBS === 'win') lobbyData.winsBS++; else lobbyData.lossesBS++;
+                if (outcomeOE === 'win') lobbyData.winsOE++; else lobbyData.lossesOE++;
+                if (outcomeColor === 'win') lobbyData.winsColor++; else lobbyData.lossesColor++;
+
+                // Update frequencies
+                lobbyData.numberFrequency[actualNum]++;
+                lobbyData.colorFrequency[actualColor]++;
+
+                // Update strategy performance
+                if (state.isAIMode) {
+                    const strategies = lobbyData.strategies;
+                    
+                    // Update B/S strategy
+                    if (outcomeBS === 'win') {
+                        strategies[bsPrediction.strategy].wins++;
+                        strategies[bsPrediction.strategy].weight = Math.min(10, strategies[bsPrediction.strategy].weight + 0.3);
+                    } else {
+                        strategies[bsPrediction.strategy].losses++;
+                        strategies[bsPrediction.strategy].weight = Math.max(1, strategies[bsPrediction.strategy].weight - 0.2);
+                    }
+                    
+                    // Update O/E strategy
+                    if (outcomeOE === 'win') {
+                        strategies[oePrediction.strategy].wins++;
+                        strategies[oePrediction.strategy].weight = Math.min(10, strategies[oePrediction.strategy].weight + 0.3);
+                    } else {
+                        strategies[oePrediction.strategy].losses++;
+                        strategies[oePrediction.strategy].weight = Math.max(1, strategies[oePrediction.strategy].weight - 0.2);
+                    }
+                    
+                    // Update Color strategy
+                    if (outcomeColor === 'win') {
+                        strategies[colorPrediction.strategy].wins++;
+                        strategies[colorPrediction.strategy].weight = Math.min(10, strategies[colorPrediction.strategy].weight + 0.3);
+                    } else {
+                        strategies[colorPrediction.strategy].losses++;
+                        strategies[colorPrediction.strategy].weight = Math.max(1, strategies[colorPrediction.strategy].weight - 0.2);
+                    }
+                }
+
+                // Add to history
+                lobbyData.history.push({
+                    period,
+                    actualNum,
+                    outcomeBS,
+                    outcomeOE,
+                    outcomeColor,
+                    strategy: bsPrediction.strategy
+                });
+
+                // Reset UI
+                dom.resultContainer.innerHTML = '';
+                dom.periodInput.value = '';
+                currentPrediction = null;
+                
+                updateUI();
+                saveState();
+            };
+
+            // Event listeners
+            dom.keypadButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    if (key === 'C') {
+                        dom.periodInput.value = '';
+                    } else if (key === 'B') {
+                        dom.periodInput.value = dom.periodInput.value.slice(0, -1);
+                    } else {
+                        dom.periodInput.value += key;
+                    }
+                });
+            });
+
+            dom.predictBtn.addEventListener('click', handlePrediction);
+
+            dom.lobbyButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.activeLobby = btn.dataset.lobby;
+                    dom.lobbyButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    updateUI();
+                    saveState();
+                });
+            });
+
+            dom.themeToggle.addEventListener('click', () => {
+                const currentTheme = dom.htmlEl.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                dom.htmlEl.setAttribute('data-theme', newTheme);
+                dom.themeToggle.className = `icon-btn fa-solid fa-${newTheme === 'dark' ? 'moon' : 'sun'} text-lg`;
+            });
+
+            dom.resetButton.addEventListener('click', () => {
+                if (confirm('Reset all data for current lobby?')) {
+                    state.lobbies[state.activeLobby] = createInitialLobbyState();
+                    updateUI();
+                    saveState();
+                }
+            });
+
+            dom.clearHistoryBtn.addEventListener('click', () => {
+                if (confirm('Clear session history?')) {
+                    state.lobbies[state.activeLobby].history = [];
+                    updateUI();
+                    saveState();
+                }
+            });
+
+            dom.aiModeToggle.addEventListener('click', () => {
+                state.isAIMode = !state.isAIMode;
+                dom.aiModeToggle.classList.toggle('text-green-400', state.isAIMode);
+                dom.aiModeToggle.classList.toggle('text-gray-500', !state.isAIMode);
+                dom.aiModeToggle.title = `AI Mode: ${state.isAIMode ? 'ON' : 'OFF'}`;
+                saveState();
+            });
+
+            // Initialize
+            loadState();
+            dom.lobbyButtons[0].classList.add('active');
+            updateUI();
+        });
+    </script>
+</body>
+</html>
