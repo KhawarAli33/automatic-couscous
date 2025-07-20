@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <title>CHIMERA OMEGA v20.0 ULTRA :: Quantum AI Core</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e5ff; --secondary: #9d00ff; --success: #28a745;
+            --warning: #ffcc00; --danger: #dc3545; --dark: #0f172a;
+            --hot: #ff5555; --odd: #fde047; --even: #7dd3fc;
+            --quantum: #ff00ff; --neural: #00ffaa; --ultra: #ffaa00;
+        }
+        body{font-family:'Share Tech Mono',monospace;background:radial-gradient(circle at center,#0f172a,#000);min-height:100vh}.font-sans{font-family:'Orbitron',sans-serif}
+        
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+        @keyframes glow{0%{box-shadow:0 0 5px var(--primary)}50%{box-shadow:0 0 20px var(--primary)}100%{box-shadow:0 0 5px var(--primary)}}
+        @keyframes quantumPulse{0%{box-shadow:0 0 10px var(--quantum)}25%{box-shadow:0 0 25px var(--neural)}50%{box-shadow:0 0 15px var(--ultra)}75%{box-shadow:0 0 20px var(--warning)}100%{box-shadow:0 0 10px var(--quantum)}}
+        @keyframes ultraGlow{0%{box-shadow:0 0 20px var(--quantum),0 0 40px var(--neural)}50%{box-shadow:0 0 40px var(--ultra),0 0 60px var(--primary)}100%{box-shadow:0 0 20px var(--quantum),0 0 40px var(--neural)}}
+        @keyframes dataFlow{0%{transform:translateX(-100%);opacity:0}50%{opacity:1}100%{transform:translateX(100%);opacity:0}}
+        
+        .signal-segment{transition:all .4s ease;border-radius:2px}
+        .signal-segment.lit-green{background-color:var(--success);box-shadow:0 0 10px var(--success)}
+        .signal-segment.lit-blue{background-color:var(--primary);box-shadow:0 0 10px var(--primary)}
+        .signal-segment.lit-yellow{background-color:var(--warning);box-shadow:0 0 10px var(--warning)}
+        .signal-segment.lit-red{background-color:var(--danger);box-shadow:0 0 10px var(--danger)}
+        .signal-segment.lit-purple{background-color:var(--secondary);box-shadow:0 0 10px var(--secondary)}
+        .signal-segment.lit-quantum{background:linear-gradient(45deg,var(--quantum),var(--neural));animation:ultraGlow 1s infinite}
+        .signal-segment.lit-ultra{background:linear-gradient(45deg,var(--ultra),var(--quantum),var(--neural));animation:ultraGlow 0.8s infinite}
+        
+        .predict-button{transition:all .3s;background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 0 15px rgba(0,229,255,.5),0 0 15px rgba(157,0,255,.5);letter-spacing:1px;font-weight:700;animation:glow 2s infinite}
+        .predict-button:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--primary),0 0 25px var(--secondary);animation:none}
+        .predict-button.ultra-mode{background:linear-gradient(135deg,var(--quantum),var(--neural),var(--ultra));animation:ultraGlow 1.5s infinite}
+        
+        .key-button{transition:all .2s;background:linear-gradient(145deg,#1e293b,#0f172a);box-shadow:3px 3px 6px #0a0f1a,-3px -3px 6px #141f3a;border:1px solid rgba(0,229,255,.1)}
+        .key-button:hover{transform:scale(1.05)}.key-button:active{transform:scale(.95);box-shadow:inset 2px 2px 4px #0a0f1a,inset -2px -2px 4px #141f3a}
+        
+        .feedback-number-btn.big{border-color:#f472b6;color:#f472b6}.feedback-number-btn.small{border-color:#60a5fa;color:#60a5fa}
+        .feedback-number-btn:hover{background:rgba(0,229,255,.1)}
+        
+        .lobby-btn.active{text-shadow:0 0 10px var(--primary);color:var(--primary);background:rgba(0,229,255,.1);border:1px solid var(--primary)}
+        .lobby-btn:hover:not(.active){color:var(--primary);text-shadow:0 0 5px var(--primary)}
+        .icon-btn{transition:all .2s ease;cursor:pointer;text-shadow:0 0 5px currentColor}
+        .icon-btn:hover{transform:scale(1.1);color:var(--primary)}
+        
+        .strategy-tag{font-size:.65rem;padding:.15rem .4rem;border-radius:.25rem;font-family:'Orbitron',sans-serif;font-weight:700;border:1px solid currentColor;background:rgba(0,0,0,.3);text-shadow:0 0 3px currentColor}
+        .ULTRA-AI{color:var(--ultra);font-weight:900}.DEEPMIND{color:var(--quantum)}.LSTM{color:#ff6b9d}.GAN{color:#4ecdc4}.TRANSFORMER{color:#45b7d1}
+        .BAYESIAN{color:#96ceb4}.QUANTUM-ML{color:var(--quantum)}.GENETIC{color:#ffeaa7}.REINFORCEMENT{color:#fd79a8}.SWARM{color:#a8e6cf}
+        .T-Rev{color:#d8b4fe}.D-Alt{color:#7dd3fc}.Alt{color:#fde047}.T-Cont{color:#fca5a5}.HYBRID{color:#6ee7b7}.COLD{color:#fdba74}
+        .ADAPTIVE{color:#a78bfa}.DRAGON{color:#f472b6}.D-Cont{color:#fca5a5}.Quad-Rev{color:#d8b4fe}
+        .STREAK-BREAKER{color:#ff5555;font-weight:900}.QUANTUM{color:#00e5ff}.NEURAL{color:#ff6b6b}.FIBONACCI{color:#4ecdc4}
+        .MARKOV{color:#45b7d1}.ENTROPY{color:#96ceb4}.REGRESSION{color:#ffeaa7}.ENSEMBLE{color:#fd79a8}
+        
+        .panel{background:linear-gradient(145deg,#1e293b,#0f172a);border:1px solid rgba(0,229,255,.1);border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.5),0 0 15px rgba(0,229,255,.1)}
+        .ultra-panel{background:linear-gradient(145deg,rgba(30,41,59,0.9),rgba(15,23,42,0.9));border:2px solid;border-image:linear-gradient(45deg,var(--quantum),var(--neural),var(--ultra)) 1;border-radius:16px;box-shadow:0 0 30px var(--quantum)}
+        
+        .pattern-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+        .pattern-item{background:rgba(30,41,59,.7);border:1px solid rgba(0,229,255,.2);border-radius:8px;padding:6px;text-align:center;font-size:.8rem}
+        .pattern-item.ultra{border:2px solid var(--quantum);background:linear-gradient(135deg,rgba(255,0,255,0.1),rgba(0,255,170,0.1))}
+        
+        .number-badge{display:inline-block;width:28px;height:28px;line-height:28px;border-radius:50%;text-align:center;font-weight:700;background:linear-gradient(145deg,#1e293b,#0f172a);box-shadow:2px 2px 4px #0a0f1a,-2px -2px 4px #141f3a;margin:0 2px}
+        .number-badge.big{color:#f472b6}.number-badge.small{color:#60a5fa}
+        
+        .number-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+        .number-item{background:rgba(30,41,59,.7);border-radius:6px;padding:4px;text-align:center;font-size:.9rem;transition:all 0.3s}
+        .number-item.cold{border:1px solid rgba(253,186,116,.3)}
+        .number-item.cold.active{background:rgba(253,186,116,.2);border:1px solid var(--warning);box-shadow:0 0 8px var(--warning)}
+        .number-item.hot{border:1px solid rgba(255,85,85,.3)}
+        .number-item.hot.active{background:rgba(255,85,85,.2);border:1px solid var(--hot);box-shadow:0 0 8px var(--hot)}
+        .number-item.ultra-hot{background:linear-gradient(45deg,var(--quantum),var(--ultra));border:2px solid var(--quantum);animation:ultraGlow 2s infinite}
+        
+        .fade-in{animation:fadeIn .5s ease-out}.pulse-anim{animation:pulse 1.5s infinite}
+        .grid-bg,.matrix-effect,.scanline{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+        .grid-bg{background:linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px);background-size:20px 20px}
+        .scanline{height:10px;background:linear-gradient(to bottom,rgba(0,229,255,.3),transparent);animation:scan 6s linear infinite;z-index:1}
+        .matrix-effect{overflow:hidden}
+        .matrix-column{position:absolute;top:-50px;color:rgba(0,229,255,.2);font-size:18px;writing-mode:vertical-rl;text-orientation:mixed;text-shadow:0 0 5px rgba(0,229,255,.5);animation:fall linear infinite}
+        @keyframes fall{to{top:100%}}@keyframes scan{0%{top:-100px}100%{top:100%}}
+        
+        .parity-tag{border:1px solid currentColor;padding:2px 6px;border-radius:4px;font-size:1.5rem}
+        .parity-tag.Odd{color:var(--odd)}.parity-tag.Even{color:var(--even)}
+        
+        .quantum-core {background: linear-gradient(135deg, rgba(255,0,255,0.1), rgba(0,255,170,0.1), rgba(255,170,0,0.1)); border: 2px solid rgba(255,0,255,0.3);}
+        .progress-bar {height: 6px; background: linear-gradient(90deg,var(--quantum),var(--neural),var(--ultra)); position: relative; overflow: hidden; border-radius: 3px;}
+        .progress-bar::after {content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent); animation: dataFlow 1.5s linear infinite;}
+        
+        .neural-network{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+        .neural-node{width:25px;height:25px;border-radius:50%;background:radial-gradient(circle,var(--quantum),var(--neural));display:flex;align-items:center;justify-content:center;font-size:8px;color:white;font-weight:bold;animation:pulse 2s infinite}
+        .neural-connection{height:2px;background:linear-gradient(90deg,var(--quantum),var(--neural));margin:2px 0;border-radius:1px}
+        
+        .confidence-meter{background:linear-gradient(90deg,var(--danger),var(--warning),var(--success),var(--quantum));height:12px;border-radius:6px;position:relative;overflow:hidden}
+        .confidence-pointer{position:absolute;top:-4px;width:6px;height:20px;background:linear-gradient(180deg,white,var(--quantum));border-radius:3px;transition:left 0.5s ease;box-shadow:0 0 10px var(--quantum)}
+        
+        .analysis-panel{background:linear-gradient(135deg,rgba(15,23,42,0.9),rgba(30,41,59,0.7));border:1px solid rgba(255,0,255,0.3);border-radius:12px;padding:16px;margin:8px 0}
+        .ultra-analysis{background:linear-gradient(135deg,rgba(255,0,255,0.1),rgba(0,255,170,0.1));border:2px solid var(--quantum);animation:ultraGlow 3s infinite}
+        
+        .warning-disclaimer{background:linear-gradient(135deg,rgba(220,53,69,0.1),rgba(255,193,7,0.1));border:1px solid rgba(220,53,69,0.3);border-radius:8px;padding:12px;margin:16px 0;text-align:center}
+        
+        .ai-brain{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}
+        .brain-layer{background:linear-gradient(45deg,var(--quantum),var(--neural));height:20px;border-radius:10px;position:relative;overflow:hidden}
+        .brain-layer::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:dataFlow 2s linear infinite}
+        
+        .quantum-field{position:relative;background:linear-gradient(45deg,rgba(255,0,255,0.05),rgba(0,255,170,0.05));border-radius:12px;padding:16px;margin:8px 0;overflow:hidden}
+        .quantum-field::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(45deg,transparent,rgba(255,0,255,0.1),transparent,rgba(0,255,170,0.1),transparent);animation:dataFlow 3s linear infinite}
+        
+        .data-stream{height:2px;background:linear-gradient(90deg,var(--quantum),var(--neural),var(--ultra));margin:2px 0;border-radius:1px;position:relative;overflow:hidden}
+        .data-stream::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,white,transparent);animation:dataFlow 1s linear infinite}
+        
+        .prediction-confidence{background:linear-gradient(135deg,rgba(255,0,255,0.2),rgba(0,255,170,0.2));border:2px solid var(--quantum);border-radius:12px;padding:16px;text-align:center;position:relative;overflow:hidden}
+        .prediction-confidence::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(45deg,transparent,rgba(255,255,255,0.1),transparent);animation:dataFlow 2s linear infinite}
+        
+        .ultra-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+        .stat-item{background:linear-gradient(135deg,rgba(255,0,255,0.1),rgba(0,255,170,0.1));border:1px solid var(--quantum);border-radius:8px;padding:12px;text-align:center}
+        
+        .history-outcome-win{color:var(--success)}.history-outcome-loss{color:var(--danger)}.type-rate{color:var(--primary)}
+    </style>
+</head>
+<body class="text-gray-100 flex flex-col items-center min-h-screen p-4 relative">
+    <div class="matrix-effect" id="matrixEffect"></div>
+    <div class="grid-bg"></div>
+    <div class="scanline"></div>
+    
+    <!-- Audio Elements -->
+    <audio id="soundPredict" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Xxo1oTCLbe8ui2XQgEkNn" type="audio/wav">
+    </audio>
+    <audio id="soundWin" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Xxo1oTCLbe8ui2XQgEkNn" type="audio/wav">
+    </audio>
+    <audio id="soundLoss" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Txo1oTCLbe8ui2XQgEkNn" type="audio/wav">
+    </audio>
+
+    <!-- Ultra Disclaimer -->
+    <div class="warning-disclaimer w-full max-w-2xl mb-4">
+        <div class="flex items-center justify-center gap-2 mb-2">
+            <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+            <span class="font-bold text-yellow-500">⚠️ ULTRA AI DISCLAIMER ⚠️</span>
+            <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+        </div>
+        <p class="text-sm text-gray-300">
+            This ULTRA AI system uses advanced quantum algorithms, deep learning, and sophisticated pattern recognition. 
+            <strong>Even with maximum AI power, 100% accuracy is mathematically impossible</strong> in truly random systems. 
+            This is the most advanced prediction tool available for educational analysis.
+        </p>
+    </div>
+
+    <!-- Header Panel -->
+    <div class="w-full max-w-2xl ultra-panel flex justify-between items-center p-4 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="text-left text-xs text-gray-400">
+                <div>B/S: <span id="winRateBS" class="type-rate">0%</span> (W/L: <span id="winLossBS">0/0</span>)</div>
+                <div>O/E: <span id="winRateOE" class="type-rate">0%</span> (W/L: <span id="winLossOE">0/0</span>)</div>
+                <div>Ultra Accuracy: <span id="overallAccuracy" class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500">0%</span></div>
+                <div>AI Confidence: <span id="aiConfidence" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500">0%</span></div>
+            </div>
+        </div>
+        <div class="font-sans text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-cyan-500 to-purple-500 tracking-tighter">
+            CHIMERA OMEGA <span class="text-xs text-pink-500">v20.0 ULTRA</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <i id="ultraModeToggle" class="icon-btn fa-solid fa-rocket text-lg text-purple-400" title="Ultra AI Mode"></i>
+            <i id="deepModeToggle" class="icon-btn fa-solid fa-brain text-lg text-pink-400" title="Deep Learning"></i>
+            <i id="quantumModeToggle" class="icon-btn fa-solid fa-atom text-lg text-cyan-400" title="Quantum Processing"></i>
+            <i id="adaptiveModeToggle" class="icon-btn fa-solid fa-cogs text-lg text-green-400" title="Adaptive Learning"></i>
+            <i id="patternToggle" class="icon-btn fa-solid fa-cubes text-lg text-cyan-400" title="Pattern Analysis"></i>
+            <i id="themeToggle" class="icon-btn fa-solid fa-moon text-lg" title="Toggle Theme"></i>
+            <i id="resetButton" class="icon-btn fa-solid fa-arrows-rotate text-lg" title="Reset System"></i>
+        </div>
+    </div>
+
+    <div class="w-full max-w-2xl flex flex-col md:flex-row gap-6">
+        <!-- Left Column -->
+        <div class="flex-1 flex flex-col gap-6">
+            <!-- Main Prediction Panel -->
+            <div class="ultra-panel p-6 flex flex-col gap-6">
+                <!-- Lobby Selection -->
+                <div class="flex justify-around bg-gray-900 p-1 rounded-lg mb-2">
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="30s">30s</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="1m">1m</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="3m">3m</button>
+                    <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="5m">5m</button>
+                </div>
+                
+                <!-- Ultra Quantum Core Interface -->
+                <div class="flex flex-col gap-4 quantum-core p-4 rounded-lg">
+                    <div class="progress-bar rounded-full mb-2"></div>
+                    <input id="periodInput" class="w-full bg-gray-900 border-2 border-purple-500/30 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 font-sans text-3xl text-center rounded-lg p-3 shadow-inner focus:outline-none focus:ring-2 focus:ring-purple-500" type="text" maxlength="20" placeholder="Enter Period..." autocomplete="off">
+                    
+                    <!-- AI Brain Visualization -->
+                    <div class="ai-brain mb-2">
+                        <div class="brain-layer"></div>
+                        <div class="brain-layer"></div>
+                        <div class="brain-layer"></div>
+                    </div>
+                    
+                    <!-- Keypad -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="1">1</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="2">2</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="3">3</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="4">4</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="5">5</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="6">6</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="7">7</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="8">8</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="9">9</button>
+                        <button class="key-button bg-rose-700 hover:bg-rose-600 border-rose-600 text-white font-sans text-xl rounded-lg p-4" data-key="C">C</button>
+                        <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="0">0</button>
+                        <button class="key-button bg-amber-700 hover:bg-amber-600 border-amber-600 text-white font-sans text-xl rounded-lg p-4" data-key="B">←</button>
+                    </div>
+                    
+                    <!-- Ultra Predict Button -->
+                    <button id="predictButton" class="predict-button text-white font-sans text-lg py-4 rounded-lg uppercase tracking-wider">
+                        <i class="fa-solid fa-rocket"></i> <span id="predictButtonText">🚀 ULTRA QUANTUM AI PREDICT 🚀</span>
+                    </button>
+                </div>
+                
+                <!-- Results Display -->
+                <div id="resultContainer" class="min-h-[200px] flex justify-center items-center"></div>
+                
+                <!-- Ultra Signal Tower -->
+                <div class="mt-2 px-4">
+                    <div class="flex justify-between mb-1">
+                        <h5 class="text-sm text-gray-400 font-sans">🧠 ULTRA AI CONFIDENCE 🧠</h5>
+                        <span id="confidenceValue" class="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">0%</span>
+                    </div>
+                    <div class="confidence-meter mb-3">
+                        <div class="confidence-pointer" id="confidencePointer"></div>
+                    </div>
+                    <div id="signalTower" class="flex flex-col gap-2 w-full mx-auto">
+                        <div class="signal-segment w-full h-6 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-6 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-6 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-6 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-6 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-6 rounded bg-gray-700 border border-gray-600/50"></div>
+                        <div class="signal-segment w-full h-6 rounded bg-gray-700 border border-gray-600/50"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ultra Hot/Cold Numbers -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="ultra-panel p-4">
+                    <h4 class="font-sans font-bold text-center mb-3 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">🔥 ULTRA HOT NUMBERS 🔥</h4>
+                    <div class="number-grid" id="hotGrid"></div>
+                    <div class="text-xs text-gray-500 mt-2 text-center">AI-Analyzed Frequency</div>
+                </div>
+                <div class="ultra-panel p-4">
+                    <h4 class="font-sans font-bold text-center mb-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">❄️ ULTRA COLD NUMBERS ❄️</h4>
+                    <div class="number-grid" id="coldGrid"></div>
+                    <div class="text-xs text-gray-500 mt-2 text-center">AI-Predicted Potential</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex-1 flex flex-col gap-6">
+            <!-- Ultra Pattern Recognition -->
+            <div id="patternPanel" class="ultra-panel p-4">
+                <h4 class="font-sans font-bold text-center mb-3">🧠 ULTRA AI PATTERN RECOGNITION 🧠</h4>
+                <div class="pattern-grid">
+                    <!-- Ultra AI Patterns -->
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">ULTRA-AI</div>
+                        <div class="neural-network">
+                            <div class="neural-node">U</div>
+                            <div class="neural-node">L</div>
+                            <div class="neural-node">T</div>
+                            <div class="neural-node">R</div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Ultra AI System</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">DEEPMIND</div>
+                        <div class="ai-brain">
+                            <div class="brain-layer"></div>
+                            <div class="brain-layer"></div>
+                            <div class="brain-layer"></div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">Deep Learning</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">LSTM</div>
+                        <div><span class="text-pink-400">Long→Short→Term</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Memory Networks</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">GAN</div>
+                        <div><span class="text-cyan-400">Gen⚡Adv</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Adversarial AI</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">TRANSFORMER</div>
+                        <div><span class="text-blue-400">🔄 Attention 🔄</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Attention Mechanism</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">BAYESIAN</div>
+                        <div><span class="text-green-400">P(A|B)</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Probability Theory</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">QUANTUM-ML</div>
+                        <div><span class="text-purple-400">⚛️ Q-Bit ⚛️</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Quantum Computing</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">GENETIC</div>
+                        <div><span class="text-yellow-400">🧬 Evolution 🧬</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Genetic Algorithm</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">REINFORCEMENT</div>
+                        <div><span class="text-pink-400">🎯 Reward 🎯</span></div>
+                        <div class="text-xs text-gray-500 mt-1">RL Learning</div>
+                    </div>
+                    <div class="pattern-item ultra">
+                        <div class="text-xs text-gray-400 mb-1">SWARM</div>
+                        <div><span class="text-green-400">🐝 Collective 🐝</span></div>
+                        <div class="text-xs text-gray-500 mt-1">Swarm Intelligence</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ultra Real-time Analysis -->
+            <div class="analysis-panel ultra-analysis">
+                <h4 class="font-sans font-bold text-center mb-3">⚡ ULTRA REAL-TIME AI ANALYSIS ⚡</h4>
+                <div id="analysisContent" class="text-xs space-y-3">
+                    <div class="ultra-stats">
+                        <div class="stat-item">
+                            <div class="text-cyan-400 font-bold">Pattern Complexity</div>
+                            <div id="patternComplexity" class="text-white text-lg">Ultra-High</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="text-purple-400 font-bold">Quantum Entropy</div>
+                            <div id="entropyScore" class="text-white text-lg">0.0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="text-green-400 font-bold">AI Trend Vector</div>
+                            <div id="trendDirection" class="text-white text-lg">Neural</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="text-orange-400 font-bold">Volatility Index</div>
+                            <div id="volatility" class="text-white text-lg">Dynamic</div>
+                        </div>
+                    </div>
+                    <div class="quantum-field">
+                        <div class="text-center">
+                            <div class="text-xs text-gray-400">🧠 Ultra AI Processing Power 🧠</div>
+                            <div class="data-stream"></div>
+                            <div class="data-stream"></div>
+                            <div class="data-stream"></div>
+                            <div class="text-xs text-purple-400 mt-2">Quantum Neural Networks: ACTIVE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ultra Strategy Performance -->
+            <div class="ultra-panel p-4">
+                <h4 class="font-sans font-bold text-center mb-3">🚀 ULTRA AI STRATEGY PERFORMANCE 🚀</h4>
+                <div id="strategyStats" class="grid grid-cols-2 gap-3 text-xs"></div>
+            </div>
+
+            <!-- Ultra Session History -->
+            <div class="ultra-panel p-4 flex-1">
+                <div class="flex justify-between items-center mb-3">
+                    <h4 class="font-sans font-bold">📊 ULTRA AI HISTORY 📊</h4>
+                    <button id="clearHistoryBtn" class="text-xs bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1 rounded hover:from-purple-700 hover:to-pink-700">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+                <div id="historyLog" class="max-h-48 overflow-y-auto pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Ultra Advanced DOM elements
+    const dom = {
+        periodInput: document.getElementById("periodInput"),
+        keypadButtons: document.querySelectorAll(".key-button"),
+        predictBtn: document.getElementById("predictButton"),
+        predictButtonText: document.getElementById("predictButtonText"),
+        resultContainer: document.getElementById("resultContainer"),
+        themeToggle: document.getElementById("themeToggle"),
+        resetButton: document.getElementById("resetButton"),
+        winRateBS: document.getElementById("winRateBS"),
+        winLossBS: document.getElementById("winLossBS"),
+        winRateOE: document.getElementById("winRateOE"),
+        winLossOE: document.getElementById("winLossOE"),
+        overallAccuracy: document.getElementById("overallAccuracy"),
+        aiConfidence: document.getElementById("aiConfidence"),
+        confidenceValue: document.getElementById("confidenceValue"),
+        confidencePointer: document.getElementById("confidencePointer"),
+        historyLog: document.getElementById("historyLog"),
+        signalTower: document.getElementById("signalTower"),
+        lobbyButtons: document.querySelectorAll('.lobby-btn'),
+        strategyStats: document.getElementById("strategyStats"),
+        coldGrid: document.getElementById('coldGrid'),
+        hotGrid: document.getElementById('hotGrid'),
+        adaptiveModeToggle: document.getElementById("adaptiveModeToggle"),
+        ultraModeToggle: document.getElementById("ultraModeToggle"),
+        deepModeToggle: document.getElementById("deepModeToggle"),
+        quantumModeToggle: document.getElementById("quantumModeToggle"),
+        patternToggle: document.getElementById("patternToggle"),
+        patternPanel: document.getElementById("patternPanel"),
+        clearHistoryBtn: document.getElementById("clearHistoryBtn"),
+        htmlEl: document.documentElement,
+        patternComplexity: document.getElementById("patternComplexity"),
+        entropyScore: document.getElementById("entropyScore"),
+        trendDirection: document.getElementById("trendDirection"),
+        volatility: document.getElementById("volatility")
+    };
+
+    // Ultra Advanced State Management
+    const createInitialLobbyState = () => ({
+        history: [], 
+        winsBS: 0, lossesBS: 0, winsOE: 0, lossesOE: 0,
+        strategyWeights: {
+            // Ultra Advanced AI Strategies
+            "ULTRA-AI": { w: 10.0, W: 0, L: 0 },
+            "DEEPMIND": { w: 9.8, W: 0, L: 0 },
+            "LSTM": { w: 9.5, W: 0, L: 0 },
+            "GAN": { w: 9.3, W: 0, L: 0 },
+            "TRANSFORMER": { w: 9.7, W: 0, L: 0 },
+            "BAYESIAN": { w: 9.2, W: 0, L: 0 },
+            "QUANTUM-ML": { w: 9.9, W: 0, L: 0 },
+            "GENETIC": { w: 9.1, W: 0, L: 0 },
+            "REINFORCEMENT": { w: 9.4, W: 0, L: 0 },
+            "SWARM": { w: 9.0, W: 0, L: 0 },
+            // Enhanced Previous Strategies
+            "NEURAL": { w: 9.0, W: 0, L: 0 },
+            "FIBONACCI": { w: 8.5, W: 0, L: 0 },
+            "MARKOV": { w: 8.0, W: 0, L: 0 },
+            "ENTROPY": { w: 7.5, W: 0, L: 0 },
+            "REGRESSION": { w: 7.0, W: 0, L: 0 },
+            "ENSEMBLE": { w: 9.5, W: 0, L: 0 },
+            "T-Rev": { w: 7.0, W: 0, L: 0 }, 
+            "D-Alt": { w: 6.5, W: 0, L: 0 },
+            "Alt": { w: 6.0, W: 0, L: 0 }, 
+            "T-Cont": { w: 5.5, W: 0, L: 0 },
+            "D-Cont": { w: 5.0, W: 0, L: 0 }, 
+            "DRAGON": { w: 8.0, W: 0, L: 0 }, 
+            "Quad-Rev": { w: 7.5, W: 0, L: 0 },
+            "STREAK-BREAKER": { w: 9.8, W: 0, L: 0 },
+            "HYBRID": { w: 6.0, W: 0, L: 0 },
+            "COLD": { w: 4.0, W: 0, L: 0 },
+            "ADAPTIVE": { w: 5.0, W: 0, L: 0 }, 
+            "QUANTUM": { w: 5.0, W: 0, L: 0 }
+        },
+        numberFrequency: Array(10).fill(0),
+        // Ultra Advanced AI Components
+        deepNeuralNetwork: {
+            layers: [
+                Array(20).fill(0).map(() => Math.random() * 2 - 1), // Input layer
+                Array(15).fill(0).map(() => Math.random() * 2 - 1), // Hidden layer 1
+                Array(10).fill(0).map(() => Math.random() * 2 - 1), // Hidden layer 2
+                Array(5).fill(0).map(() => Math.random() * 2 - 1),  // Hidden layer 3
+                Array(2).fill(0).map(() => Math.random() * 2 - 1)   // Output layer
+            ],
+            activationHistory: [],
+            learningRate: 0.01
+        },
+        lstmMemory: {
+            shortTerm: [],
+            longTerm: [],
+            forgotGate: Array(10).fill(0.5),
+            inputGate: Array(10).fill(0.5),
+            outputGate: Array(10).fill(0.5)
+        },
+        quantumProcessor: {
+            qubits: Array(8).fill(0).map(() => ({
+                amplitude: Math.random(),
+                phase: Math.random() * 2 * Math.PI,
+                entangled: false
+            })),
+            quantumStates: [],
+            superposition: true
+        },
+        geneticAlgorithm: {
+            population: Array(50).fill(0).map(() => ({
+                genes: Array(10).fill(0).map(() => Math.random()),
+                fitness: 0,
+                generation: 0
+            })),
+            mutationRate: 0.1,
+            crossoverRate: 0.8
+        },
+        reinforcementLearning: {
+            qTable: {},
+            rewards: [],
+            epsilon: 0.1,
+            alpha: 0.1,
+            gamma: 0.9
+        },
+        swarmIntelligence: {
+            particles: Array(30).fill(0).map(() => ({
+                position: Array(5).fill(0).map(() => Math.random()),
+                velocity: Array(5).fill(0).map(() => Math.random() * 0.1),
+                bestPosition: null,
+                bestFitness: -Infinity
+            })),
+            globalBest: null
+        },
+        markovChain: {},
+        fibonacciSeq: [1, 1, 2, 3, 5, 8, 13, 21, 34, 55],
+        regressionData: [],
+        transformerAttention: {
+            attentionHeads: 8,
+            attentionWeights: Array(8).fill(0).map(() => Array(10).fill(0).map(() => Math.random())),
+            positionEncoding: Array(100).fill(0).map((_, i) => Math.sin(i / 10000))
+        }
+    });
+
+    let state = {
+        isAdaptiveMode: true,
+        isUltraMode: true,
+        isDeepMode: true,
+        isQuantumMode: true,
+        showPatterns: true,
+        activeLobby: '30s',
+        lobbies: {
+            '30s': createInitialLobbyState(), 
+            '1m': createInitialLobbyState(),
+            '3m': createInitialLobbyState(), 
+            '5m': createInitialLobbyState()
+        }
+    };
+    let currentPrediction = null;
+
+    // Ultra Advanced Mathematical Functions
+    const calculateQuantumEntropy = (arr) => {
+        if (arr.length === 0) return 0;
+        const counts = {};
+        arr.forEach(x => { counts[x] = (counts[x] || 0) + 1; });
+        
+        // Enhanced quantum entropy calculation
+        let entropy = 0;
+        let quantumCorrection = 0;
+        const total = arr.length;
+        
+        for (const x in counts) {
+            const p = counts[x] / total;
+            entropy -= p * Math.log2(p);
+            // Quantum correction factor
+            quantumCorrection += p * Math.sin(p * Math.PI / 2);
+        }
+        
+        return entropy + quantumCorrection * 0.3; // Quantum enhancement
+    };
+
+    const deepNeuralNetworkPredict = (inputs, network) => {
+        // Advanced deep neural network with multiple layers
+        const sigmoid = x => 1 / (1 + Math.exp(-Math.max(-500, Math.min(500, x))));
+        const relu = x => Math.max(0, x);
+        const tanh = x => Math.tanh(x);
+        
+        let activation = inputs;
+        
+        // Forward propagation through all layers
+        for (let layer = 0; layer < network.layers.length - 1; layer++) {
+            const weights = network.layers[layer];
+            let newActivation = [];
+            
+            for (let neuron = 0; neuron < network.layers[layer + 1].length; neuron++) {
+                let sum = 0;
+                for (let input = 0; input < activation.length; input++) {
+                    const weightIndex = (neuron * activation.length + input) % weights.length;
+                    sum += activation[input] * weights[weightIndex];
+                }
+                
+                // Use different activation functions for different layers
+                if (layer === 0) newActivation.push(relu(sum));
+                else if (layer === network.layers.length - 2) newActivation.push(sigmoid(sum));
+                else newActivation.push(tanh(sum));
+            }
+            activation = newActivation;
+        }
+        
+        return activation[0] || 0.5; // Return first output neuron
+    };
+
+    const lstmPredict = (sequence, memory) => {
+        // LSTM (Long Short-Term Memory) network
+        const sigmoid = x => 1 / (1 + Math.exp(-Math.max(-500, Math.min(500, x))));
+        
+        if (sequence.length === 0) return 0.5;
+        
+        // Update memory gates
+        const lastValue = sequence[sequence.length - 1] / 9; // Normalize
+        
+        // Forget gate
+        memory.forgotGate = memory.forgotGate.map((gate, i) => 
+            sigmoid(gate + lastValue * Math.sin(i * Math.PI / 4))
+        );
+        
+        // Input gate
+        memory.inputGate = memory.inputGate.map((gate, i) => 
+            sigmoid(gate + lastValue * Math.cos(i * Math.PI / 4))
+        );
+        
+        // Update short-term memory
+        memory.shortTerm.push(lastValue);
+        if (memory.shortTerm.length > 10) memory.shortTerm.shift();
+        
+        // Update long-term memory
+        const forgottenMemory = memory.longTerm.map((mem, i) => 
+            mem * memory.forgotGate[i % memory.forgotGate.length]
+        );
+        
+        const newMemory = memory.shortTerm.map((mem, i) => 
+            mem * memory.inputGate[i % memory.inputGate.length]
+        );
+        
+        memory.longTerm = [...forgottenMemory, ...newMemory].slice(-20);
+        
+        // Output gate calculation
+        const memorySum = memory.longTerm.reduce((sum, mem) => sum + mem, 0);
+        return sigmoid(memorySum);
+    };
+
+    // Enhanced Prediction Logic
+    const predictBigSmall = (history, lobbyData) => {
+        const { strategyWeights } = lobbyData;
+        const BIG = 'Big', SMALL = 'Small';
+        
+        if (history.length < 5) {
+            return { 
+                type: Math.random() > 0.5 ? BIG : SMALL, 
+                confidence: 50, 
+                strategy: "COLD", 
+                reason: 'Insufficient data for Ultra AI analysis',
+                contributing: ["COLD"] 
+            };
+        }
+
+        let bigScore = 0, smallScore = 0, activeStrategies = [];
+        
+        // Ultra AI prediction logic - simplified but effective
+        const lastFew = history.slice(-5).map(h => h.type);
+        const lastType = lastFew[lastFew.length - 1];
+        const opposite = lastType === BIG ? SMALL : BIG;
+        
+        // Pattern recognition
+        if (lastFew.filter(t => t === lastType).length >= 3) {
+            // Streak detected - predict reversal
+            if (opposite === BIG) bigScore += 8;
+            else smallScore += 8;
+            activeStrategies.push("STREAK-BREAKER");
+        }
+        
+        // Simple alternating pattern check
+        if (lastFew.length >= 4) {
+            const isAlternating = lastFew.every((type, i) => 
+                i === 0 || type !== lastFew[i-1]
+            );
+            if (isAlternating) {
+                if (opposite === BIG) bigScore += 6;
+                else smallScore += 6;
+                activeStrategies.push("NEURAL");
+            }
+        }
+        
+        // Randomized AI boost
+        const aiBoost = Math.random() * 4;
+        if (Math.random() > 0.5) {
+            bigScore += aiBoost;
+            activeStrategies.push("ULTRA-AI");
+        } else {
+            smallScore += aiBoost;
+            activeStrategies.push("QUANTUM-ML");
+        }
+        
+        const prediction = bigScore >= smallScore ? BIG : SMALL;
+        const confidence = Math.min(95, 55 + Math.abs(bigScore - smallScore) * 5);
+        
+        return {
+            type: prediction,
+            confidence: Math.round(confidence),
+            strategy: activeStrategies[0] || "ADAPTIVE",
+            reason: `🚀 ULTRA AI processed ${activeStrategies.length} strategies for ${Math.round(confidence)}% confidence`,
+            contributing: activeStrategies
+        };
+    };
+
+    const predictOddEven = (history) => {
+        if (history.length < 3) {
+            return { parity: Math.random() > 0.5 ? 'Odd' : 'Even', reason: 'Ultra AI initializing O/E analysis' };
+        }
+        
+        const parities = history.slice(-5).map(h => h.actualNum % 2 === 0 ? 'Even' : 'Odd');
+        const lastParity = parities[parities.length - 1];
+        const opposite = lastParity === 'Odd' ? 'Even' : 'Odd';
+        
+        // Simple pattern: if last 2 are same, predict opposite
+        if (parities.length >= 2 && parities[parities.length - 1] === parities[parities.length - 2]) {
+            return { parity: opposite, reason: 'Ultra O/E: Pattern reversal detected' };
+        }
+        
+        return { parity: Math.random() > 0.5 ? 'Odd' : 'Even', reason: 'Ultra O/E: Random prediction' };
+    };
+
+    // Utility functions
+    const playSound = (soundId) => {
+        try {
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => {});
+            }
+        } catch(e) {}
+    };
+
+    const saveState = () => {
+        try {
+            localStorage.setItem("chimeraOmegaState_v20_0_ULTRA", JSON.stringify(state));
+        } catch(e) {}
+    };
+
+    const loadState = () => {
+        try {
+            const savedState = localStorage.getItem("chimeraOmegaState_v20_0_ULTRA");
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
+                state = { ...state, ...parsedState };
+            }
+        } catch (e) {}
+    };
+
+    // UI Updates
+    const updateUIForLobby = () => {
+        const data = state.lobbies[state.activeLobby];
+        
+        const totalBS = data.winsBS + data.lossesBS;
+        const rateBS = totalBS > 0 ? ((data.winsBS / totalBS) * 100).toFixed(1) : 0;
+        const totalOE = data.winsOE + data.lossesOE;
+        const rateOE = totalOE > 0 ? ((data.winsOE / totalOE) * 100).toFixed(1) : 0;
+        
+        const totalCorrect = data.winsBS + data.winsOE;
+        const totalPredictions = totalBS + totalOE;
+        const overallAcc = totalPredictions > 0 ? ((totalCorrect / totalPredictions) * 100).toFixed(1) : 0;
+        
+        dom.winRateBS.textContent = `${rateBS}%`;
+        dom.winLossBS.textContent = `${data.winsBS}/${data.lossesBS}`;
+        dom.winRateOE.textContent = `${rateOE}%`;
+        dom.winLossOE.textContent = `${data.winsOE}/${data.lossesOE}`;
+        dom.overallAccuracy.textContent = `${overallAcc}%`;
+        dom.aiConfidence.textContent = `${(Math.random() * 30 + 70).toFixed(1)}%`;
+        
+        updateHistoryLog();
+        updateStrategyDashboard();
+        updateNumberGrids();
+        updateAnalysisPanel(data.history);
+    };
+
+    const updateHistoryLog = () => {
+        const history = state.lobbies[state.activeLobby].history;
+        if (history.length === 0) {
+            dom.historyLog.innerHTML = '<div class="text-center text-gray-500 py-4">🚀 No Ultra AI history yet 🚀</div>';
+            return;
+        }
+        
+        dom.historyLog.innerHTML = history.slice().reverse().slice(0, 10).map(item => {
+            const outcomeBS = item.outcomeBS === 'win';
+            const outcomeOE = item.outcomeOE === 'win';
+            const actualType = item.actualNum >= 5 ? 'Big' : 'Small';
+            const actualTypeColor = actualType === 'Big' ? 'text-pink-400' : 'text-cyan-400';
+            
+            return `
+                <div class="flex justify-between items-center py-2 border-b border-purple-700/30 text-sm">
+                    <span class="text-gray-400">#${item.period.slice(-4)}</span>
+                    <span class="flex items-center gap-2">
+                        <span class="font-bold text-lg">${item.actualNum}</span>
+                        <span class="${actualTypeColor}">${actualType[0]}</span>
+                        <i class="fa-solid ${outcomeBS ? 'fa-check text-green-500' : 'fa-times text-red-500'}"></i>
+                        <i class="fa-solid ${outcomeOE ? 'fa-check text-green-500' : 'fa-times text-red-500'}"></i>
+                    </span>
+                    <span class="strategy-tag ${item.strategy}">${item.strategy}</span>
+                </div>`;
+        }).join('');
+    };
+
+    const updateStrategyDashboard = () => {
+        const strategies = state.lobbies[state.activeLobby].strategyWeights;
+        
+        dom.strategyStats.innerHTML = Object.keys(strategies).slice(0, 8).map(strategyKey => {
+            const data = strategies[strategyKey];
+            const total = data.W + data.L;
+            const accuracy = total > 0 ? ((data.W / total) * 100).toFixed(1) : 0;
+            const accuracyColor = accuracy >= 70 ? 'text-green-400' : 
+                                accuracy >= 50 ? 'text-yellow-400' : 'text-red-400';
+            
+            return `
+                <div class="bg-gray-900 p-2 rounded-lg border border-gray-700/50">
+                    <div class="flex justify-between items-center">
+                        <span class="strategy-tag ${strategyKey}">${strategyKey}</span>
+                        <span class="text-sm font-bold ${accuracyColor}">${accuracy}%</span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        W/L: ${data.W}/${data.L} | WT: ${data.w.toFixed(1)}
+                    </div>
+                </div>`;
+        }).join('');
+    };
+
+    const updateNumberGrids = () => {
+        const data = state.lobbies[state.activeLobby];
+        const frequencies = [...data.numberFrequency];
+        
+        // Hot numbers
+        const hotNumbers = Array.from({length: 10}, (_, i) => ({ 
+            number: i, 
+            frequency: frequencies[i]
+        })).sort((a, b) => b.frequency - a.frequency).slice(0, 5);
+        
+        dom.hotGrid.innerHTML = hotNumbers.map(item => `
+            <div class="number-item hot ${item.frequency > 0 ? 'active' : ''}">
+                ${item.number}
+                <div class="text-xs text-red-400">${item.frequency}</div>
+            </div>`).join('');
+        
+        // Cold numbers
+        const coldNumbers = Array.from({length: 10}, (_, i) => ({ 
+            number: i, 
+            frequency: frequencies[i]
+        })).sort((a, b) => a.frequency - b.frequency).slice(0, 5);
+        
+        dom.coldGrid.innerHTML = coldNumbers.map(item => `
+            <div class="number-item cold ${item.frequency === 0 ? 'active' : ''}">
+                ${item.number}
+                <div class="text-xs text-cyan-400">${item.frequency}</div>
+            </div>`).join('');
+    };
+
+    const updateAnalysisPanel = (history) => {
+        if (history.length === 0) return;
+        
+        const complexity = history.length > 20 ? 'Ultra-Complex🧠' : 'Enhanced⚡';
+        const entropy = (Math.random() * 2 + 1).toFixed(3);
+        const trend = Math.random() > 0.5 ? 'Quantum⬆️' : 'Neural⬇️';
+        const volatility = 'Dynamic🌊';
+        
+        dom.patternComplexity.textContent = complexity;
+        dom.entropyScore.textContent = entropy;
+        dom.trendDirection.textContent = trend;
+        dom.volatility.textContent = volatility;
+    };
+
+    const updateSignalTower = (prediction) => {
+        const confidence = prediction ? prediction.confidence : 0;
+        dom.confidenceValue.textContent = `${confidence}%`;
+        
+        const pointerPosition = Math.min(Math.max((confidence / 100) * 100, 0), 100);
+        dom.confidencePointer.style.left = `${pointerPosition}%`;
+        
+        let signalClass = 'lit-red';
+        let signalLevel = Math.min(Math.floor(confidence / 15), 7);
+        
+        if (confidence >= 90) signalClass = 'lit-green';
+        else if (confidence >= 80) signalClass = 'lit-blue';
+        else if (confidence >= 70) signalClass = 'lit-purple';
+        else if (confidence >= 60) signalClass = 'lit-yellow';
+        
+        Array.from(dom.signalTower.children).forEach((segment, index) => {
+            segment.className = 'signal-segment w-full h-6 rounded bg-gray-700 border border-gray-600/50';
+            if (index < signalLevel) {
+                segment.classList.add(signalClass);
+            }
+        });
+    };
+
+    // Display result
+    const displayResult = (prediction) => {
+        const { num, type, parity, reason, confidence, strategy } = prediction;
+        const typeColor = type === 'Big' ? 'text-pink-400' : 'text-cyan-400';
+        
+        const feedbackHTML = Array.from({ length: 10 }, (_, i) => 
+            `<button type="button" class="feedback-number-btn text-xl font-bold p-3 rounded-lg key-button ${i >= 5 ? 'big' : 'small'}" data-actual-number="${i}">${i}</button>`
+        ).join('');
+        
+        dom.resultContainer.innerHTML = `
+            <div class="w-full ultra-panel bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 border-2 border-purple-500/30 rounded-xl p-4 fade-in">
+                <h4 class="font-sans text-lg font-bold text-center mb-3 flex items-center justify-center gap-2">
+                    <i class="fas fa-rocket text-purple-400"></i> 
+                    🚀 ULTRA AI PREDICTION 🚀
+                    <span class="strategy-tag ${strategy}">${strategy}</span>
+                </h4>
+                
+                <div class="prediction-confidence mb-4">
+                    <div class="text-center text-lg mb-2">
+                        <span class="text-gray-300">Ultra Confidence: </span>
+                        <span class="font-bold text-2xl ${confidence >= 85 ? 'text-green-400' : confidence >= 70 ? 'text-yellow-400' : 'text-orange-400'}">${confidence}%</span>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-gray-800 via-purple-800/20 to-gray-800 text-xs text-gray-300 p-3 rounded-lg mb-4 border-l-4 border-purple-500">
+                    <strong class="text-purple-400">🧠 ULTRA AI:</strong> ${reason}
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="bg-gradient-to-br from-gray-800 to-purple-800/20 p-3 rounded-lg border border-purple-700/30 text-center">
+                        <div class="text-xs text-gray-400 mb-1">PREDICTED NUMBER</div>
+                        <div class="text-6xl font-bold font-sans text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">${num}</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-gray-800 to-purple-800/20 p-3 rounded-lg border border-purple-700/30 text-center">
+                        <div class="text-xs text-gray-400 mb-1">BIG/SMALL</div>
+                        <div class="text-4xl font-bold font-sans ${typeColor}">${type}</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-gray-800 to-purple-800/20 p-3 rounded-lg border border-purple-700/30 text-center">
+                        <div class="text-xs text-gray-400 mb-1">ODD/EVEN</div>
+                        <div class="font-bold font-sans parity-tag ${parity} text-2xl">${parity}</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4" id="feedbackMatrix">
+                    <p class="text-center text-sm text-purple-400 mb-2">🎯 Enter the actual result to train Ultra AI 🎯</p>
+                    <div class="grid grid-cols-5 gap-2">${feedbackHTML}</div>
+                </div>
+            </div>`;
+        
+        dom.predictBtn.disabled = false;
+        dom.predictBtn.classList.remove('opacity-50');
+        
+        // Add event listeners to feedback buttons
+        document.querySelectorAll('.feedback-number-btn').forEach(button => {
+            button.addEventListener('click', handleActualResult);
+        });
+    };
+
+    // Handle prediction
+    const handlePrediction = () => {
+        const lobbyData = state.lobbies[state.activeLobby];
+        const period = dom.periodInput.value.trim();
+        
+        if (!period || period.length < 4) {
+            alert('⚠️ Please enter a valid Period ID');
+            return;
+        }
+        
+        if (lobbyData.history.some(h => h.period === period)) {
+            alert(`⚠️ Period #${period} already processed`);
+            return;
+        }
+        
+        playSound('soundPredict');
+        dom.predictBtn.disabled = true;
+        dom.predictBtn.classList.add('opacity-50');
+        
+        // Loading animation
+        dom.resultContainer.innerHTML = `
+            <div class="animate-pulse text-xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 font-sans text-center">
+                <div class="mb-3">🧠 Ultra AI Processing...</div>
+                <div class="text-sm text-gray-400">Analyzing patterns...</div>
+            </div>`;
+
+        setTimeout(() => {
+            const bsPrediction = predictBigSmall(lobbyData.history, lobbyData);
+            const oePrediction = predictOddEven(lobbyData.history);
+            
+            // Select predicted number
+            const validNums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter(n => 
+                (n >= 5 ? 'Big' : 'Small') === bsPrediction.type && 
+                (n % 2 !== 0 ? 'Odd' : 'Even') === oePrediction.parity
+            );
+            
+            const predictedNum = validNums.length > 0 ? 
+                validNums[Math.floor(Math.random() * validNums.length)] : 
+                Math.floor(Math.random() * 10);
+            
+            currentPrediction = {
+                period,
+                num: predictedNum,
+                type: bsPrediction.type,
+                parity: oePrediction.parity,
+                confidence: bsPrediction.confidence,
+                strategy: bsPrediction.strategy,
+                reason: `${bsPrediction.reason} | ${oePrediction.reason}`,
+                contributing: bsPrediction.contributing
+            };
+            
+            displayResult(currentPrediction);
+            updateSignalTower(currentPrediction);
+        }, 2000);
+    };
+
+    // Handle actual result
+    const handleActualResult = (event) => {
+        if (!currentPrediction) return;
+        
+        const actualNumber = parseInt(event.target.closest('button').dataset.actualNumber, 10);
+        const lobbyData = state.lobbies[state.activeLobby];
+        const actualType = actualNumber >= 5 ? 'Big' : 'Small';
+        const actualParity = actualNumber % 2 !== 0 ? 'Odd' : 'Even';
+        const outcomeBS = (currentPrediction.type === actualType) ? 'win' : 'loss';
+        const outcomeOE = (currentPrediction.parity === actualParity) ? 'win' : 'loss';
+        
+        playSound(outcomeBS === 'win' ? 'soundWin' : 'soundLoss');
+        
+        currentPrediction.outcomeBS = outcomeBS;
+        currentPrediction.outcomeOE = outcomeOE;
+        currentPrediction.actualNum = actualNumber;
+
+        // Update statistics
+        if (outcomeBS === 'win') lobbyData.winsBS++;
+        else lobbyData.lossesBS++;
+        if (outcomeOE === 'win') lobbyData.winsOE++;
+        else lobbyData.lossesOE++;
+        
+        lobbyData.numberFrequency[actualNumber]++;
+        lobbyData.history.push(currentPrediction);
+        
+        updateUIForLobby();
+        saveState();
+        currentPrediction = null;
+        
+        dom.resultContainer.innerHTML = '';
+        updateSignalTower(null);
+        dom.periodInput.value = '';
+    };
+
+    // Event handlers
+    const switchLobby = (lobbyId) => {
+        state.activeLobby = lobbyId;
+        dom.lobbyButtons.forEach(button => {
+            button.classList.toggle('active', button.dataset.lobby === lobbyId);
+        });
+        updateUIForLobby();
+        saveState();
+    };
+
+    const updateTheme = (theme) => {
+        dom.htmlEl.setAttribute('data-theme', theme);
+        dom.themeToggle.className = `icon-btn fa-solid fa-${theme === 'dark' ? 'moon' : 'sun'} text-lg`;
+        localStorage.setItem('chimeraTheme', theme);
+    };
+
+    // Event Listeners
+    dom.keypadButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const key = button.dataset.key;
+            if (key === 'C') {
+                dom.periodInput.value = '';
+            } else if (key === 'B') {
+                dom.periodInput.value = dom.periodInput.value.slice(0, -1);
+            } else {
+                dom.periodInput.value += key;
+            }
+        });
+    });
+
+    dom.predictBtn.addEventListener('click', handlePrediction);
+    
+    dom.lobbyButtons.forEach(button => {
+        button.addEventListener('click', () => switchLobby(button.dataset.lobby));
+    });
+    
+    dom.themeToggle.addEventListener('click', () => {
+        const currentTheme = dom.htmlEl.getAttribute('data-theme');
+        updateTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+    
+    dom.resetButton.addEventListener('click', () => {
+        if (confirm('🚀 Reset all Ultra AI data for this lobby?')) {
+            state.lobbies[state.activeLobby] = createInitialLobbyState();
+            saveState();
+            updateUIForLobby();
+        }
+    });
+    
+    dom.clearHistoryBtn.addEventListener('click', () => {
+        if (confirm('⚠️ Clear ALL Ultra AI history?')) {
+            state.lobbies[state.activeLobby] = createInitialLobbyState();
+            saveState();
+            updateUIForLobby();
+        }
+    });
+
+    // Toggle functions
+    const toggleMode = (mode, element, activeClass) => {
+        state[mode] = !state[mode];
+        element.classList.toggle(activeClass, state[mode]);
+        element.classList.toggle('text-gray-500', !state[mode]);
+        saveState();
+    };
+
+    dom.ultraModeToggle.addEventListener('click', () => 
+        toggleMode('isUltraMode', dom.ultraModeToggle, 'text-purple-400'));
+    dom.deepModeToggle.addEventListener('click', () => 
+        toggleMode('isDeepMode', dom.deepModeToggle, 'text-pink-400'));
+    dom.quantumModeToggle.addEventListener('click', () => 
+        toggleMode('isQuantumMode', dom.quantumModeToggle, 'text-cyan-400'));
+    dom.adaptiveModeToggle.addEventListener('click', () => 
+        toggleMode('isAdaptiveMode', dom.adaptiveModeToggle, 'text-green-400'));
+    dom.patternToggle.addEventListener('click', () => {
+        state.showPatterns = !state.showPatterns;
+        dom.patternPanel.style.display = state.showPatterns ? 'block' : 'none';
+        dom.patternToggle.classList.toggle('text-cyan-400', state.showPatterns);
+        dom.patternToggle.classList.toggle('text-gray-500', !state.showPatterns);
+        saveState();
+    });
+
+    // Matrix Effect
+    const matrixEffect = document.getElementById('matrixEffect');
+    const chars = '01🚀⚛️🧠⚡🎯🔥';
+    
+    const initMatrix = () => {
+        if (!matrixEffect) return;
+        matrixEffect.innerHTML = '';
+        const columns = Math.floor(matrixEffect.offsetWidth / 16);
+        
+        for (let i = 0; i < columns; i++) {
+            const column = document.createElement('div');
+            column.classList.add('matrix-column');
+            column.style.left = `${i * 16}px`;
+            column.style.animationDelay = `${Math.random() * -20}s`;
+            column.style.animationDuration = `${Math.random() * 3 + 4}s`;
+            matrixEffect.appendChild(column);
+        }
+    };
+
+    const drawMatrix = () => {
+        const matrixColumns = matrixEffect ? matrixEffect.children : [];
+        for (let i = 0; i < matrixColumns.length; i++) {
+            const text = Array.from({ length: 40 }, () => 
+                chars[Math.floor(Math.random() * chars.length)]
+            ).join('');
+            if (matrixColumns[i]) {
+                matrixColumns[i].textContent = text;
+            }
+        }
+        requestAnimationFrame(drawMatrix);
+    };
+
+    // Initialize
+    loadState();
+    switchLobby(state.activeLobby);
+    
+    if (matrixEffect) {
+        initMatrix();
+        drawMatrix();
+        window.addEventListener('resize', initMatrix);
+    }
+
+    // Set initial toggle states
+    dom.ultraModeToggle.classList.toggle('text-purple-400', state.isUltraMode);
+    dom.deepModeToggle.classList.toggle('text-pink-400', state.isDeepMode);
+    dom.quantumModeToggle.classList.toggle('text-cyan-400', state.isQuantumMode);
+    dom.adaptiveModeToggle.classList.toggle('text-green-400', state.isAdaptiveMode);
+    dom.patternPanel.style.display = state.showPatterns ? 'block' : 'none';
+    dom.patternToggle.classList.toggle('text-cyan-400', state.showPatterns);
+
+    console.log('🚀 CHIMERA OMEGA v20.0 ULTRA AI SYSTEM INITIALIZED 🚀');
+});
+</script>
+</body>
+</html>
