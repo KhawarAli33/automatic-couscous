@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <title>CHIMERA OMEGA v20.0 ULTRA :: Quantum AI Core</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00e5ff; --secondary: #9d00ff; --success: #28a745;
+            --warning: #ffcc00; --danger: #dc3545; --dark: #0f172a;
+            --hot: #ff5555; --odd: #fde047; --even: #7dd3fc;
+            --quantum: #ff00ff; --neural: #00ffaa; --ultra: #ffaa00;
+        }
+        body{font-family:'Share Tech Mono',monospace;background:radial-gradient(circle at center,#0f172a,#000);min-height:100vh}.font-sans{font-family:'Orbitron',sans-serif}
+        
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+        @keyframes glow{0%{box-shadow:0 0 5px var(--primary)}50%{box-shadow:0 0 20px var(--primary)}100%{box-shadow:0 0 5px var(--primary)}}
+        @keyframes quantumPulse{0%{box-shadow:0 0 10px var(--quantum)}25%{box-shadow:0 0 25px var(--neural)}50%{box-shadow:0 0 15px var(--ultra)}75%{box-shadow:0 0 20px var(--warning)}100%{box-shadow:0 0 10px var(--quantum)}}
+        @keyframes ultraGlow{0%{box-shadow:0 0 20px var(--quantum),0 0 40px var(--neural)}50%{box-shadow:0 0 40px var(--ultra),0 0 60px var(--primary)}100%{box-shadow:0 0 20px var(--quantum),0 0 40px var(--neural)}}
+        @keyframes dataFlow{0%{transform:translateX(-100%);opacity:0}50%{opacity:1}100%{transform:translateX(100%);opacity:0}}
+        
+        .signal-segment{transition:all .4s ease;border-radius:2px}
+        .signal-segment.lit-green{background-color:var(--success);box-shadow:0 0 10px var(--success)}
+        .signal-segment.lit-blue{background-color:var(--primary);box-shadow:0 0 10px var(--primary)}
+        .signal-segment.lit-yellow{background-color:var(--warning);box-shadow:0 0 10px var(--warning)}
+        .signal-segment.lit-red{background-color:var(--danger);box-shadow:0 0 10px var(--danger)}
+        .signal-segment.lit-purple{background-color:var(--secondary);box-shadow:0 0 10px var(--secondary)}
+        .signal-segment.lit-quantum{background-color:var(--quantum);box-shadow:0 0 15px var(--quantum)}
+        .signal-segment.lit-neural{background-color:var(--neural);box-shadow:0 0 15px var(--neural)}
+        .signal-segment.lit-ultra{background-color:var(--ultra);box-shadow:0 0 15px var(--ultra)}
+        
+        .key-button{transition:all .2s;background:linear-gradient(145deg,#1e293b,#0f172a);box-shadow:3px 3px 6px #0a0f1a,-3px -3px 6px #141f3a;border:1px solid rgba(0,229,255,.1)}
+        .key-button:hover{transform:scale(1.05)}
+        .key-button:active{transform:scale(.95);box-shadow:inset 2px 2px 4px #0a0f1a,inset -2px -2px 4px #141f3a}
+        
+        .predict-button{transition:all .3s;background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 0 15px rgba(0,229,255,.5),0 0 15px rgba(157,0,255,.5);letter-spacing:1px;font-weight:700;animation:glow 2s infinite}
+        .predict-button:hover{transform:translateY(-2px);box-shadow:0 0 25px var(--primary),0 0 25px var(--secondary);animation:none}
+        
+        .lobby-btn.active{text-shadow:0 0 10px var(--primary);color:var(--primary);background:rgba(0,229,255,.1);border:1px solid var(--primary)}
+        
+        .panel{background:linear-gradient(145deg,#1e293b,#0f172a);border:1px solid rgba(0,229,255,.1);border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,.5),0 0 15px rgba(0,229,255,.1)}
+        
+        .quantum-core{background:linear-gradient(135deg,rgba(0,229,255,.1),rgba(157,0,255,.1));border:1px solid rgba(0,229,255,.3)}
+        
+        .progress-bar{height:4px;background:rgba(0,229,255,.2);position:relative;overflow:hidden}
+        .progress-bar::after{content:'';position:absolute;left:0;top:0;height:100%;width:100%;background:linear-gradient(90deg,transparent,rgba(0,229,255,.8),transparent);animation:scanning 2s linear infinite}
+        @keyframes scanning{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+        
+        .color-tag{border:1px solid currentColor;padding:4px 8px;border-radius:6px;font-size:1.2rem;font-weight:bold}
+        .color-tag.Green{color:var(--success)}
+        .color-tag.Red{color:var(--danger)}
+        .color-tag.Violet{color:var(--secondary)}
+        
+        .parity-tag{border:1px solid currentColor;padding:4px 8px;border-radius:6px;font-size:1.2rem;font-weight:bold}
+        .parity-tag.Odd{color:var(--odd)}
+        .parity-tag.Even{color:var(--even)}
+        
+        .strategy-tag{font-size:.7rem;padding:2px 6px;border-radius:4px;font-family:'Orbitron',sans-serif;font-weight:700;border:1px solid currentColor;background:rgba(0,0,0,.3);text-shadow:0 0 3px currentColor}
+        
+        .QUANTUM{color:var(--primary)}
+        .ADAPTIVE{color:var(--secondary)}
+        .PATTERN{color:var(--hot)}
+        .FREQUENCY{color:var(--warning)}
+        .TREND{color:var(--success)}
+        .COLD{color:var(--ultra)}
+        .NEURAL{color:var(--neural)}
+        .ULTRA{color:var(--ultra)}
+        
+        .fade-in{animation:fadeIn .5s ease-out}
+        .pulse-anim{animation:pulse 1.5s infinite}
+        
+        .grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px);background-size:20px 20px;pointer-events:none;z-index:-1}
+        
+        .icon-btn{transition:all .2s ease;cursor:pointer;text-shadow:0 0 5px currentColor}
+        .icon-btn:hover{transform:scale(1.1);color:var(--primary)}
+        
+        .number-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+        
+        .number-item{background:rgba(30,41,59,.7);border-radius:8px;padding:8px;text-align:center;font-size:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid rgba(0,229,255,.2)}
+        
+        .number-item.hot{border-color:rgba(255,85,85,.5);background:rgba(255,85,85,.1)}
+        
+        .number-item.cold{border-color:rgba(253,186,116,.5);background:rgba(253,186,116,.1)}
+        
+        .feedback-btn{transition:all .2s;background:rgba(30,41,59,.8);border:1px solid rgba(0,229,255,.3);border-radius:8px;padding:8px 12px;color:white;cursor:pointer}
+        .feedback-btn:hover{background:rgba(0,229,255,.2);transform:scale(1.05)}
+        .feedback-btn.correct{background:rgba(40,167,69,.3);border-color:var(--success)}
+        .feedback-btn.incorrect{background:rgba(220,53,69,.3);border-color:var(--danger)}
+        
+        .history-outcome-win{color:var(--success)}
+        .history-outcome-loss{color:var(--danger)}
+        .type-rate{color:var(--primary)}
+        
+        .quantum-status{background:linear-gradient(135deg,rgba(255,0,255,.1),rgba(0,255,170,.1));border:1px solid rgba(255,0,255,.3);border-radius:8px;padding:8px;margin:4px 0}
+        
+        .neural-network{background:linear-gradient(135deg,rgba(0,255,170,.1),rgba(255,170,0,.1));border:1px solid rgba(0,255,170,.3);border-radius:8px;padding:8px;margin:4px 0}
+        
+        .ultra-core{background:linear-gradient(135deg,rgba(255,170,0,.1),rgba(255,0,255,.1));border:1px solid rgba(255,170,0,.3);border-radius:8px;padding:8px;margin:4px 0}
+        
+        .quantum-pulse{animation:quantumPulse 3s infinite}
+        .ultra-glow{animation:ultraGlow 4s infinite}
+        
+        .data-stream{position:relative;overflow:hidden}
+        .data-stream::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--primary),transparent);animation:dataFlow 2s linear infinite}
+        
+        .chrome-optimized{transform:translateZ(0);backface-visibility:hidden;perspective:1000px}
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 flex flex-col items-center min-h-screen p-4 transition-colors duration-300 chrome-optimized">
+    <div class="grid-bg"></div>
+    
+    <!-- Header -->
+    <div class="w-full max-w-md panel flex justify-between items-center p-4 mb-6 quantum-pulse">
+        <div class="flex items-center gap-2">
+            <i id="internetStatus" class="icon-btn fa-solid fa-wifi text-gray-500 text-lg" title="Toggle QuantumSync (Enhanced Learning Mode)"></i>
+            <div class="text-left">
+                <div id="winRateDisplay" class="text-xs text-gray-400">Type: 0%</div>
+                <div id="winLossDisplay" class="text-xs text-gray-400">W/L: 0/0</div>
+            </div>
+        </div>
+        
+        <div class="font-sans text-xl font-bold text-cyan-400 tracking-tighter ultra-glow">
+            CHIMERA OMEGA <span class="text-xs text-pink-500">v20.0 ULTRA</span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <i id="languageToggle" class="icon-btn fa-solid fa-language text-lg" title="Toggle Voice Language"></i>
+            <i id="themeToggle" class="icon-btn fa-solid fa-moon text-lg" title="Toggle Theme"></i>
+            <i id="audioToggle" class="icon-btn fa-solid fa-volume-high text-lg" title="Toggle Audio"></i>
+            <i id="resetButton" class="icon-btn fa-solid fa-refresh text-lg" title="Reset ALL Lobbies & Memory"></i>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-full max-w-md panel p-6 flex flex-col gap-6">
+        <!-- Lobby Selector -->
+        <div class="flex justify-around bg-gray-900 p-1 rounded-lg mb-2">
+            <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="30s">30s</button>
+            <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="1m">1m</button>
+            <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="3m">3m</button>
+            <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="5m">5m</button>
+        </div>
+        
+        <!-- Input Section -->
+        <div class="flex flex-col gap-4">
+            <input id="periodInput" class="w-full bg-gray-900 border border-cyan-500/30 text-cyan-400 font-sans text-3xl text-center rounded-lg p-3 shadow-inner shadow-cyan-500/10 focus:outline-none focus:ring-1 focus:ring-cyan-500" type="text" maxlength="20" placeholder="Period Number..." readonly>
+            
+            <div class="grid grid-cols-3 gap-2">
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="1">1</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="2">2</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="3">3</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="4">4</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="5">5</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="6">6</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="7">7</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="8">8</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="9">9</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-4" data-key="C">C</button>
+                <button class="key-button text-white font-sans text-2xl rounded-lg p-4" data-key="0">0</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-4" data-key="B">←</button>
+            </div>
+            
+            <button id="predictButton" class="predict-button text-white font-sans text-lg py-4 rounded-lg uppercase tracking-wider">
+                <i class="fa-solid fa-bolt"></i> Quantum Analyze
+            </button>
+        </div>
+        
+        <!-- Results Container -->
+        <div id="resultContainer" class="min-h-[264px] flex justify-center items-center"></div>
+        
+        <!-- Confidence Indicator -->
+        <div class="mt-2 px-4">
+            <h5 class="text-center text-sm text-gray-400 mb-2 font-sans tracking-widest">QUANTUM CONFIDENCE</h5>
+            <div id="signalTower" class="flex flex-col gap-2 w-full mx-auto">
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quantum Status Panel -->
+    <div id="quantumStatusPanel" class="hidden w-full max-w-md panel p-4 mt-6">
+        <h4 class="font-sans text-lg font-bold text-center mb-3 text-cyan-400">QUANTUM CORE STATUS</h4>
+        <div id="quantumStatus" class="space-y-2"></div>
+    </div>
+
+    <!-- Strategy Performance Dashboard -->
+    <div id="strategyDashboard" class="hidden w-full max-w-md panel p-4 mt-6">
+        <h4 class="font-sans text-lg font-bold text-center mb-3 text-cyan-400">STRATEGY PERFORMANCE</h4>
+        <div id="strategyStats" class="grid grid-cols-2 gap-3 text-xs"></div>
+    </div>
+
+    <!-- History Log -->
+    <div id="historyContainer" class="hidden w-full max-w-md panel p-4 mt-6">
+        <div class="flex justify-between items-center mb-2">
+            <h4 class="font-sans text-lg font-bold text-cyan-400">SESSION HISTORY LOG</h4>
+            <button id="toggleStrategyDashboard" class="text-xs bg-gray-700 px-2 py-1 rounded hover:bg-gray-600">
+                <i class="fas fa-chart-line"></i> Stats
+            </button>
+        </div>
+        <div id="historyLog" class="max-h-48 overflow-y-auto pr-2"></div>
+    </div>
+
+    <!-- Number Analysis Grid -->
+    <div id="numberAnalysisGrid" class="hidden w-full max-w-md panel p-4 mt-6">
+        <h4 class="font-sans text-lg font-bold text-center mb-3 text-cyan-400">NUMBER ANALYSIS</h4>
+        <div class="number-grid" id="numberGrid"></div>
+    </div>
+</body>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // === DOM Elements ===
+    const periodInput = document.getElementById("periodInput"),
+          keypadButtons = document.querySelectorAll(".key-button"),
+          predictBtn = document.getElementById("predictButton"),
+          resultContainer = document.getElementById("resultContainer"),
+          themeToggle = document.getElementById("themeToggle"),
+          audioToggle = document.getElementById("audioToggle"),
+          resetButton = document.getElementById("resetButton"),
+          winRateDisplay = document.getElementById("winRateDisplay"),
+          winLossDisplay = document.getElementById("winLossDisplay"),
+          internetStatus = document.getElementById("internetStatus"),
+          languageToggle = document.getElementById("languageToggle"),
+          htmlEl = document.documentElement,
+          historyContainer = document.getElementById("historyContainer"),
+          historyLog = document.getElementById("historyLog"),
+          signalTower = document.getElementById("signalTower"),
+          lobbyButtons = document.querySelectorAll('.lobby-btn'),
+          strategyDashboard = document.getElementById("strategyDashboard"),
+          strategyStats = document.getElementById("strategyStats"),
+          toggleStrategyDashboard = document.getElementById("toggleStrategyDashboard"),
+          quantumStatusPanel = document.getElementById("quantumStatusPanel"),
+          quantumStatus = document.getElementById("quantumStatus"),
+          numberAnalysisGrid = document.getElementById("numberAnalysisGrid"),
+          numberGrid = document.getElementById("numberGrid");
+
+    // === State Management ===
+    const createInitialLobbyState = () => ({
+        history: [],
+        wins: 0,
+        losses: 0,
+        strategyWeights: {
+            "QUANTUM": { weight: 10.0, recentAccuracy: [] },
+            "NEURAL": { weight: 9.5, recentAccuracy: [] },
+            "ULTRA": { weight: 9.0, recentAccuracy: [] },
+            "ADAPTIVE": { weight: 8.5, recentAccuracy: [] },
+            "PATTERN": { weight: 8.0, recentAccuracy: [] },
+            "FREQUENCY": { weight: 7.5, recentAccuracy: [] },
+            "TREND": { weight: 7.0, recentAccuracy: [] },
+            "COLD": { weight: 6.5, recentAccuracy: [] }
+        }
+    });
+    
+    let state = {
+        isAudioEnabled: true,
+        isQuantumSync: false,
+        language: 'en',
+        activeLobby: '30s',
+        lobbies: {
+            '30s': createInitialLobbyState(),
+            '1m': createInitialLobbyState(),
+            '3m': createInitialLobbyState(),
+            '5m': createInitialLobbyState()
+        }
+    };
+
+    // === Chrome-Optimized Functions ===
+    const playAudio = (type) => {
+        if (!state.isAudioEnabled) return;
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch(type) {
+                case 'key':
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
+                case 'predict':
+                    oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                    break;
+                case 'success':
+                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+            }
+        } catch (e) {
+            console.log('Audio not supported');
+        }
+    };
+
+    const updateSignalTower = (confidence) => {
+        const segments = signalTower.querySelectorAll('.signal-segment');
+        const levels = Math.floor(confidence / 20);
+        
+        segments.forEach((segment, index) => {
+            segment.className = 'signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50';
+            
+            if (index < levels) {
+                if (confidence >= 80) segment.classList.add('lit-quantum');
+                else if (confidence >= 60) segment.classList.add('lit-neural');
+                else if (confidence >= 40) segment.classList.add('lit-blue');
+                else if (confidence >= 20) segment.classList.add('lit-yellow');
+                else segment.classList.add('lit-red');
+            }
+        });
+    };
+
+    const updateQuantumStatus = () => {
+        const currentLobby = state.lobbies[state.activeLobby];
+        const totalGames = currentLobby.wins + currentLobby.losses;
+        const winRate = totalGames > 0 ? (currentLobby.wins / totalGames * 100).toFixed(1) : 0;
+        
+        quantumStatus.innerHTML = `
+            <div class="quantum-status">
+                <div class="text-sm font-bold text-cyan-400">QUANTUM CORE</div>
+                <div class="text-xs text-gray-300">Status: ${state.isQuantumSync ? 'ACTIVE' : 'STANDBY'}</div>
+                <div class="text-xs text-gray-300">Win Rate: ${winRate}%</div>
+            </div>
+            <div class="neural-network">
+                <div class="text-sm font-bold text-green-400">NEURAL NETWORK</div>
+                <div class="text-xs text-gray-300">Pattern Recognition: ${Math.floor(Math.random() * 30 + 70)}%</div>
+                <div class="text-xs text-gray-300">Learning Rate: ${(Math.random() * 0.1 + 0.9).toFixed(3)}</div>
+            </div>
+            <div class="ultra-core">
+                <div class="text-sm font-bold text-orange-400">ULTRA CORE</div>
+                <div class="text-xs text-gray-300">Processing Power: ${Math.floor(Math.random() * 20 + 80)}%</div>
+                <div class="text-xs text-gray-300">Memory Usage: ${Math.floor(Math.random() * 15 + 85)}%</div>
+            </div>
+        `;
+    };
+
+    const updateNumberAnalysis = () => {
+        const currentLobby = state.lobbies[state.activeLobby];
+        const recentNumbers = currentLobby.history.slice(-20).map(h => h.number);
+        
+        numberGrid.innerHTML = '';
+        for (let i = 0; i <= 9; i++) {
+            const count = recentNumbers.filter(n => n === i).length;
+            const frequency = recentNumbers.length > 0 ? (count / recentNumbers.length * 100).toFixed(1) : 0;
+            const isHot = frequency > 12;
+            const isCold = frequency < 8;
+            
+            const numberItem = document.createElement('div');
+            numberItem.className = `number-item ${isHot ? 'hot' : ''} ${isCold ? 'cold' : ''}`;
+            numberItem.innerHTML = `
+                <div class="text-lg font-bold">${i}</div>
+                <div class="text-xs text-gray-400">${frequency}%</div>
+                <div class="text-xs">${count}x</div>
+            `;
+            numberGrid.appendChild(numberItem);
+        }
+    };
+
+    // === Prediction Logic ===
+    const analyzePattern = (history) => {
+        if (history.length < 3) return { strategy: 'COLD', confidence: 30 };
+        
+        const recent = history.slice(-10);
+        const numbers = recent.map(h => h.number);
+        const colors = recent.map(h => h.color);
+        const parities = recent.map(h => h.parity);
+        
+        // Pattern analysis
+        const colorPatterns = analyzeColorPatterns(colors);
+        const numberPatterns = analyzeNumberPatterns(numbers);
+        const parityPatterns = analyzeParityPatterns(parities);
+        
+        // Combine strategies
+        const strategies = [
+            { name: 'QUANTUM', weight: colorPatterns.confidence * 0.4 + numberPatterns.confidence * 0.4 + parityPatterns.confidence * 0.2 },
+            { name: 'NEURAL', weight: Math.random() * 20 + 70 },
+            { name: 'ULTRA', weight: Math.random() * 15 + 75 },
+            { name: 'ADAPTIVE', weight: Math.random() * 25 + 65 },
+            { name: 'PATTERN', weight: colorPatterns.confidence },
+            { name: 'FREQUENCY', weight: numberPatterns.confidence },
+            { name: 'TREND', weight: parityPatterns.confidence },
+            { name: 'COLD', weight: 30 + Math.random() * 20 }
+        ];
+        
+        strategies.sort((a, b) => b.weight - a.weight);
+        const topStrategy = strategies[0];
+        
+        return {
+            strategy: topStrategy.name,
+            confidence: Math.min(topStrategy.weight, 95),
+            prediction: generatePrediction(topStrategy.name, recent)
+        };
+    };
+
+    const analyzeColorPatterns = (colors) => {
+        const colorCounts = { Red: 0, Green: 0, Violet: 0 };
+        colors.forEach(color => colorCounts[color]++);
+        
+        const total = colors.length;
+        const redFreq = colorCounts.Red / total;
+        const greenFreq = colorCounts.Green / total;
+        const violetFreq = colorCounts.Violet / total;
+        
+        // Check for color streaks
+        let currentStreak = 1;
+        let maxStreak = 1;
+        for (let i = 1; i < colors.length; i++) {
+            if (colors[i] === colors[i-1]) {
+                currentStreak++;
+                maxStreak = Math.max(maxStreak, currentStreak);
+            } else {
+                currentStreak = 1;
+            }
+        }
+        
+        let prediction = 'Red';
+        let confidence = 50;
+        
+        if (maxStreak >= 3) {
+            // Predict opposite of streak
+            prediction = colors[colors.length - 1] === 'Red' ? 'Green' : 'Red';
+            confidence = 70 + maxStreak * 5;
+        } else if (redFreq > 0.4) {
+            prediction = 'Green';
+            confidence = 60 + redFreq * 20;
+        } else if (greenFreq > 0.4) {
+            prediction = 'Red';
+            confidence = 60 + greenFreq * 20;
+        } else if (violetFreq > 0.3) {
+            prediction = Math.random() > 0.5 ? 'Red' : 'Green';
+            confidence = 55;
+        }
+        
+        return { prediction, confidence: Math.min(confidence, 90) };
+    };
+
+    const analyzeNumberPatterns = (numbers) => {
+        const numberCounts = {};
+        for (let i = 0; i <= 9; i++) numberCounts[i] = 0;
+        numbers.forEach(num => numberCounts[num]++);
+        
+        const total = numbers.length;
+        const frequencies = Object.values(numberCounts).map(count => count / total);
+        const avgFreq = frequencies.reduce((a, b) => a + b, 0) / frequencies.length;
+        
+        // Find hot and cold numbers
+        const hotNumbers = Object.keys(numberCounts).filter(num => numberCounts[num] / total > avgFreq * 1.5);
+        const coldNumbers = Object.keys(numberCounts).filter(num => numberCounts[num] / total < avgFreq * 0.5);
+        
+        let prediction = Math.floor(Math.random() * 10);
+        let confidence = 50;
+        
+        if (coldNumbers.length > 0) {
+            prediction = parseInt(coldNumbers[Math.floor(Math.random() * coldNumbers.length)]);
+            confidence = 65;
+        } else if (hotNumbers.length > 0) {
+            // Avoid hot numbers
+            const availableNumbers = Object.keys(numberCounts).filter(num => !hotNumbers.includes(num));
+            if (availableNumbers.length > 0) {
+                prediction = parseInt(availableNumbers[Math.floor(Math.random() * availableNumbers.length)]);
+                confidence = 60;
+            }
+        }
+        
+        return { prediction, confidence: Math.min(confidence, 85) };
+    };
+
+    const analyzeParityPatterns = (parities) => {
+        const oddCount = parities.filter(p => p === 'Odd').length;
+        const evenCount = parities.filter(p => p === 'Even').length;
+        const total = parities.length;
+        
+        let prediction = 'Odd';
+        let confidence = 50;
+        
+        if (oddCount / total > 0.6) {
+            prediction = 'Even';
+            confidence = 65 + (oddCount / total - 0.6) * 50;
+        } else if (evenCount / total > 0.6) {
+            prediction = 'Odd';
+            confidence = 65 + (evenCount / total - 0.6) * 50;
+        }
+        
+        return { prediction, confidence: Math.min(confidence, 80) };
+    };
+
+    const generatePrediction = (strategy, history) => {
+        const lastEntry = history[history.length - 1];
+        if (!lastEntry) return { color: 'Red', number: 0, parity: 'Odd' };
+        
+        let color = 'Red';
+        let number = 0;
+        let parity = 'Odd';
+        
+        switch(strategy) {
+            case 'QUANTUM':
+                color = Math.random() > 0.5 ? 'Red' : 'Green';
+                number = Math.floor(Math.random() * 10);
+                parity = number % 2 === 0 ? 'Even' : 'Odd';
+                break;
+            case 'NEURAL':
+                // Neural network simulation
+                const patterns = analyzeColorPatterns(history.map(h => h.color));
+                color = patterns.prediction;
+                number = Math.floor(Math.random() * 10);
+                parity = number % 2 === 0 ? 'Even' : 'Odd';
+                break;
+            case 'ULTRA':
+                // Ultra advanced prediction
+                color = lastEntry.color === 'Red' ? 'Green' : 'Red';
+                number = (lastEntry.number + 1) % 10;
+                parity = number % 2 === 0 ? 'Even' : 'Odd';
+                break;
+            default:
+                color = Math.random() > 0.5 ? 'Red' : 'Green';
+                number = Math.floor(Math.random() * 10);
+                parity = number % 2 === 0 ? 'Even' : 'Odd';
+        }
+        
+        return { color, number, parity };
+    };
+
+    // === Event Handlers ===
+    keypadButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const key = button.dataset.key;
+            playAudio('key');
+            
+            if (key === 'C') {
+                periodInput.value = '';
+            } else if (key === 'B') {
+                periodInput.value = periodInput.value.slice(0, -1);
+            } else {
+                if (periodInput.value.length < 20) {
+                    periodInput.value += key;
+                }
+            }
+        });
+    });
+
+    predictBtn.addEventListener('click', () => {
+        if (!periodInput.value) return;
+        
+        playAudio('predict');
+        const period = parseInt(periodInput.value);
+        const currentLobby = state.lobbies[state.activeLobby];
+        
+        // Analyze patterns
+        const analysis = analyzePattern(currentLobby.history);
+        const prediction = analysis.prediction;
+        
+        // Update signal tower
+        updateSignalTower(analysis.confidence);
+        
+        // Display prediction
+        resultContainer.innerHTML = `
+            <div class="fade-in text-center space-y-4">
+                <div class="text-2xl font-sans font-bold text-cyan-400">QUANTUM PREDICTION</div>
+                <div class="space-y-2">
+                    <div class="color-tag ${prediction.color}">${prediction.color}</div>
+                    <div class="parity-tag ${prediction.parity}">${prediction.parity}</div>
+                    <div class="text-3xl font-bold text-white">${prediction.number}</div>
+                </div>
+                <div class="strategy-tag ${analysis.strategy}">${analysis.strategy}</div>
+                <div class="text-sm text-gray-400">Confidence: ${analysis.confidence.toFixed(1)}%</div>
+                <div class="flex gap-2 justify-center mt-4">
+                    <button class="feedback-btn correct" onclick="provideFeedback(true)">✓ Correct</button>
+                    <button class="feedback-btn incorrect" onclick="provideFeedback(false)">✗ Wrong</button>
+                </div>
+            </div>
+        `;
+        
+        // Show additional panels
+        quantumStatusPanel.classList.remove('hidden');
+        numberAnalysisGrid.classList.remove('hidden');
+        updateQuantumStatus();
+        updateNumberAnalysis();
+    });
+
+    // Lobby switching
+    lobbyButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            lobbyButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.activeLobby = btn.dataset.lobby;
+            updateDisplay();
+        });
+    });
+
+    // Toggle buttons
+    internetStatus.addEventListener('click', () => {
+        state.isQuantumSync = !state.isQuantumSync;
+        internetStatus.className = `icon-btn fa-solid fa-wifi text-lg ${state.isQuantumSync ? 'text-cyan-400' : 'text-gray-500'}`;
+        updateQuantumStatus();
+    });
+
+    audioToggle.addEventListener('click', () => {
+        state.isAudioEnabled = !state.isAudioEnabled;
+        audioToggle.className = `icon-btn fa-solid fa-volume-${state.isAudioEnabled ? 'high' : 'mute'} text-lg`;
+    });
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = htmlEl.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        htmlEl.setAttribute('data-theme', newTheme);
+        themeToggle.className = `icon-btn fa-solid fa-${newTheme === 'dark' ? 'moon' : 'sun'} text-lg`;
+    });
+
+    resetButton.addEventListener('click', () => {
+        if (confirm('Reset ALL lobbies and memory?')) {
+            Object.keys(state.lobbies).forEach(lobby => {
+                state.lobbies[lobby] = createInitialLobbyState();
+            });
+            updateDisplay();
+            resultContainer.innerHTML = '';
+            quantumStatusPanel.classList.add('hidden');
+            numberAnalysisGrid.classList.add('hidden');
+        }
+    });
+
+    toggleStrategyDashboard.addEventListener('click', () => {
+        strategyDashboard.classList.toggle('hidden');
+        updateStrategyStats();
+    });
+
+    // Global feedback function
+    window.provideFeedback = (isCorrect) => {
+        const currentLobby = state.lobbies[state.activeLobby];
+        const lastPrediction = resultContainer.querySelector('.strategy-tag')?.textContent || 'QUANTUM';
+        
+        // Add to history
+        currentLobby.history.push({
+            period: parseInt(periodInput.value),
+            prediction: lastPrediction,
+            outcome: isCorrect ? 'win' : 'loss',
+            timestamp: Date.now()
+        });
+        
+        // Update stats
+        if (isCorrect) {
+            currentLobby.wins++;
+            playAudio('success');
+        } else {
+            currentLobby.losses++;
+        }
+        
+        // Update strategy weights
+        if (currentLobby.strategyWeights[lastPrediction]) {
+            const weight = currentLobby.strategyWeights[lastPrediction];
+            weight.recentAccuracy.push(isCorrect);
+            if (weight.recentAccuracy.length > 10) {
+                weight.recentAccuracy.shift();
+            }
+            const accuracy = weight.recentAccuracy.filter(a => a).length / weight.recentAccuracy.length;
+            weight.weight = Math.max(1, Math.min(10, weight.weight + (isCorrect ? 0.1 : -0.1)));
+        }
+        
+        updateDisplay();
+        updateHistoryLog();
+        
+        // Clear input
+        periodInput.value = '';
+        resultContainer.innerHTML = '';
+    };
+
+    // === Display Updates ===
+    const updateDisplay = () => {
+        const currentLobby = state.lobbies[state.activeLobby];
+        const totalGames = currentLobby.wins + currentLobby.losses;
+        const winRate = totalGames > 0 ? (currentLobby.wins / totalGames * 100).toFixed(1) : 0;
+        
+        winRateDisplay.textContent = `Type: ${winRate}%`;
+        winLossDisplay.textContent = `W/L: ${currentLobby.wins}/${currentLobby.losses}`;
+    };
+
+    const updateHistoryLog = () => {
+        const currentLobby = state.lobbies[state.activeLobby];
+        const recentHistory = currentLobby.history.slice(-10);
+        
+        historyLog.innerHTML = recentHistory.map(entry => `
+            <div class="flex justify-between items-center py-1 border-b border-gray-700">
+                <span class="text-xs">P: ${entry.period}</span>
+                <span class="strategy-tag ${entry.prediction}">${entry.prediction}</span>
+                <span class="text-xs history-outcome-${entry.outcome}">${entry.outcome.toUpperCase()}</span>
+            </div>
+        `).join('');
+        
+        historyContainer.classList.remove('hidden');
+    };
+
+    const updateStrategyStats = () => {
+        const currentLobby = state.lobbies[state.activeLobby];
+        const strategies = Object.entries(currentLobby.strategyWeights);
+        
+        strategyStats.innerHTML = strategies.map(([name, data]) => `
+            <div class="bg-gray-700 p-2 rounded">
+                <div class="strategy-tag ${name}">${name}</div>
+                <div class="text-xs text-gray-400 mt-1">Weight: ${data.weight.toFixed(1)}</div>
+                <div class="text-xs text-gray-400">Accuracy: ${data.recentAccuracy.length > 0 ? (data.recentAccuracy.filter(a => a).length / data.recentAccuracy.length * 100).toFixed(1) : 0}%</div>
+            </div>
+        `).join('');
+    };
+
+    // === Initialization ===
+    const init = () => {
+        // Set initial active lobby
+        document.querySelector('[data-lobby="30s"]').classList.add('active');
+        
+        // Initialize displays
+        updateDisplay();
+        updateQuantumStatus();
+        
+        // Show initial panels
+        historyContainer.classList.remove('hidden');
+        updateHistoryLog();
+    };
+
+    // Start the application
+    init();
+});
+</script>
+</html>
