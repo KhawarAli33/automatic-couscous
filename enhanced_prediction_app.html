@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <title>CHIMERA QUANTUM v21.0 :: Ultimate Prediction Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #00e5ff;
+            --secondary: #9d00ff;
+            --success: #28a745;
+            --warning: #ffcc00;
+            --danger: #dc3545;
+            --dark: #0f172a;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        input {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: radial-gradient(circle at center, #0f172a, #000);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .font-sans { font-family: 'Orbitron', sans-serif; }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        @keyframes pulse { 
+            0% { transform: scale(1); } 
+            50% { transform: scale(1.05); } 
+            100% { transform: scale(1); } 
+        }
+        
+        @keyframes glow { 
+            0% { box-shadow: 0 0 5px var(--primary); } 
+            50% { box-shadow: 0 0 20px var(--primary); } 
+            100% { box-shadow: 0 0 5px var(--primary); } 
+        }
+        
+        @keyframes scanning { 
+            0% { transform: translateX(-100%); } 
+            100% { transform: translateX(100%); } 
+        }
+        
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .panel {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 229, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .signal-segment { 
+            transition: all 0.4s ease; 
+            border-radius: 4px; 
+        }
+        .signal-segment.lit-green { 
+            background-color: var(--success); 
+            box-shadow: 0 0 10px var(--success); 
+        }
+        .signal-segment.lit-blue { 
+            background-color: var(--primary); 
+            box-shadow: 0 0 10px var(--primary); 
+        }
+        .signal-segment.lit-yellow { 
+            background-color: var(--warning); 
+            box-shadow: 0 0 10px var(--warning); 
+        }
+        .signal-segment.lit-red { 
+            background-color: var(--danger); 
+            box-shadow: 0 0 10px var(--danger); 
+        }
+        .signal-segment.lit-purple { 
+            background-color: var(--secondary); 
+            box-shadow: 0 0 10px var(--secondary); 
+        }
+        
+        .key-button {
+            transition: all 0.2s;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            box-shadow: 3px 3px 6px #0a0f1a, -3px -3px 6px #141f3a;
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            font-weight: 600;
+        }
+        .key-button:hover:not(:disabled) { 
+            transform: scale(1.05); 
+            border-color: var(--primary);
+        }
+        .key-button:active { 
+            transform: scale(0.95); 
+            box-shadow: inset 2px 2px 4px #0a0f1a, inset -2px -2px 4px #141f3a; 
+        }
+        
+        .predict-button {
+            transition: all 0.3s;
+            background: var(--gradient);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5), 0 0 15px rgba(157, 0, 255, 0.5);
+            letter-spacing: 1px;
+            font-weight: 700;
+            animation: glow 2s infinite;
+        }
+        .predict-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px var(--primary), 0 0 25px var(--secondary);
+            animation: none;
+        }
+        .predict-button:disabled {
+            opacity: 0.6;
+            animation: none;
+            cursor: not-allowed;
+        }
+        
+        .lobby-btn {
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .lobby-btn.active {
+            text-shadow: 0 0 10px var(--primary);
+            color: var(--primary);
+            background: rgba(0, 229, 255, 0.1);
+            border-color: var(--primary);
+        }
+        .lobby-btn:hover:not(.active) { 
+            color: var(--primary); 
+        }
+        
+        .icon-btn {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-shadow: 0 0 5px currentColor;
+        }
+        .icon-btn:hover {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+        
+        .strategy-tag {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            border: 1px solid currentColor;
+            background: rgba(0, 0, 0, 0.3);
+            text-shadow: 0 0 3px currentColor;
+        }
+        
+        .QUANTUM { color: #00e5ff; }
+        .ADAPTIVE { color: #a78bfa; }
+        .PATTERN { color: #f472b6; }
+        .FREQUENCY { color: #fbbf24; }
+        .TREND { color: #34d399; }
+        .COLD { color: #fdba74; }
+        .HYBRID { color: #6ee7b7; }
+        
+        .color-tag {
+            border: 1px solid currentColor;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .color-tag.Green { color: var(--success); }
+        .color-tag.Red { color: var(--danger); }
+        .color-tag.Violet { color: var(--secondary); }
+        
+        .parity-tag {
+            border: 1px solid currentColor;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .parity-tag.Odd { color: #fde047; }
+        .parity-tag.Even { color: #60a5fa; }
+        
+        .size-tag {
+            border: 1px solid currentColor;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .size-tag.Big { color: #f472b6; }
+        .size-tag.Small { color: #60a5fa; }
+        
+        .feedback-btn {
+            transition: all 0.2s;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 2px solid;
+            font-weight: 600;
+        }
+        .feedback-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+        .feedback-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        .pulse-anim { animation: pulse 1.5s infinite; }
+        
+        .quantum-core {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(157, 0, 255, 0.1));
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: rgba(0, 229, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.8), transparent);
+            animation: scanning 2s linear infinite;
+        }
+        
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+        
+        .number-item {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            min-height: 50px;
+        }
+        
+        .number-item.hot {
+            border-color: rgba(220, 53, 69, 0.5);
+            background: rgba(220, 53, 69, 0.1);
+        }
+        
+        .number-item.cold {
+            border-color: rgba(253, 186, 116, 0.5);
+            background: rgba(253, 186, 116, 0.1);
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .key-button {
+                padding: 12px;
+                font-size: 1.2rem;
+            }
+            
+            .panel {
+                margin: 0 8px;
+            }
+            
+            .number-item {
+                font-size: 0.8rem;
+                min-height: 40px;
+                padding: 4px;
+            }
+        }
+        
+        /* Light theme */
+        [data-theme="light"] {
+            --dark: #f8fafc;
+            --primary: #0ea5e9;
+            --secondary: #8b5cf6;
+        }
+        
+        [data-theme="light"] body {
+            background: radial-gradient(circle at center, #f8fafc, #e2e8f0);
+            color: #1e293b;
+        }
+        
+        [data-theme="light"] .panel {
+            background: linear-gradient(145deg, rgba(248, 250, 252, 0.9), rgba(226, 232, 240, 0.9));
+            border-color: rgba(14, 165, 233, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 15px rgba(14, 165, 233, 0.1);
+        }
+        
+        [data-theme="light"] .key-button {
+            background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+            color: #1e293b;
+            box-shadow: 3px 3px 6px #cbd5e1, -3px -3px 6px #ffffff;
+        }
+        
+        [data-theme="light"] .signal-segment {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body class="text-gray-100 flex flex-col items-center min-h-screen p-4 relative">
+    <div class="grid-bg"></div>
+    
+    <!-- Header -->
+    <div class="w-full max-w-md panel flex justify-between items-center p-4 mb-6">
+        <div class="flex items-center gap-2">
+            <div class="text-left text-xs text-gray-400">
+                <div>B/S: <span id="winRateBS" class="text-cyan-400">0%</span> (<span id="winLossBS">0/0</span>)</div>
+                <div>O/E: <span id="winRateOE" class="text-cyan-400">0%</span> (<span id="winLossOE">0/0</span>)</div>
+                <div>Color: <span id="winRateColor" class="text-cyan-400">0%</span> (<span id="winLossColor">0/0</span>)</div>
+            </div>
+        </div>
+        
+        <div class="font-sans text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-purple-500 tracking-tighter text-center">
+            CHIMERA<br><span class="text-xs text-pink-500">QUANTUM v21.0</span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <i id="aiModeToggle" class="icon-btn fa-solid fa-brain text-lg text-green-400" title="AI Mode: ON"></i>
+            <i id="themeToggle" class="icon-btn fa-solid fa-moon text-lg" title="Toggle Theme"></i>
+            <i id="resetButton" class="icon-btn fa-solid fa-arrows-rotate text-lg" title="Reset System"></i>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-full max-w-md panel p-6 flex flex-col gap-6">
+        <!-- Lobby Selector -->
+        <div class="flex justify-around bg-gray-900 p-1 rounded-lg mb-2">
+            <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="30s">30s</button>
+            <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="1m">1m</button>
+            <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="3m">3m</button>
+            <button class="lobby-btn text-gray-400 px-3 py-1 font-sans text-sm rounded-md transition-colors" data-lobby="5m">5m</button>
+        </div>
+        
+        <!-- Quantum Core Input -->
+        <div class="flex flex-col gap-4 quantum-core p-4 rounded-lg">
+            <div class="progress-bar rounded-full mb-2"></div>
+            <input id="periodInput" class="w-full bg-gray-900 border border-cyan-500/30 text-cyan-400 font-sans text-2xl text-center rounded-lg p-3 shadow-inner shadow-cyan-500/10 focus:outline-none focus:ring-1 focus:ring-cyan-500" type="text" maxlength="20" placeholder="Enter Period..." autocomplete="off">
+            
+            <!-- Keypad -->
+            <div class="grid grid-cols-3 gap-2">
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="1">1</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="2">2</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="3">3</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="4">4</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="5">5</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="6">6</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="7">7</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="8">8</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="9">9</button>
+                <button class="key-button bg-rose-700 hover:bg-rose-600 border-rose-600 text-white font-sans text-lg rounded-lg p-3" data-key="C">C</button>
+                <button class="key-button text-white font-sans text-xl rounded-lg p-3" data-key="0">0</button>
+                <button class="key-button bg-amber-700 hover:bg-amber-600 border-amber-600 text-white font-sans text-lg rounded-lg p-3" data-key="B">←</button>
+            </div>
+            
+            <button id="predictButton" class="predict-button text-white font-sans text-lg py-4 rounded-lg uppercase tracking-wider">
+                <i class="fa-solid fa-bolt"></i> Quantum Predict
+            </button>
+        </div>
+        
+        <!-- Results Container -->
+        <div id="resultContainer" class="min-h-[200px] flex justify-center items-center"></div>
+        
+        <!-- Confidence Indicator -->
+        <div class="mt-2 px-4">
+            <div class="flex justify-between mb-2">
+                <h5 class="text-sm text-gray-400 font-sans tracking-widest">QUANTUM CONFIDENCE</h5>
+                <span id="confidenceValue" class="text-sm font-bold text-cyan-400">0%</span>
+            </div>
+            <div id="signalTower" class="flex flex-col-reverse gap-2 w-full mx-auto">
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+                <div class="signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hot/Cold Numbers & Stats -->
+    <div class="w-full max-w-md grid grid-cols-2 gap-4 mt-6">
+        <div class="panel p-4">
+            <h4 class="font-sans font-bold text-center mb-3 text-red-400 text-sm">HOT NUMBERS</h4>
+            <div class="number-grid" id="hotGrid"></div>
+            <div class="text-xs text-gray-500 mt-2 text-center">Highest frequency</div>
+        </div>
+        <div class="panel p-4">
+            <h4 class="font-sans font-bold text-center mb-3 text-orange-400 text-sm">COLD NUMBERS</h4>
+            <div class="number-grid" id="coldGrid"></div>
+            <div class="text-xs text-gray-500 mt-2 text-center">Lowest frequency</div>
+        </div>
+    </div>
+
+    <!-- History Log -->
+    <div id="historyContainer" class="hidden w-full max-w-md panel p-4 mt-6">
+        <div class="flex justify-between items-center mb-2">
+            <h4 class="font-sans text-lg font-bold">SESSION HISTORY</h4>
+            <button id="toggleHistory" class="text-xs bg-gray-700 px-2 py-1 rounded hover:bg-gray-600">
+                <i class="fas fa-eye-slash"></i> Hide
+            </button>
+        </div>
+        <div id="historyLog" class="max-h-48 overflow-y-auto pr-2"></div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // === Cached DOM Elements ===
+        const elements = {
+            periodInput: document.getElementById("periodInput"),
+            keypadButtons: document.querySelectorAll(".key-button"),
+            predictBtn: document.getElementById("predictButton"),
+            resultContainer: document.getElementById("resultContainer"),
+            themeToggle: document.getElementById("themeToggle"),
+            resetButton: document.getElementById("resetButton"),
+            aiModeToggle: document.getElementById("aiModeToggle"),
+            signalTower: document.getElementById("signalTower"),
+            confidenceValue: document.getElementById("confidenceValue"),
+            lobbyButtons: document.querySelectorAll('.lobby-btn'),
+            historyContainer: document.getElementById("historyContainer"),
+            historyLog: document.getElementById("historyLog"),
+            toggleHistory: document.getElementById("toggleHistory"),
+            hotGrid: document.getElementById("hotGrid"),
+            coldGrid: document.getElementById("coldGrid"),
+            winRateBS: document.getElementById("winRateBS"),
+            winLossBS: document.getElementById("winLossBS"),
+            winRateOE: document.getElementById("winRateOE"),
+            winLossOE: document.getElementById("winLossOE"),
+            winRateColor: document.getElementById("winRateColor"),
+            winLossColor: document.getElementById("winLossColor"),
+            htmlEl: document.documentElement
+        };
+
+        // === State Management ===
+        const createInitialLobbyState = () => ({
+            history: [],
+            stats: {
+                bigSmall: { wins: 0, losses: 0 },
+                oddEven: { wins: 0, losses: 0 },
+                color: { wins: 0, losses: 0 }
+            },
+            strategyWeights: {
+                "QUANTUM": { weight: 9.0, recentAccuracy: [] },
+                "ADAPTIVE": { weight: 8.5, recentAccuracy: [] },
+                "PATTERN": { weight: 8.0, recentAccuracy: [] },
+                "FREQUENCY": { weight: 7.5, recentAccuracy: [] },
+                "TREND": { weight: 7.0, recentAccuracy: [] }
+            }
+        });
+        
+        let state = {
+            isAiMode: true,
+            activeLobby: '30s',
+            lobbies: {
+                '30s': createInitialLobbyState(),
+                '1m': createInitialLobbyState(),
+                '3m': createInitialLobbyState(),
+                '5m': createInitialLobbyState()
+            }
+        };
+        
+        let currentPrediction = null;
+        let isProcessing = false;
+        
+        // === Utility Functions ===
+        const sanitizeText = (text) => {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        };
+        
+        const getColorFromNumber = (num) => {
+            if ([1, 3, 7, 9].includes(num)) return 'Red';
+            if ([2, 4, 6, 8].includes(num)) return 'Green';
+            if ([0, 5].includes(num)) return 'Violet';
+            return 'Unknown';
+        };
+        
+        const getBigSmall = (num) => (num >= 5 ? 'Big' : 'Small');
+        const getOddEven = (num) => (num % 2 === 0 ? 'Even' : 'Odd');
+        
+        const playSound = (type) => {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                const now = audioCtx.currentTime;
+                osc.type = "sine";
+                
+                switch (type) {
+                    case 'beep': osc.frequency.setValueAtTime(620, now); break;
+                    case 'success': osc.frequency.setValueAtTime(800, now); break;
+                    case 'error': osc.frequency.setValueAtTime(200, now); break;
+                    default: osc.frequency.setValueAtTime(440, now); break;
+                }
+                
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        };
+        
+        // === AI Prediction Engine ===
+        const chimeraQuantumCore = (history, strategyWeights) => {
+            if (history.length < 3) {
+                const num = Math.floor(Math.random() * 10);
+                return {
+                    number: num,
+                    color: getColorFromNumber(num),
+                    size: getBigSmall(num),
+                    parity: getOddEven(num),
+                    confidence: 35,
+                    strategy: "QUANTUM",
+                    reason: 'Insufficient data, quantum initialization'
+                };
+            }
+
+            const recent = history.slice(-20);
+            const frequencies = {};
+            for (let i = 0; i <= 9; i++) {
+                frequencies[i] = recent.filter(h => h.number === i).length;
+            }
+            
+            // Find hot and cold numbers
+            const sortedByFreq = Object.entries(frequencies)
+                .sort((a, b) => b[1] - a[1]);
+            
+            const hotNumbers = sortedByFreq.slice(0, 3).map(([num]) => parseInt(num));
+            const coldNumbers = sortedByFreq.slice(-3).map(([num]) => parseInt(num));
+            
+            // Pattern analysis
+            const lastNumbers = recent.slice(-5).map(h => h.number);
+            const patterns = {
+                sequential: lastNumbers.some((num, i) => i > 0 && num === lastNumbers[i-1] + 1),
+                repeating: lastNumbers.some((num, i) => i > 0 && num === lastNumbers[i-1]),
+                alternating: lastNumbers.length >= 3 && 
+                    lastNumbers.slice(-3).every((num, i) => i === 0 || 
+                    (i === 1 && num !== lastNumbers[i-1]) || 
+                    (i === 2 && num === lastNumbers[i-2]))
+            };
+            
+            // Strategy selection based on patterns
+            let selectedStrategy = "QUANTUM";
+            let confidence = 50;
+            let targetNumber;
+            
+            if (patterns.repeating && recent.length >= 3) {
+                selectedStrategy = "PATTERN";
+                confidence = 75;
+                // Avoid last number
+                const lastNum = recent[recent.length - 1].number;
+                const candidates = [0,1,2,3,4,5,6,7,8,9].filter(n => n !== lastNum);
+                targetNumber = candidates[Math.floor(Math.random() * candidates.length)];
+            } else if (patterns.alternating) {
+                selectedStrategy = "ADAPTIVE";
+                confidence = 70;
+                // Continue alternating pattern
+                const last = recent[recent.length - 1].number;
+                const secondLast = recent[recent.length - 2].number;
+                targetNumber = secondLast;
+            } else if (hotNumbers.length > 0 && Math.random() > 0.6) {
+                selectedStrategy = "FREQUENCY";
+                confidence = 65;
+                targetNumber = hotNumbers[Math.floor(Math.random() * hotNumbers.length)];
+            } else {
+                selectedStrategy = "TREND";
+                confidence = 60;
+                targetNumber = coldNumbers[Math.floor(Math.random() * coldNumbers.length)];
+            }
+            
+            // Fallback if no target selected
+            if (targetNumber === undefined) {
+                targetNumber = Math.floor(Math.random() * 10);
+            }
+            
+            return {
+                number: targetNumber,
+                color: getColorFromNumber(targetNumber),
+                size: getBigSmall(targetNumber),
+                parity: getOddEven(targetNumber),
+                confidence: Math.min(confidence, 95),
+                strategy: selectedStrategy,
+                reason: `${selectedStrategy} analysis: Pattern detected with ${confidence}% confidence`
+            };
+        };
+        
+        // === UI Update Functions ===
+        const saveState = () => {
+            try {
+                localStorage.setItem('chimeraQuantumState_v21', JSON.stringify(state));
+            } catch (e) {
+                console.error("Could not save state:", e);
+            }
+        };
+        
+        const updateSignalTower = (prediction) => {
+            const confidence = prediction ? prediction.confidence : 0;
+            elements.confidenceValue.textContent = `${confidence}%`;
+            
+            let colorClass = 'lit-red';
+            let segmentsToLight = 1;
+            
+            if (prediction?.strategy === 'QUANTUM') colorClass = 'lit-purple';
+            else if (confidence >= 85) { colorClass = 'lit-green'; segmentsToLight = 5; }
+            else if (confidence >= 75) { colorClass = 'lit-blue'; segmentsToLight = 4; }
+            else if (confidence >= 65) { colorClass = 'lit-blue'; segmentsToLight = 3; }
+            else if (confidence >= 50) { colorClass = 'lit-yellow'; segmentsToLight = 2; }
+            
+            if (!prediction) segmentsToLight = 0;
+            
+            // Light segments from bottom to top (reversed due to flex-col-reverse)
+            const segments = elements.signalTower.children;
+            for (let i = 0; i < segments.length; i++) {
+                const segment = segments[i];
+                segment.className = 'signal-segment w-full h-4 rounded bg-gray-700 border border-gray-600/50';
+                if (i < segmentsToLight) {
+                    segment.classList.add(colorClass);
+                }
+            }
+        };
+        
+        const updateHotColdNumbers = () => {
+            const history = state.lobbies[state.activeLobby].history;
+            if (history.length === 0) {
+                elements.hotGrid.innerHTML = '';
+                elements.coldGrid.innerHTML = '';
+                return;
+            }
+            
+            const frequencies = {};
+            for (let i = 0; i <= 9; i++) {
+                frequencies[i] = history.filter(h => h.number === i).length;
+            }
+            
+            const sorted = Object.entries(frequencies)
+                .sort((a, b) => b[1] - a[1]);
+            
+            const hot = sorted.slice(0, 5);
+            const cold = sorted.slice(-5).reverse();
+            
+            elements.hotGrid.innerHTML = hot.map(([num, freq]) => 
+                `<div class="number-item hot">
+                    <div class="text-white font-bold">${num}</div>
+                    <div class="text-red-400 text-xs">${freq}</div>
+                </div>`
+            ).join('');
+            
+            elements.coldGrid.innerHTML = cold.map(([num, freq]) => 
+                `<div class="number-item cold">
+                    <div class="text-white font-bold">${num}</div>
+                    <div class="text-orange-400 text-xs">${freq}</div>
+                </div>`
+            ).join('');
+        };
+        
+        const updateStats = () => {
+            const lobbyData = state.lobbies[state.activeLobby];
+            const { bigSmall, oddEven, color } = lobbyData.stats;
+            
+            const bsTotal = bigSmall.wins + bigSmall.losses;
+            const oeTotal = oddEven.wins + oddEven.losses;
+            const colorTotal = color.wins + color.losses;
+            
+            elements.winRateBS.textContent = bsTotal > 0 ? `${Math.round((bigSmall.wins / bsTotal) * 100)}%` : '0%';
+            elements.winLossBS.textContent = `${bigSmall.wins}/${bigSmall.losses}`;
+            
+            elements.winRateOE.textContent = oeTotal > 0 ? `${Math.round((oddEven.wins / oeTotal) * 100)}%` : '0%';
+            elements.winLossOE.textContent = `${oddEven.wins}/${oddEven.losses}`;
+            
+            elements.winRateColor.textContent = colorTotal > 0 ? `${Math.round((color.wins / colorTotal) * 100)}%` : '0%';
+            elements.winLossColor.textContent = `${color.wins}/${color.losses}`;
+        };
+        
+        const updateHistoryLog = () => {
+            const history = state.lobbies[state.activeLobby].history;
+            
+            if (history.length === 0) {
+                elements.historyContainer.classList.add('hidden');
+                return;
+            }
+            
+            elements.historyContainer.classList.remove('hidden');
+            elements.historyLog.innerHTML = '';
+            
+            history.slice().reverse().slice(0, 20).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center py-2 border-b border-gray-700/50 text-sm';
+                div.innerHTML = `
+                    <span class="text-gray-400">#${sanitizeText(item.period.slice(-4))}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-white font-bold text-lg">${item.number}</span>
+                        <span class="color-tag ${item.color}">${item.color}</span>
+                        <span class="size-tag ${item.size}">${item.size.charAt(0)}</span>
+                        <span class="parity-tag ${item.parity}">${item.parity.charAt(0)}</span>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="strategy-tag ${item.strategy}">${item.strategy}</span>
+                        <span class="text-xs ${item.accuracy >= 0.6 ? 'text-green-400' : 'text-red-400'}">${Math.round(item.accuracy * 100)}%</span>
+                    </div>
+                `;
+                elements.historyLog.appendChild(div);
+            });
+        };
+        
+        const switchLobby = (lobbyId) => {
+            state.activeLobby = lobbyId;
+            elements.lobbyButtons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lobby-btn[data-lobby="${lobbyId}"]`).classList.add('active');
+            updateStats();
+            updateHistoryLog();
+            updateHotColdNumbers();
+            elements.resultContainer.innerHTML = '';
+            updateSignalTower(null);
+        };
+        
+        // === Event Handlers ===
+        const handlePrediction = async () => {
+            if (isProcessing) return;
+            
+            const period = elements.periodInput.value.trim();
+            if (!period || period.length < 4) {
+                playSound('error');
+                return;
+            }
+            
+            const lobbyData = state.lobbies[state.activeLobby];
+            if (lobbyData.history.some(h => h.period === period)) {
+                playSound('error');
+                return;
+            }
+            
+            isProcessing = true;
+            elements.predictBtn.disabled = true;
+            elements.resultContainer.innerHTML = '<div class="animate-pulse text-2xl text-cyan-400 font-sans">Quantum Analysis...</div>';
+            
+            // Simulate processing time
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            if (state.isAiMode) {
+                currentPrediction = chimeraQuantumCore(lobbyData.history, lobbyData.strategyWeights);
+            } else {
+                const num = Math.floor(Math.random() * 10);
+                currentPrediction = {
+                    number: num,
+                    color: getColorFromNumber(num),
+                    size: getBigSmall(num),
+                    parity: getOddEven(num),
+                    confidence: 50,
+                    strategy: "RANDOM",
+                    reason: 'AI Mode disabled, random selection'
+                };
+            }
+            
+            currentPrediction.period = period;
+            displayResult(currentPrediction);
+            updateSignalTower(currentPrediction);
+            
+            isProcessing = false;
+        };
+        
+        const displayResult = (prediction) => {
+            const { number, color, size, parity, confidence, strategy, reason } = prediction;
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'w-full panel p-4 fade-in';
+            resultDiv.innerHTML = `
+                <h4 class="font-sans text-lg font-bold text-center mb-3 flex items-center justify-center gap-2">
+                    <i class="fas fa-atom text-cyan-400"></i> 
+                    QUANTUM PREDICTION 
+                    <span class="strategy-tag ${strategy}">${strategy}</span>
+                </h4>
+                <div class="text-center text-sm mb-3">
+                    Confidence: <span class="font-bold text-cyan-400">${confidence}%</span>
+                </div>
+                <div class="bg-gray-800 text-xs text-gray-300 p-3 rounded-lg mb-4 border-l-4 border-cyan-500">
+                    <strong class="text-cyan-400">ANALYSIS:</strong> ${sanitizeText(reason)}
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="bg-gray-800 p-3 rounded-lg border border-gray-700 text-center">
+                        <div class="text-xs text-gray-400 mb-1">NUMBER</div>
+                        <div class="text-5xl font-bold font-sans text-cyan-400">${number}</div>
+                    </div>
+                    <div class="bg-gray-800 p-3 rounded-lg border border-gray-700 text-center space-y-2">
+                        <div class="color-tag ${color}">${color}</div>
+                        <div class="size-tag ${size}">${size}</div>
+                        <div class="parity-tag ${parity}">${parity}</div>
+                    </div>
+                </div>
+                <div id="feedbackSection" class="space-y-3">
+                    <div class="text-center text-sm text-gray-400 mb-2">Enter actual winning number:</div>
+                    <div class="flex gap-2">
+                        <input id="actualNumber" class="flex-1 bg-gray-900 border border-cyan-500/30 text-cyan-400 font-sans text-2xl text-center rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-cyan-500" type="number" min="0" max="9" maxlength="1" placeholder="0-9">
+                        <button id="submitResult" class="bg-green-600 hover:bg-green-700 text-white font-sans py-2 px-4 rounded-lg transition-colors">
+                            <i class="fas fa-check"></i> Submit
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            elements.resultContainer.innerHTML = '';
+            elements.resultContainer.appendChild(resultDiv);
+            
+            playSound('success');
+            
+            // Add event listeners using proper cleanup
+            const submitBtn = resultDiv.querySelector('#submitResult');
+            const actualInput = resultDiv.querySelector('#actualNumber');
+            
+            const handleSubmit = () => {
+                const actualNum = parseInt(actualInput.value);
+                if (isNaN(actualNum) || actualNum < 0 || actualNum > 9) {
+                    playSound('error');
+                    return;
+                }
+                processFeedback(actualNum);
+            };
+            
+            submitBtn.addEventListener('click', handleSubmit);
+            actualInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleSubmit();
+            });
+            
+            actualInput.focus();
+        };
+        
+        const processFeedback = (actualNumber) => {
+            if (!currentPrediction) return;
+            
+            const actualColor = getColorFromNumber(actualNumber);
+            const actualSize = getBigSmall(actualNumber);
+            const actualParity = getOddEven(actualNumber);
+            
+            // Calculate accuracy
+            let correctPredictions = 0;
+            let totalPredictions = 3; // color, size, parity
+            
+            if (currentPrediction.color === actualColor) correctPredictions++;
+            if (currentPrediction.size === actualSize) correctPredictions++;
+            if (currentPrediction.parity === actualParity) correctPredictions++;
+            
+            const accuracy = correctPredictions / totalPredictions;
+            
+            // Create history entry
+            const historyEntry = {
+                period: currentPrediction.period,
+                number: actualNumber,
+                color: actualColor,
+                size: actualSize,
+                parity: actualParity,
+                predicted: {
+                    number: currentPrediction.number,
+                    color: currentPrediction.color,
+                    size: currentPrediction.size,
+                    parity: currentPrediction.parity
+                },
+                strategy: currentPrediction.strategy,
+                confidence: currentPrediction.confidence,
+                accuracy: accuracy,
+                timestamp: Date.now()
+            };
+            
+            // Update stats
+            const lobbyData = state.lobbies[state.activeLobby];
+            lobbyData.history.push(historyEntry);
+            
+            // Update win/loss stats
+            if (currentPrediction.size === actualSize) {
+                lobbyData.stats.bigSmall.wins++;
+            } else {
+                lobbyData.stats.bigSmall.losses++;
+            }
+            
+            if (currentPrediction.parity === actualParity) {
+                lobbyData.stats.oddEven.wins++;
+            } else {
+                lobbyData.stats.oddEven.losses++;
+            }
+            
+            if (currentPrediction.color === actualColor) {
+                lobbyData.stats.color.wins++;
+            } else {
+                lobbyData.stats.color.losses++;
+            }
+            
+            // Update strategy weights
+            if (lobbyData.strategyWeights[currentPrediction.strategy]) {
+                const strategyLog = lobbyData.strategyWeights[currentPrediction.strategy].recentAccuracy;
+                strategyLog.push(accuracy);
+                if (strategyLog.length > 20) strategyLog.shift();
+                
+                // Adjust weight based on recent performance
+                const avgAccuracy = strategyLog.reduce((a, b) => a + b, 0) / strategyLog.length;
+                lobbyData.strategyWeights[currentPrediction.strategy].weight = 5 + (avgAccuracy * 10);
+            }
+            
+            saveState();
+            updateStats();
+            updateHistoryLog();
+            updateHotColdNumbers();
+            
+            playSound(accuracy >= 0.6 ? 'success' : 'error');
+            
+            setTimeout(() => {
+                elements.resultContainer.innerHTML = '';
+                updateSignalTower(null);
+                elements.predictBtn.disabled = false;
+                elements.periodInput.value = '';
+            }, 2000);
+        };
+        
+        const resetSystem = () => {
+            if (confirm('This will reset ALL data. Are you sure?')) {
+                state.lobbies = {
+                    '30s': createInitialLobbyState(),
+                    '1m': createInitialLobbyState(),
+                    '3m': createInitialLobbyState(),
+                    '5m': createInitialLobbyState()
+                };
+                saveState();
+                switchLobby('30s');
+                playSound('success');
+            }
+        };
+        
+        const updateTheme = (theme) => {
+            elements.htmlEl.setAttribute('data-theme', theme);
+            elements.themeToggle.className = `icon-btn fa-solid fa-${theme === 'dark' ? 'sun' : 'moon'} text-lg`;
+            localStorage.setItem('chimeraTheme', theme);
+        };
+        
+        // === Event Listeners ===
+        elements.keypadButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                playSound('beep');
+                const key = button.dataset.key;
+                
+                if (key === 'C') {
+                    elements.periodInput.value = '';
+                } else if (key === 'B') {
+                    elements.periodInput.value = elements.periodInput.value.slice(0, -1);
+                } else {
+                    if (elements.periodInput.value.length < 20) {
+                        elements.periodInput.value += key;
+                    }
+                }
+            });
+        });
+        
+        elements.predictBtn.addEventListener('click', handlePrediction);
+        
+        elements.themeToggle.addEventListener('click', () => {
+            const currentTheme = elements.htmlEl.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            updateTheme(newTheme);
+        });
+        
+        elements.aiModeToggle.addEventListener('click', () => {
+            state.isAiMode = !state.isAiMode;
+            elements.aiModeToggle.className = `icon-btn fa-solid fa-brain text-lg ${state.isAiMode ? 'text-green-400' : 'text-gray-500'}`;
+            elements.aiModeToggle.title = `AI Mode: ${state.isAiMode ? 'ON' : 'OFF'}`;
+            saveState();
+        });
+        
+        elements.resetButton.addEventListener('click', resetSystem);
+        
+        elements.lobbyButtons.forEach(btn => {
+            btn.addEventListener('click', () => switchLobby(btn.dataset.lobby));
+        });
+        
+        elements.toggleHistory?.addEventListener('click', () => {
+            elements.historyContainer.classList.toggle('hidden');
+            const isHidden = elements.historyContainer.classList.contains('hidden');
+            elements.toggleHistory.innerHTML = `<i class="fas fa-eye${isHidden ? '' : '-slash'}"></i> ${isHidden ? 'Show' : 'Hide'}`;
+        });
+        
+        // === Initialization ===
+        const loadState = () => {
+            const savedTheme = localStorage.getItem('chimeraTheme') || 'dark';
+            updateTheme(savedTheme);
+            
+            const savedState = localStorage.getItem('chimeraQuantumState_v21');
+            if (savedState) {
+                try {
+                    const parsed = JSON.parse(savedState);
+                    state = { ...state, ...parsed };
+                    
+                    // Ensure all lobbies have proper structure
+                    Object.keys(state.lobbies).forEach(lobbyId => {
+                        if (!state.lobbies[lobbyId].stats) {
+                            state.lobbies[lobbyId].stats = createInitialLobbyState().stats;
+                        }
+                        if (!state.lobbies[lobbyId].strategyWeights) {
+                            state.lobbies[lobbyId].strategyWeights = createInitialLobbyState().strategyWeights;
+                        }
+                    });
+                } catch (e) {
+                    console.error("Failed to parse saved state:", e);
+                    localStorage.removeItem('chimeraQuantumState_v21');
+                }
+            }
+            
+            switchLobby(state.activeLobby || '30s');
+        };
+        
+        // Prevent zoom on mobile
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        });
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        loadState();
+    });
+    </script>
+</body>
+</html>
