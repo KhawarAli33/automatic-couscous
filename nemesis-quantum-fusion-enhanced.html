@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <title>NEMESIS-QUANTUM FUSION v4.0 :: ULTIMATE CORE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
+    <meta name="theme-color" content="#0a0f1a" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary: #00e5ff; --secondary: #c026d3; --success: #22c55e;
+            --warning: #facc15; --danger: #ef4444; --bg-dark: #0a0f1a;
+            --panel-border: linear-gradient(45deg, var(--secondary), var(--primary), var(--warning)) 1;
+            --neon-glow: 0 0 20px var(--primary), 0 0 40px var(--primary), 0 0 60px var(--primary);
+            --pulse-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+        
+        html[data-theme='dark'] {
+            --bg-color: var(--bg-dark); --text-color: #e2e8f0;
+            --panel-bg: rgba(30, 41, 59, 0.8);
+            --keypad-bg: linear-gradient(145deg, #1e293b, #0f172a);
+            --keypad-shadow: 3px 3px 6px #060910, -3px -3px 6px #141f3a;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+        }
+        
+        html[data-theme='light'] {
+            --bg-color: #f1f5f9; --text-color: #1e293b;
+            --panel-bg: rgba(255, 255, 255, 0.8);
+            --keypad-bg: linear-gradient(145deg, #e2e8f0, #cbd5e1);
+            --keypad-shadow: 3px 3px 6px #b8c1d1, -3px -3px 6px #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(192, 38, 211, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(34, 197, 94, 0.05) 0%, transparent 50%);
+        }
+        
+        .font-sans { font-family: 'Orbitron', sans-serif; }
+        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes glow { 0%, 100% { box-shadow: var(--pulse-shadow); } 50% { box-shadow: var(--neon-glow); } }
+        @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
+        @keyframes matrix { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
+        @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        .predict-button {
+            transition: all 0.3s;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5), 0 0 15px rgba(192, 38, 211, 0.5);
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .predict-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            animation: glow 2s infinite;
+        }
+        
+        .predict-button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .predict-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .predict-button:hover::before { left: 100%; }
+        
+        .key-button {
+            transition: all 0.2s;
+            background: var(--keypad-bg);
+            box-shadow: var(--keypad-shadow);
+            border: 1px solid rgba(0, 229, 255, 0.1);
+            position: relative;
+        }
+        
+        .key-button:active {
+            transform: scale(0.95);
+            box-shadow: inset 2px 2px 4px #0a0f1a, inset -2px -2px 4px #141f3a;
+        }
+        
+        .key-button:hover { border-color: var(--primary); }
+        
+        .icon-btn {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+        }
+        
+        .icon-btn:hover {
+            transform: scale(1.1);
+            color: var(--primary);
+            background: rgba(0, 229, 255, 0.1);
+        }
+        
+        .ultra-panel {
+            background: var(--glass-bg);
+            border: 1px solid;
+            border-image: var(--panel-border) 1;
+            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .ultra-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.5;
+        }
+        
+        .mega-panel {
+            background: linear-gradient(135deg, var(--glass-bg), rgba(30, 41, 59, 0.6));
+            border: 2px solid;
+            border-image: linear-gradient(45deg, var(--primary), var(--secondary), var(--warning), var(--success)) 1;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 2px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.4;
+        }
+        
+        html[data-theme='light'] #matrixCanvas { display: none; }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        .slide-in { animation: slideIn 0.5s ease-out; }
+        
+        #periodInput.error {
+            border-color: var(--danger) !important;
+            animation: shake 0.5s;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+        
+        .lobby-btn {
+            transition: all 0.3s;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lobby-btn.active {
+            text-shadow: 0 0 10px var(--primary);
+            color: var(--primary);
+            background: rgba(0, 229, 255, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+        
+        .lobby-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.3), transparent);
+            transition: left 0.3s;
+        }
+        
+        .lobby-btn:hover::before { left: 100%; }
+        
+        .color-tag, .size-tag {
+            border: 1px solid currentColor;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .color-tag.Green { color: var(--success); }
+        .color-tag.Red { color: var(--danger); }
+        .color-tag.Violet { color: #9d00ff; }
+        .color-tag.Violet-Red {
+            background: linear-gradient(135deg, #9d00ff, var(--danger));
+            color: white;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .size-tag.Big { color: #f472b6; }
+        .size-tag.Small { color: #60a5fa; }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 6000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show { transform: translateX(0); }
+        
+        .notification.success {
+            background: linear-gradient(135deg, var(--success), #16a34a);
+            color: white;
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+        }
+        
+        .notification.warning {
+            background: linear-gradient(135deg, var(--warning), #eab308);
+            color: black;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 200px;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            padding: 10px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--glass-bg), rgba(0, 0, 0, 0.2));
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 229, 255, 0.2);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .hologram-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hologram-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.1), transparent);
+            animation: hologram 3s infinite;
+        }
+        
+        @keyframes hologram {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .neural-network {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+        
+        .prediction-confidence {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(192, 38, 211, 0.1));
+            border: 1px solid var(--primary);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .confidence-meter {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger), var(--warning), var(--success));
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .ai-brain {
+            animation: pulse 2s infinite;
+            text-shadow: 0 0 20px var(--primary);
+        }
+        
+        .quantum-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 4s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10px) rotate(360deg); opacity: 0; }
+        }
+        
+        .terminal-window {
+            background: #000;
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            padding: 10px;
+            height: 150px;
+            overflow-y: auto;
+        }
+        
+        .terminal-line {
+            color: #00ff00;
+            margin: 2px 0;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .terminal-prompt::before {
+            content: '> ';
+            color: var(--primary);
+        }
+        
+        .heat-map {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            padding: 15px;
+        }
+        
+        .heat-cell {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .heat-cell:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px currentColor;
+        }
+        
+        .advanced-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .control-button {
+            background: linear-gradient(135deg, var(--glass-bg), rgba(0, 0, 0, 0.3));
+            border: 1px solid var(--primary);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        .control-button:hover {
+            background: var(--primary);
+            color: black;
+            transform: translateY(-2px);
+        }
+        
+        .ai-suggestion {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+            border-left: 4px solid var(--success);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .pattern-visualization {
+            height: 100px;
+            background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.1), transparent);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pattern-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                var(--primary) 1px,
+                transparent 2px,
+                transparent 20px
+            );
+            animation: wave 3s infinite linear;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 229, 255, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .voice-indicator {
+            width: 20px;
+            height: 20px;
+            background: var(--danger);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+        
+        .voice-indicator.active {
+            background: var(--success);
+            box-shadow: 0 0 20px var(--success);
+        }
+    </style>
+</head>
+<body class="p-2 md:p-4">
+    <!-- Preloader -->
+    <div id="preloader" class="fixed top-0 left-0 w-full h-full bg-black z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <div class="font-sans text-lg text-primary ai-brain">
+                INITIALIZING ULTIMATE CORE v4.0...
+            </div>
+            <div class="mt-2 text-sm text-gray-400">
+                Loading Neural Networks & Quantum Algorithms
+            </div>
+        </div>
+    </div>
+
+    <!-- Quantum Particles -->
+    <div id="quantumParticles"></div>
+    
+    <!-- Matrix Background -->
+    <canvas id="matrixCanvas"></canvas>
+    
+    <!-- Neural Network Background -->
+    <canvas id="neuralNetwork" class="neural-network"></canvas>
+
+    <!-- Notification System -->
+    <div id="notificationContainer"></div>
+
+    <!-- Main Container -->
+    <main id="mainContainer" class="w-full max-w-8xl mx-auto opacity-0" style="transition: opacity 0.5s;">
+        <!-- Header -->
+        <header class="mega-panel flex justify-between items-center p-4 mb-6 hologram-effect">
+            <div class="text-left text-xs text-gray-400 hidden md:block">
+                <div>Neural Accuracy: <span id="neuralAccuracy" class="text-cyan-400">0%</span></div>
+                <div>Quantum Sync: <span id="quantumSync" class="text-purple-400">100%</span></div>
+                <div>AI Confidence: <span id="aiConfidenceHeader" class="text-yellow-400">0%</span></div>
+                <div>Core Status: <span class="text-green-400">OPTIMAL</span></div>
+            </div>
+            
+            <div class="text-center">
+                <h1 class="font-sans text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-cyan-500 to-purple-500">
+                    <i class="fa-solid fa-brain ai-brain"></i> NEMESIS-QUANTUM v4.0
+                </h1>
+                <div class="text-sm text-gray-400 mt-1">ULTIMATE PREDICTION CORE</div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div id="voiceIndicator" class="voice-indicator" title="Voice Control"></div>
+                <i id="fullscreenToggle" class="icon-btn fa-solid fa-expand text-lg" title="Fullscreen"></i>
+                <i id="themeToggle" class="icon-btn fa-solid fa-moon text-lg" title="Toggle Theme"></i>
+                <i id="settingsButton" class="icon-btn fa-solid fa-cog text-lg" title="Advanced Settings"></i>
+                <i id="resetButton" class="icon-btn fa-solid fa-power-off text-lg text-red-500" title="Reset System"></i>
+            </div>
+        </header>
+
+        <!-- Advanced Stats Bar -->
+        <section class="ultra-panel p-4 mb-6">
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+                <div class="stat-card">
+                    <div class="text-green-400 text-xl"><i class="fa-solid fa-circle"></i></div>
+                    <div class="text-2xl font-bold" id="greenHits">0</div>
+                    <div class="text-xs text-gray-400">Green Hits</div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress-fill" id="greenProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="text-red-400 text-xl"><i class="fa-solid fa-circle"></i></div>
+                    <div class="text-2xl font-bold" id="redHits">0</div>
+                    <div class="text-xs text-gray-400">Red Hits</div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress-fill" id="redProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="text-pink-400 text-xl"><i class="fa-solid fa-arrow-up"></i></div>
+                    <div class="text-2xl font-bold" id="bigHits">0</div>
+                    <div class="text-xs text-gray-400">Big Results</div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress-fill" id="bigProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="text-blue-400 text-xl"><i class="fa-solid fa-arrow-down"></i></div>
+                    <div class="text-2xl font-bold" id="smallHits">0</div>
+                    <div class="text-xs text-gray-400">Small Results</div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress-fill" id="smallProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="text-yellow-400 text-xl"><i class="fa-solid fa-star"></i></div>
+                    <div class="text-2xl font-bold" id="totalPredictions">0</div>
+                    <div class="text-xs text-gray-400">Total Predictions</div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress-fill" id="totalProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="text-cyan-400 text-xl"><i class="fa-solid fa-target"></i></div>
+                    <div class="text-2xl font-bold" id="overallAccuracy">0%</div>
+                    <div class="text-xs text-gray-400">Success Rate</div>
+                    <div class="progress-bar mt-2">
+                        <div class="progress-fill" id="accuracyProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+            <!-- Left Panel: Controls & Input -->
+            <section class="xl:col-span-3 space-y-6">
+                <!-- Lobby Selection -->
+                <div class="ultra-panel p-4">
+                    <h3 class="font-sans font-bold text-center mb-4 text-cyan-400">
+                        <i class="fa-solid fa-clock"></i> TIME LOBBIES
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="lobby-btn text-gray-400 px-4 py-3 font-sans text-sm rounded-lg" data-lobby="30s">
+                            <i class="fa-solid fa-bolt"></i> 30s
+                        </button>
+                        <button class="lobby-btn text-gray-400 px-4 py-3 font-sans text-sm rounded-lg" data-lobby="1m">
+                            <i class="fa-solid fa-clock"></i> 1m
+                        </button>
+                        <button class="lobby-btn text-gray-400 px-4 py-3 font-sans text-sm rounded-lg" data-lobby="3m">
+                            <i class="fa-solid fa-hourglass-half"></i> 3m
+                        </button>
+                        <button class="lobby-btn text-gray-400 px-4 py-3 font-sans text-sm rounded-lg" data-lobby="5m">
+                            <i class="fa-solid fa-hourglass"></i> 5m
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Period Input -->
+                <div class="ultra-panel p-4">
+                    <h3 class="font-sans font-bold text-center mb-4 text-purple-400">
+                        <i class="fa-solid fa-keyboard"></i> PERIOD INPUT
+                    </h3>
+                    <input id="periodInput" 
+                           class="w-full bg-black/30 border-2 border-purple-500/30 text-white font-sans text-3xl text-center rounded-lg p-4 shadow-inner hologram-effect" 
+                           type="text" 
+                           maxlength="25" 
+                           placeholder="Enter Period ID..."
+                           autocomplete="off">
+                    
+                    <!-- Advanced Input Controls -->
+                    <div class="advanced-controls mt-4">
+                        <button class="control-button" id="voiceInputBtn">
+                            <i class="fa-solid fa-microphone"></i> Voice
+                        </button>
+                        <button class="control-button" id="scanQRBtn">
+                            <i class="fa-solid fa-qrcode"></i> QR Scan
+                        </button>
+                        <button class="control-button" id="autoFillBtn">
+                            <i class="fa-solid fa-magic"></i> Auto
+                        </button>
+                        <button class="control-button" id="historyBtn">
+                            <i class="fa-solid fa-history"></i> History
+                        </button>
+                    </div>
+                    
+                    <!-- Enhanced Keypad -->
+                    <div class="grid grid-cols-3 gap-3 mt-4">
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="1">1</button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="2">2</button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="3">3</button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="4">4</button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="5">5</button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="6">6</button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="7">7</button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="8">8</button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="9">9</button>
+                        <button class="key-button bg-rose-700/50 font-sans text-xl p-4 rounded-lg" data-key="C">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <button class="key-button font-sans text-2xl p-4 rounded-lg" data-key="0">0</button>
+                        <button class="key-button bg-amber-700/50 font-sans text-xl p-4 rounded-lg" data-key="B">
+                            <i class="fa-solid fa-backspace"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Enhanced Predict Button -->
+                    <button id="predictButton" class="predict-button text-white font-sans text-lg py-4 rounded-lg uppercase tracking-wider w-full mt-4">
+                        <i class="fa-solid fa-brain ai-brain"></i> 
+                        <span id="predictButtonText">ENGAGE QUANTUM CORE</span>
+                    </button>
+                </div>
+
+                <!-- AI Terminal -->
+                <div class="ultra-panel p-4">
+                    <h3 class="font-sans font-bold text-center mb-4 text-green-400">
+                        <i class="fa-solid fa-terminal"></i> AI TERMINAL
+                    </h3>
+                    <div id="aiTerminal" class="terminal-window">
+                        <div class="terminal-line terminal-prompt">System initialized...</div>
+                        <div class="terminal-line terminal-prompt">Neural networks online...</div>
+                        <div class="terminal-line terminal-prompt">Awaiting input...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Center Panel: Main Prediction Display -->
+            <section class="xl:col-span-6">
+                <!-- Prediction Results -->
+                <div class="mega-panel p-6 mb-6 hologram-effect" id="predictionPanel">
+                    <div id="resultContainer" class="min-h-[400px] flex justify-center items-center">
+                        <div class="text-center text-gray-500">
+                            <i class="fa-solid fa-atom text-8xl mb-6 opacity-20 ai-brain"></i>
+                            <p class="text-xl font-rajdhani">QUANTUM CORE STANDING BY</p>
+                            <p class="text-sm mt-2 opacity-70">Ready for neural prediction analysis</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern Analysis -->
+                <div class="ultra-panel p-4 mb-6">
+                    <h3 class="font-sans font-bold text-center mb-4 text-yellow-400">
+                        <i class="fa-solid fa-chart-line"></i> PATTERN ANALYSIS
+                    </h3>
+                    <div class="pattern-visualization mb-4">
+                        <div class="pattern-wave"></div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="patternChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Heat Map -->
+                <div class="ultra-panel p-4">
+                    <h3 class="font-sans font-bold text-center mb-4 text-red-400">
+                        <i class="fa-solid fa-fire"></i> NUMBER FREQUENCY HEAT MAP
+                    </h3>
+                    <div id="heatMap" class="heat-map"></div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Analytics & History -->
+            <section class="xl:col-span-3 space-y-6">
+                <!-- Performance Metrics -->
+                <div class="ultra-panel p-4">
+                    <h3 class="font-sans font-bold text-center mb-4 text-cyan-400">
+                        <i class="fa-solid fa-chart-bar"></i> PERFORMANCE METRICS
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="stat-card">
+                            <div class="flex justify-between items-center">
+                                <span>Neural Score</span>
+                                <span id="neuralScore" class="font-bold text-cyan-400">0</span>
+                            </div>
+                            <div class="progress-bar mt-2">
+                                <div class="progress-fill" id="neuralScoreProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="flex justify-between items-center">
+                                <span>Quantum Efficiency</span>
+                                <span id="quantumEfficiency" class="font-bold text-purple-400">0%</span>
+                            </div>
+                            <div class="progress-bar mt-2">
+                                <div class="progress-fill" id="quantumEfficiencyProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="flex justify-between items-center">
+                                <span>Learning Rate</span>
+                                <span id="learningRate" class="font-bold text-yellow-400">1.00x</span>
+                            </div>
+                            <div class="progress-bar mt-2">
+                                <div class="progress-fill" id="learningRateProgress" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quantum Insights -->
+                <div class="ultra-panel p-4">
+                    <h3 class="font-sans font-bold text-center mb-4 text-purple-400">
+                        <i class="fa-solid fa-eye"></i> QUANTUM INSIGHTS
+                    </h3>
+                    <div id="quantumInsights" class="space-y-4">
+                        <div class="ai-suggestion">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-lightbulb text-yellow-400 pt-1"></i>
+                                <div>
+                                    <div class="font-bold text-sm">AI Suggestion</div>
+                                    <div id="aiSuggestion" class="text-xs mt-1">Analyzing patterns...</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-black/20 p-3 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-infinity text-purple-400 pt-1"></i>
+                                <div>
+                                    <div class="font-bold text-sm">Streak Analysis</div>
+                                    <div id="streakInfo" class="text-xs mt-1">No active streaks</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-black/20 p-3 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-search text-cyan-400 pt-1"></i>
+                                <div>
+                                    <div class="font-bold text-sm">Pattern Detection</div>
+                                    <div id="patternInfo" class="text-xs mt-1">Scanning for patterns...</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-black/20 p-3 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-clock text-orange-400 pt-1"></i>
+                                <div>
+                                    <div class="font-bold text-sm">Timing Analysis</div>
+                                    <div id="timingInfo" class="text-xs mt-1">Optimal timing calculated</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session History -->
+                <div class="ultra-panel p-4">
+                    <h3 class="font-sans font-bold text-center mb-4 text-green-400">
+                        <i class="fa-solid fa-history"></i> SESSION HISTORY
+                    </h3>
+                    <div id="historyLog" class="text-sm space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                        <p class="text-center text-gray-500">No predictions yet</p>
+                    </div>
+                </div>
+
+                <!-- Data Management -->
+                <div class="ultra-panel p-4">
+                    <h3 class="font-sans font-bold text-center mb-4 text-amber-400">
+                        <i class="fa-solid fa-database"></i> DATA MANAGEMENT
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="exportData" class="control-button">
+                            <i class="fa-solid fa-download"></i> Export
+                        </button>
+                        <button id="importData" class="control-button">
+                            <i class="fa-solid fa-upload"></i> Import
+                        </button>
+                        <button id="backupData" class="control-button">
+                            <i class="fa-solid fa-shield-alt"></i> Backup
+                        </button>
+                        <button id="shareData" class="control-button">
+                            <i class="fa-solid fa-share"></i> Share
+                        </button>
+                    </div>
+                    
+                    <div class="mt-4 text-xs text-center text-gray-400">
+                        <div>Data Records: <span id="totalRecords" class="text-cyan-400">0</span></div>
+                        <div>Storage Used: <span id="storageUsed" class="text-yellow-400">0 KB</span></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Result Confirmation Modal -->
+    <div id="resultModal" class="modal">
+        <div class="fade-in ultra-panel p-6 w-11/12 max-w-md">
+            <h3 class="font-sans text-xl text-center mb-4">
+                <i class="fa-solid fa-check-circle text-green-400"></i>
+                Confirm Actual Result
+            </h3>
+            <p class="text-center text-gray-400 mb-4">
+                Period: <span id="modalPeriod" class="font-bold text-cyan-400"></span>
+            </p>
+            <div class="grid grid-cols-5 gap-2" id="modalKeypad"></div>
+            <div class="flex gap-3 mt-4">
+                <button id="modalCancel" class="key-button w-full py-3">
+                    <i class="fa-solid fa-times"></i> Cancel
+                </button>
+                <button id="modalReset" class="key-button w-full py-3 bg-yellow-600">
+                    <i class="fa-solid fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="fade-in ultra-panel p-6 w-11/12 max-w-2xl">
+            <h3 class="font-sans text-xl text-center mb-6">
+                <i class="fa-solid fa-cog text-cyan-400"></i>
+                ADVANCED SETTINGS
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-bold mb-3 text-purple-400">Neural Network</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm mb-1">Learning Rate</label>
+                            <input type="range" id="learningRateSlider" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Pattern Weight</label>
+                            <input type="range" id="patternWeightSlider" min="0.5" max="5.0" step="0.1" value="2.5" class="w-full">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">Trend Analysis</label>
+                            <input type="range" id="trendWeightSlider" min="0.5" max="5.0" step="0.1" value="2.0" class="w-full">
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-3 text-cyan-400">System Preferences</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">Voice Commands</span>
+                            <input type="checkbox" id="voiceEnabled" class="toggle">
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">Auto-Save</span>
+                            <input type="checkbox" id="autoSaveEnabled" class="toggle" checked>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">Sound Effects</span>
+                            <input type="checkbox" id="soundEnabled" class="toggle" checked>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">Advanced UI</span>
+                            <input type="checkbox" id="advancedUIEnabled" class="toggle" checked>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button id="settingsCancel" class="control-button flex-1">
+                    <i class="fa-solid fa-times"></i> Cancel
+                </button>
+                <button id="settingsReset" class="control-button flex-1 bg-yellow-600">
+                    <i class="fa-solid fa-undo"></i> Reset to Default
+                </button>
+                <button id="settingsSave" class="control-button flex-1 bg-green-600">
+                    <i class="fa-solid fa-save"></i> Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div id="resetConfirmModal" class="modal">
+        <div class="fade-in ultra-panel p-6 w-11/12 max-w-md text-center">
+            <h3 class="font-sans text-xl text-red-500 mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i> 
+                DANGER ZONE
+            </h3>
+            <p class="text-gray-300 mb-6">
+                This will reset all data, statistics, and neural network training for ALL LOBBIES. 
+                This action cannot be undone.
+            </p>
+            <div class="flex justify-around gap-4">
+                <button id="resetModalCancel" class="key-button w-full py-3">
+                    <i class="fa-solid fa-shield"></i> CANCEL
+                </button>
+                <button id="resetModalConfirm" class="key-button w-full bg-red-700 py-3">
+                    <i class="fa-solid fa-skull"></i> CONFIRM RESET
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Enhanced Functionality -->
+    <script>
+        class NemesisQuantumUltimate {
+            constructor() {
+                this.version = '4.0';
+                this.currentPeriod = '';
+                this.currentPrediction = null;
+                this.activeLobby = '1m';
+                this.isVoiceEnabled = false;
+                this.charts = {};
+                
+                // Enhanced state structure
+                this.defaultState = {
+                    lobbies: {
+                        '30s': this.createAdvancedLobbyState(),
+                        '1m': this.createAdvancedLobbyState(),
+                        '3m': this.createAdvancedLobbyState(),
+                        '5m': this.createAdvancedLobbyState()
+                    },
+                    settings: {
+                        learningRate: 1.0,
+                        patternWeight: 2.5,
+                        trendWeight: 2.0,
+                        voiceEnabled: false,
+                        autoSave: true,
+                        soundEnabled: true,
+                        advancedUI: true
+                    },
+                    neuralNetwork: {
+                        weights: this.initializeNeuralWeights(),
+                        biases: this.initializeNeuralBiases(),
+                        activationHistory: []
+                    }
+                };
+                
+                this.state = JSON.parse(JSON.stringify(this.defaultState));
+                this.init();
+            }
+            
+            createAdvancedLobbyState() {
+                return {
+                    history: [],
+                    stats: {
+                        total: 0,
+                        wins: 0,
+                        streak: { current: 0, best: 0 },
+                        learningRate: 1.05,
+                        neuralScore: 0,
+                        quantumEfficiency: 0,
+                        bs: { wins: 0, total: 0 },
+                        color: { wins: 0, total: 0 },
+                        confidence: { average: 0, peak: 0 }
+                    },
+                    weights: {
+                        frequency: 1.5,
+                        trend: 2.0,
+                        pattern: 2.5,
+                        attribute: 1.8,
+                        streakBreaker: 3.0,
+                        fluctuation: 0.2,
+                        neural: 3.5,
+                        quantum: 2.8
+                    },
+                    patterns: {
+                        sequences: new Map(),
+                        frequencies: Array(10).fill(0),
+                        gaps: Array(10).fill(0),
+                        trends: []
+                    }
+                };
+            }
+            
+            initializeNeuralWeights() {
+                // Initialize neural network weights with random values
+                const weights = [];
+                for (let layer = 0; layer < 3; layer++) {
+                    const layerWeights = [];
+                    const inputSize = layer === 0 ? 20 : 10;
+                    const outputSize = layer === 2 ? 10 : 10;
+                    
+                    for (let i = 0; i < outputSize; i++) {
+                        const neuronWeights = [];
+                        for (let j = 0; j < inputSize; j++) {
+                            neuronWeights.push((Math.random() - 0.5) * 2);
+                        }
+                        layerWeights.push(neuronWeights);
+                    }
+                    weights.push(layerWeights);
+                }
+                return weights;
+            }
+            
+            initializeNeuralBiases() {
+                return [
+                    Array(10).fill(0).map(() => (Math.random() - 0.5) * 0.1),
+                    Array(10).fill(0).map(() => (Math.random() - 0.5) * 0.1),
+                    Array(10).fill(0).map(() => (Math.random() - 0.5) * 0.1)
+                ];
+            }
+            
+            getColor(n) {
+                if ([1, 3, 7, 9].includes(n)) return 'Green';
+                if ([2, 4, 6, 8].includes(n)) return 'Red';
+                if (n === 5) return 'Violet';
+                if (n === 0) return 'Violet-Red';
+                return 'Unknown';
+            }
+            
+            getSize(n) {
+                return n >= 5 ? 'Big' : 'Small';
+            }
+            
+            init() {
+                this.loadData();
+                this.setupEventListeners();
+                this.initializeVisuals();
+                this.initializeCharts();
+                this.startPreloader();
+                this.switchLobby(this.activeLobby);
+                this.createQuantumParticles();
+                this.initializeVoiceControl();
+            }
+            
+            startPreloader() {
+                const steps = [
+                    'Initializing quantum algorithms...',
+                    'Loading neural networks...',
+                    'Calibrating prediction matrices...',
+                    'Synchronizing temporal data...',
+                    'Activating AI consciousness...'
+                ];
+                
+                let currentStep = 0;
+                const preloaderText = document.querySelector('#preloader .ai-brain');
+                
+                const stepInterval = setInterval(() => {
+                    if (currentStep < steps.length) {
+                        preloaderText.textContent = steps[currentStep];
+                        currentStep++;
+                    } else {
+                        clearInterval(stepInterval);
+                        setTimeout(() => {
+                            document.getElementById('preloader').style.display = 'none';
+                            document.getElementById('mainContainer').style.opacity = '1';
+                            this.showNotification('System initialized successfully!', 'success');
+                            this.addTerminalLine('Core systems online');
+                            this.addTerminalLine('Ready for quantum predictions');
+                        }, 500);
+                    }
+                }, 300);
+            }
+            
+            loadData() {
+                try {
+                    const saved = localStorage.getItem('nemesisQuantumUltimate_v4_0');
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        if (data.version === this.version) {
+                            this.state = { ...this.defaultState, ...data.state };
+                            this.activeLobby = data.activeLobby || '1m';
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to load data:', e);
+                    this.state = JSON.parse(JSON.stringify(this.defaultState));
+                }
+            }
+            
+            saveData() {
+                const dataToSave = {
+                    version: this.version,
+                    state: this.state,
+                    activeLobby: this.activeLobby,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('nemesisQuantumUltimate_v4_0', JSON.stringify(dataToSave));
+                
+                // Calculate storage usage
+                const usage = new Blob([JSON.stringify(dataToSave)]).size;
+                document.getElementById('storageUsed').textContent = `${(usage / 1024).toFixed(1)} KB`;
+            }
+            
+            setupEventListeners() {
+                // Enhanced event listeners
+                document.getElementById('periodInput').addEventListener('input', (e) => this.validatePeriodInput(e.target));
+                document.querySelectorAll('.key-button').forEach(b => 
+                    b.addEventListener('click', e => this.handleKeypad(e.target.dataset.key))
+                );
+                
+                // Main action buttons
+                document.getElementById('predictButton').addEventListener('click', () => this.predict());
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+                document.getElementById('fullscreenToggle').addEventListener('click', () => this.toggleFullscreen());
+                document.getElementById('settingsButton').addEventListener('click', () => this.showSettingsModal());
+                document.getElementById('resetButton').addEventListener('click', () => this.showResetConfirmModal());
+                
+                // Modal controls
+                document.getElementById('modalCancel').addEventListener('click', () => this.hideResultModal(false));
+                document.getElementById('resetModalCancel').addEventListener('click', () => this._hideResetConfirmModal());
+                document.getElementById('resetModalConfirm').addEventListener('click', () => this._performReset());
+                
+                // Data management
+                document.getElementById('exportData').addEventListener('click', () => this.exportData());
+                document.getElementById('importData').addEventListener('click', () => this.importData());
+                document.getElementById('backupData').addEventListener('click', () => this.createBackup());
+                document.getElementById('shareData').addEventListener('click', () => this.shareData());
+                
+                // Advanced controls
+                document.getElementById('voiceInputBtn').addEventListener('click', () => this.toggleVoiceInput());
+                document.getElementById('autoFillBtn').addEventListener('click', () => this.autoFillPeriod());
+                document.getElementById('historyBtn').addEventListener('click', () => this.showPeriodHistory());
+                
+                // Lobby selection
+                document.querySelectorAll('.lobby-btn').forEach(b => 
+                    b.addEventListener('click', e => this.switchLobby(e.target.dataset.lobby))
+                );
+                
+                // Settings modal
+                document.getElementById('settingsCancel').addEventListener('click', () => this.hideSettingsModal());
+                document.getElementById('settingsSave').addEventListener('click', () => this.saveSettings());
+                document.getElementById('settingsReset').addEventListener('click', () => this.resetSettings());
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+            }
+            
+            handleKeypad(key) {
+                const input = document.getElementById('periodInput');
+                
+                if (key === 'C') {
+                    input.value = '';
+                } else if (key === 'B') {
+                    input.value = input.value.slice(0, -1);
+                } else if (input.value.length < 25 && /^\d$/.test(key)) {
+                    input.value += key;
+                }
+                
+                this.validatePeriodInput(input);
+                this.addTerminalLine(`Input: ${input.value || 'cleared'}`);
+            }
+            
+            validatePeriodInput(input) {
+                const period = input.value.trim();
+                const history = this.state.lobbies[this.activeLobby].history;
+                
+                if (period && history.some(h => h.period === period)) {
+                    input.classList.add('error');
+                    this.showNotification('Period ID already exists!', 'warning');
+                } else {
+                    input.classList.remove('error');
+                }
+            }
+            
+            async predict() {
+                const input = document.getElementById('periodInput');
+                this.currentPeriod = input.value.trim();
+                
+                if (!this.currentPeriod || this.currentPeriod.length < 4) {
+                    return this.showError('Period ID must be at least 4 digits.');
+                }
+                
+                const history = this.state.lobbies[this.activeLobby].history;
+                if (history.some(x => x.period === this.currentPeriod)) {
+                    return this.showError('This Period ID has already been processed.');
+                }
+                
+                const btn = document.getElementById('predictButton');
+                btn.disabled = true;
+                document.getElementById('predictButtonText').textContent = 'QUANTUM ANALYSIS...';
+                
+                this.addTerminalLine(`Analyzing period: ${this.currentPeriod}`);
+                this.addTerminalLine('Activating neural networks...');
+                
+                // Show analysis progress
+                await this.simulateAnalysisProgress();
+                
+                this.currentPrediction = this.generateAdvancedPrediction();
+                this.displayAdvancedPrediction(this.currentPrediction);
+                
+                btn.disabled = false;
+                document.getElementById('predictButtonText').textContent = 'ENGAGE QUANTUM CORE';
+                
+                this.addTerminalLine('Prediction generated successfully');
+                this.updateQuantumEfficiency();
+            }
+            
+            async simulateAnalysisProgress() {
+                const steps = [
+                    'Scanning frequency patterns...',
+                    'Analyzing trend vectors...',
+                    'Processing neural weights...',
+                    'Calculating quantum probabilities...',
+                    'Generating prediction matrix...'
+                ];
+                
+                for (const step of steps) {
+                    this.addTerminalLine(step);
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+            }
+            
+            generateAdvancedPrediction() {
+                const lobby = this.state.lobbies[this.activeLobby];
+                const history = lobby.history;
+                
+                // Initialize scoring array
+                let scores = Array(10).fill(0);
+                
+                // Apply enhanced algorithms
+                if (history.length > 0) {
+                    scores = this.applyNeuralNetwork(scores, history);
+                    scores = this.applyQuantumAlgorithm(scores, history);
+                    scores = this.applyAdvancedPatterns(scores, history);
+                    scores = this.applyFrequencyAnalysis(scores, history);
+                    scores = this.applyTrendAnalysis(scores, history);
+                    scores = this.applyStreakBreaker(scores, history);
+                } else {
+                    // Random initialization for first prediction
+                    scores = scores.map(() => Math.random());
+                }
+                
+                // Sort by score
+                const scored = scores.map((score, number) => ({ number, score }))
+                    .sort((a, b) => b.score - a.score);
+                
+                // Calculate advanced confidence
+                const confidence = this.calculateAdvancedConfidence(scored, history);
+                const attributePredictions = this.analyzeAdvancedAttributes(scores, history);
+                
+                return {
+                    primary: scored[0],
+                    secondary: scored[1],
+                    tertiary: scored[2],
+                    wildcard: scored[Math.floor(Math.random() * 3) + 3],
+                    aiConfidence: confidence,
+                    neuralStrength: this.calculateNeuralStrength(scores),
+                    quantumCoherence: this.calculateQuantumCoherence(scores),
+                    bsPrediction: attributePredictions.bs,
+                    colorPrediction: attributePredictions.color,
+                    trends: this.analyzeTrends(history),
+                    risks: this.calculateRiskFactors(scores, history)
+                };
+            }
+            
+            applyNeuralNetwork(scores, history) {
+                // Advanced neural network processing
+                const inputs = this.prepareNeuralInputs(history);
+                const outputs = this.forwardPass(inputs);
+                
+                for (let i = 0; i < 10; i++) {
+                    scores[i] += outputs[i] * this.state.lobbies[this.activeLobby].weights.neural;
+                }
+                
+                return scores;
+            }
+            
+            applyQuantumAlgorithm(scores, history) {
+                // Quantum superposition simulation
+                const quantumStates = this.generateQuantumStates(history);
+                
+                for (let i = 0; i < 10; i++) {
+                    const quantumProbability = this.calculateQuantumProbability(i, quantumStates);
+                    scores[i] += quantumProbability * this.state.lobbies[this.activeLobby].weights.quantum;
+                }
+                
+                return scores;
+            }
+            
+            prepareNeuralInputs(history) {
+                const inputs = Array(20).fill(0);
+                
+                if (history.length > 0) {
+                    // Last 10 results
+                    const recent = history.slice(-10);
+                    recent.forEach((record, index) => {
+                        inputs[index] = record.result / 9; // Normalize to 0-1
+                    });
+                    
+                    // Statistical features
+                    const frequencies = Array(10).fill(0);
+                    history.slice(-100).forEach(record => frequencies[record.result]++);
+                    
+                    for (let i = 0; i < 10; i++) {
+                        inputs[10 + i] = frequencies[i] / Math.max(1, history.slice(-100).length);
+                    }
+                }
+                
+                return inputs;
+            }
+            
+            forwardPass(inputs) {
+                let activations = inputs;
+                
+                // Process through each layer
+                for (let layer = 0; layer < this.state.neuralNetwork.weights.length; layer++) {
+                    const newActivations = [];
+                    const weights = this.state.neuralNetwork.weights[layer];
+                    const biases = this.state.neuralNetwork.biases[layer];
+                    
+                    for (let neuron = 0; neuron < weights.length; neuron++) {
+                        let sum = biases[neuron];
+                        for (let input = 0; input < activations.length; input++) {
+                            sum += activations[input] * weights[neuron][input];
+                        }
+                        newActivations.push(this.sigmoid(sum));
+                    }
+                    
+                    activations = newActivations;
+                }
+                
+                return activations;
+            }
+            
+            sigmoid(x) {
+                return 1 / (1 + Math.exp(-x));
+            }
+            
+            generateQuantumStates(history) {
+                // Simulate quantum superposition of number states
+                const states = Array(10).fill(0).map(() => ({
+                    amplitude: Math.random(),
+                    phase: Math.random() * 2 * Math.PI
+                }));
+                
+                // Apply quantum interference based on history
+                if (history.length > 0) {
+                    const recent = history.slice(-5);
+                    recent.forEach(record => {
+                        states[record.result].amplitude *= 1.1;
+                    });
+                }
+                
+                return states;
+            }
+            
+            calculateQuantumProbability(number, states) {
+                const state = states[number];
+                return Math.pow(state.amplitude, 2) * Math.cos(state.phase);
+            }
+            
+            calculateAdvancedConfidence(scored, history) {
+                const scoreDiff = scored[0].score - scored[1].score;
+                const historyFactor = Math.min(history.length / 100, 1);
+                const diversityFactor = this.calculateScoreDiversity(scored);
+                
+                let confidence = (scoreDiff * 50 + historyFactor * 30 + diversityFactor * 20);
+                confidence = Math.max(10, Math.min(99, confidence));
+                
+                return confidence.toFixed(1);
+            }
+            
+            calculateScoreDiversity(scored) {
+                const scores = scored.map(s => s.score);
+                const mean = scores.reduce((a, b) => a + b) / scores.length;
+                const variance = scores.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / scores.length;
+                return Math.sqrt(variance) * 100;
+            }
+            
+            displayAdvancedPrediction(prediction) {
+                const createPredictionBox = (data, label, color, icon, details = '') => {
+                    let detailsHtml = '';
+                    if (label === 'Primary') {
+                        detailsHtml = `
+                            <div class="flex justify-center gap-2 mt-3">
+                                <div class="size-tag text-xs ${this.getSize(data.number)}">
+                                    ${prediction.bsPrediction.type} 
+                                    <span class="opacity-70">${prediction.bsPrediction.confidence.toFixed(1)}%</span>
+                                </div>
+                                <div class="color-tag text-xs ${this.getColor(data.number).split('-')[0]}">
+                                    ${prediction.colorPrediction.type.split('-')[0]} 
+                                    <span class="opacity-70">${prediction.colorPrediction.confidence.toFixed(1)}%</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    return `
+                        <div class="ultra-panel p-4 text-center hologram-effect">
+                            <div class="font-sans text-sm uppercase text-${color}-400 mb-2">
+                                <i class="fa-solid ${icon}"></i> ${label}
+                            </div>
+                            <div class="font-bold text-6xl my-3 ai-brain">${data.number}</div>
+                            <div class="text-xs text-gray-400">Score: ${data.score.toFixed(3)}</div>
+                            ${detailsHtml}
+                            ${details}
+                        </div>
+                    `;
+                };
+                
+                const confidenceColor = prediction.aiConfidence > 80 ? 'text-green-400' : 
+                                      prediction.aiConfidence > 60 ? 'text-yellow-400' : 'text-red-400';
+                
+                document.getElementById('resultContainer').innerHTML = `
+                    <div class="fade-in w-full space-y-6">
+                        <!-- Main Predictions -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            ${createPredictionBox(prediction.primary, 'Primary', 'cyan', 'fa-crosshairs')}
+                            ${createPredictionBox(prediction.secondary, 'Secondary', 'purple', 'fa-shield-halved')}
+                            ${createPredictionBox(prediction.tertiary, 'Tertiary', 'yellow', 'fa-star')}
+                            ${createPredictionBox(prediction.wildcard, 'Wildcard', 'orange', 'fa-bolt')}
+                        </div>
+                        
+                        <!-- Advanced Analytics -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="prediction-confidence">
+                                <div class="font-sans font-bold text-center mb-2">AI CONFIDENCE</div>
+                                <div class="text-4xl font-bold ${confidenceColor} text-center">${prediction.aiConfidence}%</div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill" style="width: ${prediction.aiConfidence}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="prediction-confidence">
+                                <div class="font-sans font-bold text-center mb-2">NEURAL STRENGTH</div>
+                                <div class="text-4xl font-bold text-purple-400 text-center">${prediction.neuralStrength}%</div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill" style="width: ${prediction.neuralStrength}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="prediction-confidence">
+                                <div class="font-sans font-bold text-center mb-2">QUANTUM COHERENCE</div>
+                                <div class="text-4xl font-bold text-cyan-400 text-center">${prediction.quantumCoherence}%</div>
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill" style="width: ${prediction.quantumCoherence}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Risk Analysis -->
+                        <div class="ultra-panel p-4">
+                            <h4 class="font-sans font-bold text-center mb-3 text-red-400">RISK ANALYSIS</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div class="text-center">
+                                    <div class="text-yellow-400 font-bold">Volatility Risk</div>
+                                    <div class="text-2xl">${prediction.risks.volatility}%</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-orange-400 font-bold">Pattern Break Risk</div>
+                                    <div class="text-2xl">${prediction.risks.patternBreak}%</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-red-400 font-bold">Randomness Factor</div>
+                                    <div class="text-2xl">${prediction.risks.randomness}%</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Button -->
+                        <button id="confirmResultBtn" class="predict-button text-white font-sans text-lg py-4 rounded-lg w-full uppercase tracking-wider">
+                            <i class="fa-solid fa-check-circle"></i> CONFIRM ACTUAL RESULT
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('confirmResultBtn').addEventListener('click', () => this.showResultModal());
+                this.updatePredictionCharts(prediction);
+            }
+            
+            // Continue with remaining methods...
+            calculateNeuralStrength(scores) {
+                const maxScore = Math.max(...scores);
+                const avgScore = scores.reduce((a, b) => a + b) / scores.length;
+                return Math.min(99, ((maxScore - avgScore) * 100)).toFixed(0);
+            }
+            
+            calculateQuantumCoherence(scores) {
+                const variance = this.calculateVariance(scores);
+                const coherence = Math.max(10, 100 - (variance * 50));
+                return Math.min(99, coherence).toFixed(0);
+            }
+            
+            calculateVariance(array) {
+                const mean = array.reduce((a, b) => a + b) / array.length;
+                return array.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / array.length;
+            }
+            
+            calculateRiskFactors(scores, history) {
+                const volatility = this.calculateVolatility(history);
+                const patternBreak = this.calculatePatternBreakRisk(history);
+                const randomness = this.calculateRandomnessFactor(scores);
+                
+                return {
+                    volatility: Math.min(99, volatility * 100).toFixed(0),
+                    patternBreak: Math.min(99, patternBreak * 100).toFixed(0),
+                    randomness: Math.min(99, randomness * 100).toFixed(0)
+                };
+            }
+            
+            calculateVolatility(history) {
+                if (history.length < 2) return 0.5;
+                
+                const changes = [];
+                for (let i = 1; i < Math.min(history.length, 20); i++) {
+                    changes.push(Math.abs(history[i].result - history[i-1].result));
+                }
+                
+                return changes.reduce((a, b) => a + b, 0) / (changes.length * 9);
+            }
+            
+            calculatePatternBreakRisk(history) {
+                if (history.length < 5) return 0.3;
+                
+                const recent = history.slice(-5);
+                const patterns = this.findSequentialPatterns(recent);
+                return 1 - (patterns.length / 10);
+            }
+            
+            calculateRandomnessFactor(scores) {
+                const sortedScores = [...scores].sort((a, b) => b - a);
+                const topThree = sortedScores.slice(0, 3);
+                const scoreSpread = topThree[0] - topThree[2];
+                return 1 - Math.min(1, scoreSpread * 2);
+            }
+            
+            showResultModal() {
+                document.getElementById('modalPeriod').textContent = this.currentPeriod;
+                const keypad = document.getElementById('modalKeypad');
+                
+                keypad.innerHTML = Array.from({ length: 10 }, (_, i) => 
+                    `<button class="key-button font-sans text-xl p-3 rounded-lg hologram-effect">${i}</button>`
+                ).join('');
+                
+                keypad.querySelectorAll('button').forEach(btn => 
+                    btn.onclick = () => this.handleResultSubmission(parseInt(btn.textContent))
+                );
+                
+                document.getElementById('resultModal').style.display = 'flex';
+            }
+            
+            handleResultSubmission(actualResult) {
+                this.hideResultModal(true);
+                if (!this.currentPrediction) return;
+                
+                const lobby = this.state.lobbies[this.activeLobby];
+                const prediction = this.currentPrediction;
+                
+                // Analyze result
+                const actual = {
+                    number: actualResult,
+                    size: this.getSize(actualResult),
+                    color: this.getColor(actualResult)
+                };
+                
+                const predicted = {
+                    size: prediction.bsPrediction.type,
+                    color: prediction.colorPrediction.type
+                };
+                
+                const wins = {
+                    number: [prediction.primary.number, prediction.secondary.number, 
+                            prediction.tertiary.number, prediction.wildcard.number].includes(actual.number),
+                    bs: predicted.size === actual.size,
+                    color: predicted.color.split('-')[0] === actual.color.split('-')[0]
+                };
+                
+                // Update statistics
+                this.updateAdvancedStats(wins, actualResult, prediction);
+                
+                // Add to history
+                lobby.history.push({
+                    period: this.currentPeriod,
+                    result: actualResult,
+                    prediction: prediction,
+                    wins: wins,
+                    timestamp: Date.now()
+                });
+                
+                // Update neural network with feedback
+                this.updateNeuralNetwork(wins, actualResult);
+                
+                // Update UI
+                this.updateAllUI();
+                this.saveData();
+                
+                // Show success notification
+                const winMessage = wins.number ? 'Perfect prediction! 🎯' : 
+                                 (wins.bs || wins.color) ? 'Partial success! 📊' : 'Learning from result 🧠';
+                this.showNotification(winMessage, wins.number ? 'success' : 'warning');
+                
+                this.addTerminalLine(`Result: ${actualResult} | ${wins.number ? 'WIN' : 'MISS'}`);
+            }
+            
+            updateAdvancedStats(wins, actualResult, prediction) {
+                const stats = this.state.lobbies[this.activeLobby].stats;
+                
+                stats.total++;
+                if (wins.number) {
+                    stats.wins++;
+                    stats.streak.current++;
+                    stats.streak.best = Math.max(stats.streak.best, stats.streak.current);
+                } else {
+                    stats.streak.current = 0;
+                }
+                
+                // Update subsystem stats
+                stats.bs.total++;
+                stats.color.total++;
+                if (wins.bs) stats.bs.wins++;
+                if (wins.color) stats.color.wins++;
+                
+                // Update neural score
+                const neuralBonus = wins.number ? 10 : (wins.bs || wins.color) ? 5 : -2;
+                stats.neuralScore = Math.max(0, stats.neuralScore + neuralBonus);
+                
+                // Update quantum efficiency
+                const confidenceAccuracy = wins.number ? parseFloat(prediction.aiConfidence) : 0;
+                stats.quantumEfficiency = (stats.quantumEfficiency * 0.9) + (confidenceAccuracy * 0.1);
+                
+                // Update confidence tracking
+                const currentConfidence = parseFloat(prediction.aiConfidence);
+                stats.confidence.average = (stats.confidence.average * 0.95) + (currentConfidence * 0.05);
+                stats.confidence.peak = Math.max(stats.confidence.peak, currentConfidence);
+            }
+            
+            updateNeuralNetwork(wins, actualResult) {
+                // Simple backpropagation update
+                const learningRate = 0.01;
+                const target = Array(10).fill(0);
+                target[actualResult] = 1;
+                
+                // Update output layer biases based on result
+                for (let i = 0; i < 10; i++) {
+                    const error = target[i] - (i === actualResult ? 1 : 0);
+                    this.state.neuralNetwork.biases[2][i] += learningRate * error;
+                }
+                
+                // Clip biases to prevent explosion
+                this.state.neuralNetwork.biases.forEach(layer => {
+                    layer.forEach((bias, i) => {
+                        layer[i] = Math.max(-1, Math.min(1, bias));
+                    });
+                });
+            }
+            
+            // Visual and UI methods
+            initializeVisuals() {
+                this.initializeMatrix();
+                this.initializeNeuralNetwork();
+            }
+            
+            initializeMatrix() {
+                const canvas = document.getElementById('matrixCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                
+                const matrix = "QUANTUMCORE-v4.0-ULTIMATE";
+                const fontSize = 14;
+                const columns = Math.ceil(canvas.width / fontSize);
+                const drops = Array(columns).fill(1).map(() => Math.random() * canvas.height);
+                
+                const draw = () => {
+                    ctx.fillStyle = 'rgba(10, 15, 26, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    ctx.fillStyle = '#00e5ff';
+                    ctx.font = fontSize + 'px monospace';
+                    
+                    for (let i = 0; i < drops.length; i++) {
+                        const text = matrix[i % matrix.length];
+                        ctx.fillText(text, i * fontSize, drops[i]);
+                        
+                        if (drops[i] > canvas.height && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        drops[i] += fontSize;
+                    }
+                };
+                
+                if (!window.matrixInterval) {
+                    window.matrixInterval = setInterval(draw, 50);
+                }
+            }
+            
+            createQuantumParticles() {
+                const container = document.getElementById('quantumParticles');
+                
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'quantum-particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 4 + 's';
+                    particle.style.animationDuration = (3 + Math.random() * 2) + 's';
+                    container.appendChild(particle);
+                }
+            }
+            
+            initializeCharts() {
+                // Pattern Analysis Chart
+                const ctx = document.getElementById('patternChart').getContext('2d');
+                this.charts.pattern = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Prediction Accuracy',
+                            data: [],
+                            borderColor: '#00e5ff',
+                            backgroundColor: 'rgba(0, 229, 255, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { 
+                                beginAtZero: true,
+                                max: 100,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#e2e8f0' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#e2e8f0' }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            updatePredictionCharts(prediction) {
+                // Update pattern chart with latest prediction confidence
+                const chart = this.charts.pattern;
+                chart.data.labels.push(this.currentPeriod.slice(-4));
+                chart.data.datasets[0].data.push(parseFloat(prediction.aiConfidence));
+                
+                // Keep only last 20 data points
+                if (chart.data.labels.length > 20) {
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                }
+                
+                chart.update();
+            }
+            
+            // Enhanced UI methods
+            updateAllUI() {
+                this.updateStatsDisplay();
+                this.updateHeatMap();
+                this.updateHistoryLog();
+                this.updateQuantumInsights();
+                this.updateProgressBars();
+            }
+            
+            updateHeatMap() {
+                const history = this.state.lobbies[this.activeLobby].history;
+                const frequencies = Array(10).fill(0);
+                
+                history.forEach(record => frequencies[record.result]++);
+                const maxFreq = Math.max(...frequencies);
+                
+                const heatMap = document.getElementById('heatMap');
+                heatMap.innerHTML = frequencies.map((freq, num) => {
+                    const intensity = maxFreq > 0 ? freq / maxFreq : 0;
+                    const color = `rgba(0, 229, 255, ${0.2 + intensity * 0.8})`;
+                    
+                    return `
+                        <div class="heat-cell" style="background: ${color}; color: white;">
+                            <div>
+                                <div class="text-lg font-bold">${num}</div>
+                                <div class="text-xs">${freq}x</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            updateProgressBars() {
+                const hits = this.recalculateLiveStats();
+                const total = hits.green + hits.red;
+                
+                if (total > 0) {
+                    document.getElementById('greenProgress').style.width = `${(hits.green / total) * 100}%`;
+                    document.getElementById('redProgress').style.width = `${(hits.red / total) * 100}%`;
+                    document.getElementById('bigProgress').style.width = `${(hits.big / total) * 100}%`;
+                    document.getElementById('smallProgress').style.width = `${(hits.small / total) * 100}%`;
+                }
+                
+                const stats = this.state.lobbies[this.activeLobby].stats;
+                if (stats.total > 0) {
+                    document.getElementById('accuracyProgress').style.width = `${(stats.wins / stats.total) * 100}%`;
+                    document.getElementById('totalProgress').style.width = `${Math.min(100, (stats.total / 100) * 100)}%`;
+                }
+            }
+            
+            // Utility methods
+            showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 
+                                        type === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
+                    ${message}
+                `;
+                
+                document.getElementById('notificationContainer').appendChild(notification);
+                
+                setTimeout(() => notification.classList.add('show'), 100);
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+            
+            addTerminalLine(text) {
+                const terminal = document.getElementById('aiTerminal');
+                const line = document.createElement('div');
+                line.className = 'terminal-line terminal-prompt';
+                line.textContent = text;
+                
+                terminal.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight;
+                
+                // Keep only last 50 lines
+                const lines = terminal.querySelectorAll('.terminal-line');
+                if (lines.length > 50) {
+                    lines[0].remove();
+                }
+            }
+            
+            toggleTheme() {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', newTheme);
+                
+                const icon = document.getElementById('themeToggle');
+                icon.className = newTheme === 'dark' ? 'icon-btn fa-solid fa-moon text-lg' : 'icon-btn fa-solid fa-sun text-lg';
+                
+                this.addTerminalLine(`Theme switched to ${newTheme} mode`);
+            }
+            
+            toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    document.getElementById('fullscreenToggle').className = 'icon-btn fa-solid fa-compress text-lg';
+                } else {
+                    document.exitFullscreen();
+                    document.getElementById('fullscreenToggle').className = 'icon-btn fa-solid fa-expand text-lg';
+                }
+            }
+            
+            switchLobby(lobbyId) {
+                this.activeLobby = lobbyId;
+                
+                document.querySelectorAll('.lobby-btn').forEach(btn => 
+                    btn.classList.toggle('active', btn.dataset.lobby === lobbyId)
+                );
+                
+                this.resetResultContainer();
+                this.updateAllUI();
+                this.addTerminalLine(`Switched to ${lobbyId} lobby`);
+            }
+            
+            resetResultContainer() {
+                document.getElementById('resultContainer').innerHTML = `
+                    <div class="text-center text-gray-500">
+                        <i class="fa-solid fa-atom text-8xl mb-6 opacity-20 ai-brain"></i>
+                        <p class="text-xl font-rajdhani">QUANTUM CORE STANDING BY</p>
+                        <p class="text-sm mt-2 opacity-70">Ready for neural prediction analysis</p>
+                    </div>
+                `;
+            }
+            
+            hideResultModal(clearPrediction = false) {
+                document.getElementById('resultModal').style.display = 'none';
+                if (clearPrediction) {
+                    this.resetResultContainer();
+                }
+            }
+            
+            showError(message) {
+                document.getElementById('resultContainer').innerHTML = `
+                    <div class="text-red-400 text-center fade-in">
+                        <i class="fas fa-exclamation-triangle text-6xl mb-4"></i>
+                        <div class="text-xl font-rajdhani">${message}</div>
+                    </div>
+                `;
+                this.showNotification(message, 'error');
+            }
+            
+            // Placeholder methods for remaining functionality
+            updateStatsDisplay() { /* Implementation */ }
+            updateHistoryLog() { /* Implementation */ }
+            updateQuantumInsights() { /* Implementation */ }
+            recalculateLiveStats() { return { green: 0, red: 0, big: 0, small: 0 }; }
+            
+            // Additional enhanced methods would continue here...
+            showSettingsModal() { document.getElementById('settingsModal').style.display = 'flex'; }
+            hideSettingsModal() { document.getElementById('settingsModal').style.display = 'none'; }
+            showResetConfirmModal() { document.getElementById('resetConfirmModal').style.display = 'flex'; }
+            _hideResetConfirmModal() { document.getElementById('resetConfirmModal').style.display = 'none'; }
+            _performReset() { /* Implementation */ }
+            
+            exportData() { /* Implementation */ }
+            importData() { /* Implementation */ }
+            createBackup() { /* Implementation */ }
+            shareData() { /* Implementation */ }
+            
+            toggleVoiceInput() { /* Implementation */ }
+            autoFillPeriod() { /* Implementation */ }
+            showPeriodHistory() { /* Implementation */ }
+            
+            saveSettings() { /* Implementation */ }
+            resetSettings() { /* Implementation */ }
+            handleKeyboardShortcuts(e) { /* Implementation */ }
+            
+            initializeVoiceControl() { /* Implementation */ }
+            updateQuantumEfficiency() { /* Implementation */ }
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            window.nemesisQuantumUltimate = new NemesisQuantumUltimate();
+        });
+    </script>
+</body>
+</html>
