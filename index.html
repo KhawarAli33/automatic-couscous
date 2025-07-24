@@ -3,13 +3,15 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <title>CHIMERA OMEGA v16.5 :: Hybrid AI Core</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEMESIS-QUANTUM FUSION v3.5 :: Enhanced Core</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
+  <meta name="theme-color" content="#0a0f1a" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Share Tech Mono', monospace; }
     .font-sans { font-family: 'Orbitron', sans-serif; }
@@ -61,7 +63,7 @@
     .COLD { color: #fdba74; } /* orange-300 */
   </style>
 </head>
-<body class="bg-gray-900 text-gray-100 flex flex-col items-center min-h-screen p-4 transition-colors duration-300">
+<body class="p-2 md:p-4">
   <!-- Header -->
   <div class="w-full max-w-md bg-gray-800 border border-cyan-500/20 rounded-xl shadow-lg shadow-cyan-500/10 flex justify-between items-center p-4 mb-6">
     <div class="flex items-center gap-2">
@@ -149,6 +151,12 @@
       </button>
     </div>
     <div id="historyLog" class="max-h-48 overflow-y-auto pr-2"></div>
+  </div>
+
+  <!-- NEW ANALYTICS PANEL -->
+  <div class="ultra-panel p-4">
+    <h4 class="font-sans font-bold text-center mb-3 text-cyan-400">TREND ANALYTICS</h4>
+    <canvas id="trendChart" height="120"></canvas>
   </div>
 
 <script>
